@@ -7,9 +7,15 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Date: 23.05.2010
@@ -18,36 +24,100 @@ import java.util.List;
 public class AnalyzeForumThreadService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeForumThreadService.class);
 
-    private final static String FORUM_THREAD_URL = "http://forums.storm8.com/showthread.php?t={0}";
-    private final static String FORUM_THREAD_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0}&page={1}";
+    private final static String FORUM_THREAD_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
+    private final static String FORUM_THREAD_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}&page={1,number,######}";
 
-    private int topicId;
 
-    private List<String> codes;
+    private static final Pattern pagePattern = Pattern.compile(".*page=(\\d*)\" title=\"Last Page.*", Pattern.DOTALL);
 
-    private ForumAnalyzeCallback callback;
+    private static final Pattern postPattern = Pattern.compile("<!-- message -->(.*?)<!-- / message -->", Pattern.DOTALL);
+
+    private static final String CODE_PATTERN = "\\w{5}";
+    private static final Pattern codePattern = Pattern.compile("\\s(" + CODE_PATTERN + ")\\s");
+
+
     private HttpClient httpClient;
+    private HashSet<String> blackList;
 
-    public AnalyzeForumThreadService(int topicId, ForumAnalyzeCallback callback) {
-        this.topicId = topicId;
-        this.callback = callback;
+    public AnalyzeForumThreadService() {
+        initBlackList();
     }
 
-    public void analyze() {
+    private void initBlackList() {
+        blackList = new HashSet<String>();
+        String newCode;
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader("black.list"));
+            newCode = bufferedReader.readLine();
+            do {
+                blackList.add(newCode.trim().toUpperCase());
+                newCode = bufferedReader.readLine();
+            }
+            while (newCode != null);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Error", e);
+        } catch (IOException e) {
+            LOGGER.error("Error", e);
+        } finally {
+            try {
+                assert bufferedReader != null;
+                bufferedReader.close();
+            } catch (IOException e) {
+                LOGGER.error("Error", e);
+            }
+        }
+    }
+
+    public void analyze(int topicId, ForumAnalyzeCallback callback) {
         try {
             initHttpClient();
+            LOGGER.info("Topic: " + topicId);
+            int count = getPagesCount(httpClient, topicId);
+            LOGGER.debug("Pages: " + count);
 
-            getPagesCount(httpClient);
-            walkThroughPages();
+            callback.codesFound(walkThroughPages(topicId, count));
 
-            callback.codesFound(codes);
         } catch (IOException e) {
             LOGGER.error("Error", e);
         }
     }
 
-    private void walkThroughPages() {
+    private Collection<String> walkThroughPages(int topicId, int count) {
+        Collection<String> codes = new HashSet<String>(1000);
+        for (int page = 1; page <= count; page++) {
+            LOGGER.info("Page: " + page);
+            try {
+                GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_THREAD_PAGE_URL, topicId, page));
+                int statusCode = httpClient.executeMethod(pageMethod);
+                if (statusCode != 200) {
+                    throw new IOException("Can't access thread page");
+                }
+                String pageBuffer = pageMethod.getResponseBodyAsString();
+                Matcher matcher = postPattern.matcher(pageBuffer);
+                while (matcher.find()) {
+                    String post = matcher.group(1);
+                    LOGGER.debug("Post: " + post);
+                    parsePost(post, codes);
+                }
+            } catch (IOException e) {
+                LOGGER.error("Error", e);
+            }
+        }
 
+        return codes;
+    }
+
+    private void parsePost(String post, Collection<String> codes) {
+        Matcher matcher = codePattern.matcher(post);
+        while (matcher.find()) {
+            String code = matcher.group(1).toUpperCase();
+            if (blackList.contains(code)) {
+                continue;
+            }
+            LOGGER.info("Found code: " + code);
+            codes.add(code);
+        }
     }
 
     private void initHttpClient() {
@@ -56,17 +126,22 @@ public class AnalyzeForumThreadService {
         httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, "Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
     }
 
-    private void getPagesCount(HttpClient httpClient) throws IOException {
+    private int getPagesCount(HttpClient httpClient, Object topicId) throws IOException {
+        int count = 0;
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_THREAD_URL, topicId));
         int statusCode = httpClient.executeMethod(pagesMethod);
         if (statusCode != 200) {
-            return;
+            throw new IOException("Can't access thread page");
         }
-        //page=54" title="Last Page
         String page = pagesMethod.getResponseBodyAsString();
+        Matcher matcher = pagePattern.matcher(page);
+        if (matcher.matches()) {
+            count = Integer.parseInt(matcher.group(1));
+        }
+        return count;
     }
 
-    private interface ForumAnalyzeCallback {
-        void codesFound(List<String> codes);
+    public interface ForumAnalyzeCallback {
+        void codesFound(Collection<String> codes);
     }
 }
