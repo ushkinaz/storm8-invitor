@@ -1,5 +1,6 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.dao;
 
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.invite.ClanInviteStatus;
 import org.slf4j.Logger;
 
@@ -11,13 +12,15 @@ import java.sql.Statement;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class ClassDao {
-    private static final Logger LOGGER = getLogger(ClassDao.class);
+@Singleton
+public class ClanDao {
+    private static final Logger LOGGER = getLogger(ClanDao.class);
 
     private Connection conn;
     private static final String DB_LOCATION = "c:/temp/inviordb";
 
-    public ClassDao() {
+    public ClanDao() throws IOException {
+        initDB();
     }
 
     public void initDB() throws IOException {

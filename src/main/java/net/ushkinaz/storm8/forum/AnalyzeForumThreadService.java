@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.forum;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
@@ -15,8 +15,8 @@ import java.util.List;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class AnalyzeForumThread {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeForumThread.class);
+public class AnalyzeForumThreadService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeForumThreadService.class);
 
     private final static String FORUM_THREAD_URL = "http://forums.storm8.com/showthread.php?t={0}";
     private final static String FORUM_THREAD_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0}&page={1}";
@@ -28,7 +28,7 @@ public class AnalyzeForumThread {
     private ForumAnalyzeCallback callback;
     private HttpClient httpClient;
 
-    public AnalyzeForumThread(int topicId, ForumAnalyzeCallback callback) {
+    public AnalyzeForumThreadService(int topicId, ForumAnalyzeCallback callback) {
         this.topicId = topicId;
         this.callback = callback;
     }

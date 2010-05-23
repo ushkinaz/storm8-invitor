@@ -1,7 +1,7 @@
 package net.ushkinaz.storm8.invite;
 
-import net.ushkinaz.storm8.ClassDao;
-import net.ushkinaz.storm8.Invitor;
+import com.google.inject.Inject;
+import net.ushkinaz.storm8.dao.ClanDao;
 import org.slf4j.Logger;
 
 import java.io.FileWriter;
@@ -17,15 +17,16 @@ public class InviteParser {
 
     private static final String NAME_PATTERN = "([\\w \\S]*)";
 
-    private final ClassDao classDao;
+    private final ClanDao clanDao;
 
     private static Pattern successPattern = Pattern.compile(".*<div class=\"messageBoxSuccess\"><span class=\"success\">Success!</span> You invited " + NAME_PATTERN + " to your clan.</div>.*", Pattern.DOTALL);
     private static Pattern alreadyInvitedPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> You already invited " + NAME_PATTERN + " to join your clan.</div>.*", Pattern.DOTALL);
     private static Pattern inClanPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> " + NAME_PATTERN + " is already in your clan.</div>.*", Pattern.DOTALL);
     private static Pattern notFoundPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> Unable to find anyone with that clan code.</div>.*", Pattern.DOTALL);
 
-    public InviteParser(ClassDao classDao) {
-        this.classDao = classDao;
+    @Inject
+    public InviteParser(ClanDao clanDao) {
+        this.clanDao = clanDao;
     }
 
     public void parseResult(String response, String clanCode) {
@@ -38,19 +39,19 @@ public class InviteParser {
 
         if (matcherSuccess.matches()) {
             clanName = matcherSuccess.group(1);
-            classDao.updateClanDB(clanCode, clanName, ClanInviteStatus.REQUESTED);
+            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.REQUESTED);
             LOGGER.info("Requested: " + clanName);
         } else if (matcherAlreadyInvited.matches()) {
             clanName = matcherAlreadyInvited.group(1);
-            classDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING);
+            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING);
             LOGGER.info("Pending: " + clanName);
         } else if (matcherInClan.matches()) {
             clanName = matcherInClan.group(1);
-            classDao.updateClanDB(clanCode, clanName, ClanInviteStatus.ACCEPTED);
+            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.ACCEPTED);
             LOGGER.info("InClan: " + clanName);
         } else if (matcherNotFound.matches()) {
             //clanName = matcherNotFound.group(1);
-            classDao.updateClanDB(clanCode, null, ClanInviteStatus.NOT_FOUND);
+            clanDao.updateClanDB(clanCode, null, ClanInviteStatus.NOT_FOUND);
             LOGGER.info("Unable to find clan with code: " + clanCode);
         } else {
             LOGGER.info("Unknown error");

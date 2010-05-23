@@ -1,6 +1,8 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.invite;
 
-import net.ushkinaz.storm8.invite.InviteParser;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.ushkinaz.storm8.dao.ClanDao;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
@@ -21,8 +23,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class Invitor {
-    private static final Logger LOGGER = getLogger(Invitor.class);
+@Singleton
+public class InviteService {
+    private static final Logger LOGGER = getLogger(InviteService.class);
 
     private static final String HTTP_HOST = "http://nl.storm8.com";
 //    private static final String HTTP_HOST = "http://ya.ru";
@@ -33,13 +36,14 @@ public class Invitor {
     private HttpClient httpClient = initHttpClient();
     private Random random;
     private InviteParser inviteParser;
-    private ClassDao classDao;
+    private ClanDao clanDao;
 
-    public Invitor(ClassDao classDao) throws Exception {
-        this.classDao = classDao;
+    @Inject
+    public InviteService(ClanDao clanDao, InviteParser inviteParser) throws Exception {
+        this.clanDao = clanDao;
+        this.random = new Random();
+        this.inviteParser = inviteParser;
         initHttpClient();
-        random = new Random();
-        inviteParser = new InviteParser(classDao);
     }
 
     private HttpClient initHttpClient() {
@@ -61,6 +65,7 @@ public class Invitor {
     }
 
     public void shutdown() {
+        clanDao.shutdown();
     }
 
     public void inviteClans() throws IOException {
@@ -80,7 +85,7 @@ public class Invitor {
     }
 
     private void invite(String clanCode) throws IOException {
-        classDao.insertNewClan(clanCode);
+        clanDao.insertNewClan(clanCode);
         PostMethod postMethod = new PostMethod(HTTP_HOST + CLAN_URI);
         postMethod.addRequestHeader("Referer", HTTP_HOST + CLAN_URI);
         postMethod.addRequestHeader("Origin", HTTP_HOST);
