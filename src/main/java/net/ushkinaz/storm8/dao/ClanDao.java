@@ -5,10 +5,7 @@ import net.ushkinaz.storm8.invite.ClanInviteStatus;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -68,5 +65,16 @@ public class ClanDao {
         } catch (SQLException e) {
             LOGGER.error("Error", e);
         }
+    }
+
+    public boolean isInvited(String clanCode) {
+        String queryString = "SELECT code FROM Clans WHERE Status is NOT NULL AND code='" + clanCode + "'";
+        try {
+            ResultSet set = conn.createStatement().executeQuery(queryString);
+            return set.next();
+        } catch (SQLException e) {
+            LOGGER.error("Error", e);
+        }
+        return false;
     }
 }

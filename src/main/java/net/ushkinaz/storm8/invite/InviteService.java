@@ -2,7 +2,9 @@ package net.ushkinaz.storm8.invite;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.forum.CodesDigger;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
@@ -12,10 +14,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -37,12 +40,19 @@ public class InviteService {
     private Random random;
     private InviteParser inviteParser;
     private ClanDao clanDao;
+    private Collection<String> codes;
+    private CodesDigger codesDigger;
 
     @Inject
-    public InviteService(ClanDao clanDao, InviteParser inviteParser) throws Exception {
+    public InviteService(ClanDao clanDao, InviteParser inviteParser, CodesReader codesReader, CodesDigger codesDigger) throws Exception {
         this.clanDao = clanDao;
         this.random = new Random();
         this.inviteParser = inviteParser;
+        this.codesDigger = codesDigger;
+
+        codes = new HashSet<String>();
+        codesReader.readFromFile(CODES_FILENAME, codes);
+
         initHttpClient();
     }
 
@@ -69,23 +79,34 @@ public class InviteService {
     }
 
     public void inviteClans() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(CODES_FILENAME));
-        String newCode;
-        try {
-            newCode = bufferedReader.readLine();
-            do {
-                newCode = newCode.trim();
-                invite(newCode);
-                newCode = bufferedReader.readLine();
-            }
-            while (newCode != null);
-        } finally {
-            bufferedReader.close();
+        Set<String> allCodes = new HashSet<String>(codes);
+        allCodes.addAll(codesDigger.digCodes());
+
+        for (String code : allCodes) {
+            invite(code);
         }
     }
 
     private void invite(String clanCode) throws IOException {
+        if (clanDao.isInvited(clanCode)) {
+            LOGGER.debug("Skipping:" + clanCode);
+            return;
+        }
+
         clanDao.insertNewClan(clanCode);
+        PostMethod postMethod = createPostMethod(clanCode);
+
+        LOGGER.debug("Inviting: " + clanCode);
+
+        int status = 0;
+        httpClient.executeMethod(postMethod);
+        inviteParser.parseResult(postMethod.getResponseBodyAsString(), clanCode);
+
+        LOGGER.debug("Res: " + status);
+        randomlySleep();
+    }
+
+    private PostMethod createPostMethod(String clanCode) {
         PostMethod postMethod = new PostMethod(HTTP_HOST + CLAN_URI);
         postMethod.addRequestHeader("Referer", HTTP_HOST + CLAN_URI);
         postMethod.addRequestHeader("Origin", HTTP_HOST);
@@ -98,15 +119,7 @@ public class InviteService {
                 new NameValuePair("mobcode", clanCode)
         };
         postMethod.setRequestBody(request);
-
-        LOGGER.debug("Inviting: " + clanCode);
-
-        int status = 0;
-        httpClient.executeMethod(postMethod);
-        inviteParser.parseResult(postMethod.getResponseBodyAsString(), clanCode);
-
-        LOGGER.debug("Res: " + status);
-        randomlySleep();
+        return postMethod;
     }
 
     private void randomlySleep() {

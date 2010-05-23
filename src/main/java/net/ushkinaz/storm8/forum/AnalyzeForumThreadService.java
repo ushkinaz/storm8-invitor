@@ -1,5 +1,7 @@
 package net.ushkinaz.storm8.forum;
 
+import com.google.inject.Inject;
+import net.ushkinaz.storm8.CodesReader;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -7,9 +9,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -33,40 +32,16 @@ public class AnalyzeForumThreadService {
     private static final Pattern postPattern = Pattern.compile("<!-- message -->(.*?)<!-- / message -->", Pattern.DOTALL);
 
     private static final String CODE_PATTERN = "\\w{5}";
-    private static final Pattern codePattern = Pattern.compile("\\s(" + CODE_PATTERN + ")\\s");
+    private static final Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
 
 
     private HttpClient httpClient;
     private HashSet<String> blackList;
 
-    public AnalyzeForumThreadService() {
-        initBlackList();
-    }
-
-    private void initBlackList() {
+    @Inject
+    public AnalyzeForumThreadService(CodesReader codesReader) {
         blackList = new HashSet<String>();
-        String newCode;
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new FileReader("black.list"));
-            newCode = bufferedReader.readLine();
-            do {
-                blackList.add(newCode.trim().toUpperCase());
-                newCode = bufferedReader.readLine();
-            }
-            while (newCode != null);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Error", e);
-        } catch (IOException e) {
-            LOGGER.error("Error", e);
-        } finally {
-            try {
-                assert bufferedReader != null;
-                bufferedReader.close();
-            } catch (IOException e) {
-                LOGGER.error("Error", e);
-            }
-        }
+        codesReader.readFromFile("black.list", blackList);
     }
 
     public void analyze(int topicId, ForumAnalyzeCallback callback) {

@@ -6,9 +6,11 @@ package net.ushkinaz.storm8;/*
  */
 
 import com.google.inject.AbstractModule;
+import net.ushkinaz.storm8.forum.CodesDigger;
+import net.ushkinaz.storm8.forum.ForumCodesDigger;
 
 public class Storm8Module extends AbstractModule {
     protected void configure() {
-//        bind(ClanDao.class).to(ClanDao.class);
+        bind(CodesDigger.class).to(ForumCodesDigger.class);
     }
 }
