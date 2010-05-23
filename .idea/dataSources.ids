@@ -1,0 +1,20 @@
+<?xml version="1.0"?><component name="dataSourceStorage">
+  <data-source source="LOCAL" name="DataSource" product="HSQL Database Engine" version="1.8.0" uuid="5963d8b0-6c07-4275-8db6-91282ece0768">
+    <jdbc-driver>org.hsqldb.jdbcDriver</jdbc-driver>
+    <jdbc-url>jdbc:hsqldb:file:C:/Temp/inviordb</jdbc-url>
+    <user-name>SA</user-name>
+    <libraries>
+      <library>
+        <url>jar://$MAVEN_REPOSITORY$/hsqldb/hsqldb/1.8.0.1/hsqldb-1.8.0.1.jar!/</url>
+      </library>
+    </libraries>
+    <table name="CLANS" schema="PUBLIC" catalog="" type="TABLE">
+      <column name="CODE" sqlType="CHAR" length="5" precision="0" nullable="false" jdbcType="1" />
+      <column name="NAME" sqlType="VARCHAR" length="100" precision="0" nullable="true" jdbcType="12" />
+      <column name="DATE_REQUESTED" sqlType="TIMESTAMP" length="6" precision="0" nullable="true" jdbcType="93" />
+      <column name="DATE_UPDATED" sqlType="TIMESTAMP" length="6" precision="0" nullable="true" jdbcType="93" />
+      <column name="STATUS" sqlType="INTEGER" length="0" precision="0" nullable="true" jdbcType="4" />
+      <primary-key name="SYS_PK_46" columns="code" />
+    </table>
+  </data-source>
+</component>
