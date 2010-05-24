@@ -3,9 +3,7 @@ package net.ushkinaz.storm8.forum;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,8 +95,8 @@ public class AnalyzeForumThreadService {
 
     private void initHttpClient() {
         httpClient = new HttpClient();
-        httpClient.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
-        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, "Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
+//        httpClient.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
+//        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, "Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
     }
 
     private int getPagesCount(HttpClient httpClient, Object topicId) throws IOException {

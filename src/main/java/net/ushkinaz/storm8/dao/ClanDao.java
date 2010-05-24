@@ -14,7 +14,7 @@ public class ClanDao {
     private static final Logger LOGGER = getLogger(ClanDao.class);
 
     private Connection conn;
-    private static final String DB_LOCATION = "c:/temp/inviordb";
+    private static final String DB_LOCATION = "/tmp/Storm.db";
 
     public ClanDao() throws IOException {
         initDB();

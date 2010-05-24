@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.forum.CodesDigger;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
@@ -19,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -31,10 +33,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class InviteService {
     private static final Logger LOGGER = getLogger(InviteService.class);
 
-    private static final String HTTP_HOST = "http://nl.storm8.com";
-//    private static final String HTTP_HOST = "http://ya.ru";
-    private static final String CLAN_URI = "/group.php";
-
     private static final String CODES_FILENAME = "codes.list";
 
     private HttpClient httpClient = initHttpClient();
@@ -43,13 +41,18 @@ public class InviteService {
     private ClanDao clanDao;
     private Collection<String> codes;
     private CodesDigger codesDigger;
+    private Game game;
+    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private static final String ACCEPT_CHARSET = "Accept-Charset: utf-8, iso-8859-1, utf-16, *;q=0.7";
+    private static final String ACCEPT = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5,application/youtube-client";
 
     @Inject
-    public InviteService(ClanDao clanDao, InviteParser inviteParser, CodesReader codesReader, CodesDigger codesDigger) throws Exception {
+    public InviteService(ClanDao clanDao, InviteParser inviteParser, CodesReader codesReader, CodesDigger codesDigger, Game game) throws Exception {
         this.clanDao = clanDao;
         this.random = new Random();
         this.inviteParser = inviteParser;
         this.codesDigger = codesDigger;
+        this.game = game;
 
         codes = new HashSet<String>();
         codesReader.readFromFile(CODES_FILENAME, codes);
@@ -60,11 +63,10 @@ public class InviteService {
     private HttpClient initHttpClient() {
         HttpState initialState = new HttpState();
 
-        Cookie ascCookie = new Cookie("nl.storm8.com", "asc", "1ec7c54864b2d968f89aa6453b067a9d4bff8a2f;", "/", null, false);
-        Cookie stCookie = new Cookie("nl.storm8.com", "st", "2792593%2Cc2e17ffa909fd6d4a6b1bbe219fed884ffddb425%2C1274554582%2C12%2C%2Ca1.54%2C14%2C4%2C10003%2C2010-05-22+11%3A56%3A22%2C%2Cv1_1274554582_5e4680101c1b52f0674b973b4a03b1aaf3043356", "/", null, false);
-
-        initialState.addCookie(ascCookie);
-        initialState.addCookie(stCookie);
+        for (Map.Entry<String, String> cookieEntry : game.getCookies().entrySet()) {
+            Cookie cookie = new Cookie(game.getDomain(), cookieEntry.getKey(), cookieEntry.getValue(), "/", null, false);
+            initialState.addCookie(cookie);
+        }
 
 
         HttpClient httpClient = new HttpClient();
@@ -102,7 +104,7 @@ public class InviteService {
             }
         } catch (SQLException e) {
             LOGGER.error("Error", e);
-        }finally {
+        } finally {
             try {
                 set.close();
             } catch (SQLException e) {
@@ -123,20 +125,20 @@ public class InviteService {
         LOGGER.debug("Inviting: " + clanCode);
 
         int status = 0;
-        httpClient.executeMethod(postMethod);
-        inviteParser.parseResult(postMethod.getResponseBodyAsString(), clanCode);
+//        httpClient.executeMethod(postMethod);
+//        inviteParser.parseResult(postMethod.getResponseBodyAsString(), clanCode);
 
         LOGGER.debug("Res: " + status);
         randomlySleep();
     }
 
     private PostMethod createPostMethod(String clanCode) {
-        PostMethod postMethod = new PostMethod(HTTP_HOST + CLAN_URI);
-        postMethod.addRequestHeader("Referer", HTTP_HOST + CLAN_URI);
-        postMethod.addRequestHeader("Origin", HTTP_HOST);
-        postMethod.addRequestHeader("Accept", "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5,application/youtube-client");
-        postMethod.addRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        postMethod.addRequestHeader("Accept-Charset", "Accept-Charset: utf-8, iso-8859-1, utf-16, *;q=0.7");
+        PostMethod postMethod = new PostMethod(game.getClansURL());
+        postMethod.addRequestHeader("Referer", game.getClansURL());
+        postMethod.addRequestHeader("Origin", game.getGameURL());
+        postMethod.addRequestHeader("Accept", ACCEPT);
+        postMethod.addRequestHeader("Content-type", CONTENT_TYPE);
+        postMethod.addRequestHeader("Accept-Charset", ACCEPT_CHARSET);
 
         NameValuePair[] request = {
                 new NameValuePair("action", "Invite"),
