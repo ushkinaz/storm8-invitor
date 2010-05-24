@@ -27,7 +27,7 @@ public class StormMe {
         this.configurator = configurator;
         this.service = service;
         this.clanDao = clanDao;
-
+        this.digger = digger;
     }
 
     public static void main(String[] args) throws Exception {
@@ -41,7 +41,7 @@ public class StormMe {
     private void doIt() throws IOException {
         Game ninja = configurator.getGame("Ninja");
 
-        digger.digCodes(ninja.getGameCode());
+//        digger.digCodes(ninja.getGameCode());
 
         //TODO: read codes from file
 //
