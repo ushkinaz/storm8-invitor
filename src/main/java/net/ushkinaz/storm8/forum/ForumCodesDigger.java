@@ -9,7 +9,6 @@ import net.ushkinaz.storm8.dao.ClanDao;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class ForumCodesDigger implements CodesDigger {
     private AnalyzeForumThreadService forumThreadService;
@@ -33,20 +32,22 @@ public class ForumCodesDigger implements CodesDigger {
     }
 
 
-    public void digCodes() {
+    public void digCodes(String gameCode) {
         for (Integer topic : topics) {
-            forumThreadService.analyze(topic, new MyForumAnalyzeCallback());
+            forumThreadService.analyze(topic, new MyForumAnalyzeCallback(gameCode));
         }
     }
 
     private class MyForumAnalyzeCallback implements AnalyzeForumThreadService.ForumAnalyzeCallback {
+        private String gameCode;
 
-        public MyForumAnalyzeCallback() {
+        public MyForumAnalyzeCallback(String gameCode) {
+            this.gameCode = gameCode;
         }
 
         public void codesFound(Collection<String> codes) {
             for (String code : codes) {
-                ForumCodesDigger.this.clanDao.insertNewClan(code);
+                ForumCodesDigger.this.clanDao.insertNewClan(code, gameCode);
             }
         }
     }

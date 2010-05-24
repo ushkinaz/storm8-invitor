@@ -23,36 +23,40 @@ public class InviteParser {
     private static Pattern alreadyInvitedPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> You already invited " + NAME_PATTERN + " to join your clan.</div>.*", Pattern.DOTALL);
     private static Pattern inClanPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> " + NAME_PATTERN + " is already in your clan.</div>.*", Pattern.DOTALL);
     private static Pattern notFoundPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> Unable to find anyone with that clan code.</div>.*", Pattern.DOTALL);
+    private static Pattern notAndroidPattern = Pattern.compile(".*If you are using an Android device, press the back button to exit the game.*", Pattern.DOTALL);
 
     @Inject
     public InviteParser(ClanDao clanDao) {
         this.clanDao = clanDao;
     }
 
-    public void parseResult(String response, String clanCode) {
+    public void parseResult(String response, String clanCode, String gameCode) throws IOException {
         String clanName;
 
         Matcher matcherSuccess = successPattern.matcher(response);
         Matcher matcherAlreadyInvited = alreadyInvitedPattern.matcher(response);
         Matcher matcherInClan = inClanPattern.matcher(response);
         Matcher matcherNotFound = notFoundPattern.matcher(response);
+        Matcher matcherNotAndroid = notAndroidPattern.matcher(response);
 
         if (matcherSuccess.matches()) {
             clanName = matcherSuccess.group(1);
-            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.REQUESTED);
+            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING, gameCode);
             LOGGER.info("Requested: " + clanName);
         } else if (matcherAlreadyInvited.matches()) {
             clanName = matcherAlreadyInvited.group(1);
-            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING);
+            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING, gameCode);
             LOGGER.info("Pending: " + clanName);
         } else if (matcherInClan.matches()) {
             clanName = matcherInClan.group(1);
-            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.ACCEPTED);
+            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.ACCEPTED, gameCode);
             LOGGER.info("InClan: " + clanName);
         } else if (matcherNotFound.matches()) {
-            //clanName = matcherNotFound.group(1);
-            clanDao.updateClanDB(clanCode, null, ClanInviteStatus.NOT_FOUND);
+            clanDao.updateClanDB(clanCode, null, ClanInviteStatus.NOT_FOUND, gameCode);
             LOGGER.info("Unable to find clan with code: " + clanCode);
+        } else if (matcherNotAndroid.matches()) {
+            LOGGER.error("Server does not like us!");
+            throw new IOException("Server does not like us!\n" + response);
         } else {
             LOGGER.info("Unknown error");
             logUnknownError(response, clanCode);

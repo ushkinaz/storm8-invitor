@@ -9,19 +9,19 @@ import net.ushkinaz.storm8.domain.Game;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Dmitry Sidorenko
- * @date May 24, 2010
  */
 @Singleton
 public class StormConfigurator {
     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(StormConfigurator.class);
     private static final String GAMES_XML = "games.xml";
 
-    private List<Game> games = new ArrayList<Game>();
+    private Map<String, Game> games = new HashMap<String, Game>(10);
 
     private XMLBinding binding;
 
@@ -31,21 +31,26 @@ public class StormConfigurator {
         configure();
     }
 
-    public List<Game> getGames() {
+    public Map<String, Game> getGames() {
         return games;
     }
 
+    public Game getGame(String game) {
+        return games.get(game);
+    }
+
     protected void configure() {
+
         try {
             XMLObjectReader reader = XMLObjectReader.newInstance(new FileInputStream(GAMES_XML));
             reader.setBinding(binding);
+            List<Game> gamesList = reader.read("Games");
+            reader.close();
 
-            while (reader.hasNext()) {
-                Game game = reader.read("Game", Game.class);
-                games.add(game);
+            for (Game game : gamesList) {
+                games.put(game.getName(), game);
             }
 
-            reader.close();
         } catch (XMLStreamException e) {
             LOGGER.error(e);
         } catch (FileNotFoundException e) {

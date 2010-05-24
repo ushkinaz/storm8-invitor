@@ -26,16 +26,5 @@ public class Storm8Module extends AbstractModule {
         bind(CodesDigger.class).to(ForumCodesDigger.class);
 
         bind(XMLBinding.class).toProvider(new XMLBinderFactory());
-//        bind(HierarchicalConfiguration.class).toProvider(new Provider<HierarchicalConfiguration>() {
-//            public HierarchicalConfiguration get() {
-//                HierarchicalConfiguration configuration = null;
-//                try {
-//                    configuration = new XMLConfiguration("games.xml");
-//                } catch (ConfigurationException e) {
-//                    LOGGER.error("Error loading configuration", e);
-//                }
-//                return configuration;
-//            }
-//        });
     }
 }

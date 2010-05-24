@@ -5,7 +5,7 @@ import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author Dmitry Sidorenko
@@ -19,7 +19,7 @@ public class StormConfiguratorTest {
     public void testStormConfigurator() throws Exception {
         stormConfigurator = new StormConfigurator(new XMLBinderFactory().get());
 
-        List<Game> games = stormConfigurator.getGames();
+        Map<String, Game> games = stormConfigurator.getGames();
 
         Assert.assertNotNull(games);
     }

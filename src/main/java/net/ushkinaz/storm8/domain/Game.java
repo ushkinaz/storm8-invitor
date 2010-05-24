@@ -27,6 +27,10 @@ public class Game implements XMLSerializable {
         topics = new ArrayList<Topic>();
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getGameURL(){
         return "http://" + domain  + "/";
     }
@@ -81,6 +85,14 @@ public class Game implements XMLSerializable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Game{" +
+                "name='" + name + '\'' +
+                ", domain='" + domain + '\'' +
+                '}';
+    }
+
     @SuppressWarnings({"UnusedDeclaration"})
     protected static final XMLFormat<Game> GAME_XML = new XMLFormat<Game>(Game.class) {
         public void write(Game g, XMLFormat.OutputElement xml) throws XMLStreamException {
@@ -99,4 +111,8 @@ public class Game implements XMLSerializable {
             g.topics = xml.get("topics");
         }
     };
+
+    public String getGameCode() {
+        return domain.substring(0, 2);
+    }
 }

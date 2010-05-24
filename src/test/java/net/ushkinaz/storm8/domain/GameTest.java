@@ -46,7 +46,7 @@ public class GameTest {
         XMLObjectWriter writer = XMLObjectWriter.newInstance(new FileOutputStream(GAMES_XML, false));
         writer.setBinding(binding); // Optional.
         writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(game, "Game", Game.class);
+        writer.write(game, "Game");
         writer.close();
 
         // Reads the area back
