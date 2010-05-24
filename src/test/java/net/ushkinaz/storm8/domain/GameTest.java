@@ -30,8 +30,8 @@ public class GameTest {
         binding = xmlBinderFactory.get();
 
         game = new Game();
-        game.setDomain("Ninja");
-        game.setUrl("http://nl.storm8.com");
+        game.setName("Ninja");
+        game.setDomain("nl.storm8.com");
         game.setClan_uri("/group.php");
         game.getCookies().put("ask", "1ec7c54864b2d968f89aa6453b067a9d4bff8a2f");
         game.getCookies().put("st", "2792593%2Cc2e17ffa909fd6d4a6b1bbe219fed884ffddb425%2C1274554582%2C12%2C%2Ca1.54%2C14%2C4%2C10003%2C2010-05-22+11%3A56%3A22%2C%2Cv1_1274554582_5e4680101c1b52f0674b973b4a03b1aaf3043356");

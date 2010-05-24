@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Game domain="Ninja">
+<Game name="Ninja">
 	<domain type="java.lang.String" value="nl.storm8.com"/>
 	<clan_uri type="java.lang.String" value="/group.php"/>
 	<cookies type="java.util.HashMap">
@@ -8,4 +8,8 @@
 		<Key type="java.lang.String" value="ask"/>
 		<Value type="java.lang.String" value="1ec7c54864b2d968f89aa6453b067a9d4bff8a2f"/>
 	</cookies>
+	<topics type="java.util.ArrayList">
+		<Topic topicId="11134"/>
+		<Topic topicId="90434"/>
+	</topics>
 </Game>
