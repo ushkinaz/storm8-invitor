@@ -3,7 +3,7 @@ package net.ushkinaz.storm8;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.dao.DBConnector;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.forum.CodesDigger;
 import net.ushkinaz.storm8.invite.InviteService;
@@ -19,14 +19,13 @@ public class StormMe {
 
     private StormConfigurator configurator;
     private InviteService service;
-    private ClanDao clanDao;
     private CodesDigger digger;
+    private DBConnector dbConnector;
 
     @Inject
-    private void StormMe(StormConfigurator configurator, InviteService service, ClanDao clanDao, CodesDigger digger) {
+    private void StormMe(StormConfigurator configurator, InviteService service, CodesDigger digger, DBConnector dbConnector) {
         this.configurator = configurator;
         this.service = service;
-        this.clanDao = clanDao;
         this.digger = digger;
     }
 
@@ -36,6 +35,7 @@ public class StormMe {
         StormMe stormMe = injector.getInstance(StormMe.class);
 
         stormMe.doIt();
+
     }
 
     private void doIt() throws IOException {
@@ -51,8 +51,7 @@ public class StormMe {
 
         service.inviteClans(ninja);
 
-        clanDao.shutdown();
-
+        dbConnector.shutdown();
     }
 
 }
