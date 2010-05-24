@@ -1,5 +1,5 @@
-<component domain="libraryTable">
-  <library domain="Maven: commons-codec:commons-codec:1.2">
+<component name="libraryTable">
+  <library name="Maven: commons-codec:commons-codec:1.2">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.2/commons-codec-1.2.jar!/" />
     </CLASSES>

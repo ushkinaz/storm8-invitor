@@ -1,4 +1,4 @@
-<component domain="CopyrightManager">
+<component name="CopyrightManager">
   <settings default="">
     <module2copyright />
   </settings>

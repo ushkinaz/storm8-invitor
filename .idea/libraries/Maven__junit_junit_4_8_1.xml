@@ -1,5 +1,5 @@
-<component domain="libraryTable">
-  <library domain="Maven: junit:junit:4.8.1">
+<component name="libraryTable">
+  <library name="Maven: junit:junit:4.8.1">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.8.1/junit-4.8.1.jar!/" />
     </CLASSES>

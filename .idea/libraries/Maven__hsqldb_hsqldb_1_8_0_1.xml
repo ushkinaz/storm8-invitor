@@ -1,5 +1,5 @@
-<component domain="libraryTable">
-  <library domain="Maven: hsqldb:hsqldb:1.8.0.1">
+<component name="libraryTable">
+  <library name="Maven: hsqldb:hsqldb:1.8.0.1">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/hsqldb/hsqldb/1.8.0.1/hsqldb-1.8.0.1.jar!/" />
     </CLASSES>

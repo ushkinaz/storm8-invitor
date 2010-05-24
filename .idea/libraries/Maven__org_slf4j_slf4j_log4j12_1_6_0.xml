@@ -1,5 +1,5 @@
-<component domain="libraryTable">
-  <library domain="Maven: org.slf4j:slf4j-log4j12:1.6.0">
+<component name="libraryTable">
+  <library name="Maven: org.slf4j:slf4j-log4j12:1.6.0">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-log4j12/1.6.0/slf4j-log4j12-1.6.0.jar!/" />
     </CLASSES>

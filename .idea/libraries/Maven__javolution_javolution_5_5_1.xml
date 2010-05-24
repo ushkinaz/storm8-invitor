@@ -1,5 +1,5 @@
-<component domain="libraryTable">
-  <library domain="Maven: javolution:javolution:5.5.1">
+<component name="libraryTable">
+  <library name="Maven: javolution:javolution:5.5.1">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/javolution/javolution/5.5.1/javolution-5.5.1.jar!/" />
     </CLASSES>

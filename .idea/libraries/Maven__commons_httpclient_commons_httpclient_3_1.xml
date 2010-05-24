@@ -1,5 +1,5 @@
-<component domain="libraryTable">
-  <library domain="Maven: commons-httpclient:commons-httpclient:3.1">
+<component name="libraryTable">
+  <library name="Maven: commons-httpclient:commons-httpclient:3.1">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar!/" />
     </CLASSES>
