@@ -7,5 +7,5 @@ import java.util.Set;
  * Created by Dmitry Sidorenko.
  */
 public interface CodesDigger {
-    Set<String> digCodes();
+    void digCodes();
 }

@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
+import net.ushkinaz.storm8.dao.ClanDao;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,10 +14,12 @@ import java.util.TreeSet;
 public class ForumCodesDigger implements CodesDigger {
     private AnalyzeForumThreadService forumThreadService;
     private Collection<Integer> topics;
+    private ClanDao clanDao;
 
     @Inject
-    public ForumCodesDigger(AnalyzeForumThreadService forumThreadService, CodesReader codesReader) {
+    public ForumCodesDigger(AnalyzeForumThreadService forumThreadService, CodesReader codesReader, ClanDao clanDao) {
         this.forumThreadService = forumThreadService;
+        this.clanDao = clanDao;
         Set<String> topicStrings = new HashSet<String>();
 
         codesReader.readFromFile("topics.list", topicStrings);
@@ -30,24 +33,21 @@ public class ForumCodesDigger implements CodesDigger {
     }
 
 
-    public Set<String> digCodes() {
-        Set<String> allCodes = new TreeSet<String>();
-
+    public void digCodes() {
         for (Integer topic : topics) {
-            forumThreadService.analyze(topic, new MyForumAnalyzeCallback(allCodes));
+            forumThreadService.analyze(topic, new MyForumAnalyzeCallback());
         }
-        return allCodes;
     }
 
-    private static class MyForumAnalyzeCallback implements AnalyzeForumThreadService.ForumAnalyzeCallback {
-        private final Set<String> allCodes;
+    private class MyForumAnalyzeCallback implements AnalyzeForumThreadService.ForumAnalyzeCallback {
 
-        public MyForumAnalyzeCallback(Set<String> allCodes) {
-            this.allCodes = allCodes;
+        public MyForumAnalyzeCallback() {
         }
 
         public void codesFound(Collection<String> codes) {
-            allCodes.addAll(codes);
+            for (String code : codes) {
+                ForumCodesDigger.this.clanDao.insertNewClan(code);
+            }
         }
     }
 }

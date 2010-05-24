@@ -77,4 +77,14 @@ public class ClanDao {
         }
         return false;
     }
+
+    public ResultSet getNotInvited() {
+        String queryString = "SELECT code FROM Clans WHERE Status IS NULL" ;
+        try {
+            return conn.createStatement().executeQuery(queryString);
+        } catch (SQLException e) {
+            LOGGER.error("Error", e);
+            return null;
+        }
+    }
 }

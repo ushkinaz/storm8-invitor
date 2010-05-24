@@ -15,10 +15,11 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -79,11 +80,34 @@ public class InviteService {
     }
 
     public void inviteClans() throws IOException {
-        Set<String> allCodes = new HashSet<String>(codes);
-        allCodes.addAll(codesDigger.digCodes());
+        codesDigger.digCodes();
 
-        for (String code : allCodes) {
+        for (String code : codes) {
             invite(code);
+        }
+
+        workOnDB();
+    }
+
+    private void workOnDB() throws IOException {
+        ResultSet set = clanDao.getNotInvited();
+        try {
+            while (set.next()) {
+                try {
+                    String code = set.getString(1);
+                    invite(code);
+                } catch (SQLException e) {
+                    LOGGER.error("Error", e);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Error", e);
+        }finally {
+            try {
+                set.close();
+            } catch (SQLException e) {
+                LOGGER.error("Error", e);
+            }
         }
     }
 
