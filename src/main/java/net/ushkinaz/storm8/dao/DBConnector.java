@@ -18,7 +18,7 @@ public class DBConnector implements Provider<Connection> {
     private static final Logger LOGGER = getLogger(DBConnector.class);
 
     static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
-    static final String DB_LOCATION = "/tmp/Storm.db";
+    static final String DB_LOCATION = "Storm.db";
     private Connection conn;
 
     @Inject

@@ -2,6 +2,7 @@ package net.ushkinaz.storm8.invite;
 
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import org.slf4j.Logger;
 
 import java.io.FileWriter;

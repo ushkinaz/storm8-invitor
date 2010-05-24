@@ -27,6 +27,7 @@ public class StormMe {
         this.configurator = configurator;
         this.service = service;
         this.digger = digger;
+        this.dbConnector = dbConnector; 
     }
 
     public static void main(String[] args) throws Exception {

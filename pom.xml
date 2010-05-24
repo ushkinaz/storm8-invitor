@@ -28,6 +28,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.db4o</groupId>
+            <artifactId>db4o</artifactId>
+            <version>7.12</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>2.0</version>
@@ -74,6 +80,12 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>project-repository</id>
+            <name>Storm8 Repo</name>
+            <url>http://repo.storm8-invitor.googlecode.com/hg/</url>
+        </repository>
+
         <repository>
             <id>google-maven-repository</id>
             <name>Google Maven Repository</name>

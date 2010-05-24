@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8.invite;
+package net.ushkinaz.storm8.domain;
 
 /**
  * Date: 23.05.2010

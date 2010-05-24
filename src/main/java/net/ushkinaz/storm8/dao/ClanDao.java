@@ -2,7 +2,7 @@ package net.ushkinaz.storm8.dao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.ushkinaz.storm8.invite.ClanInviteStatus;
+import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
