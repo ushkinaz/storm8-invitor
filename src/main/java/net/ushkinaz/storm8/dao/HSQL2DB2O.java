@@ -38,6 +38,7 @@ public class HSQL2DB2O {
         }
         db.commit();
 
+
         final DBConnector dbConnector = new DBConnector("Storm.db");
         Connection connection = dbConnector.get();
 
@@ -64,7 +65,8 @@ public class HSQL2DB2O {
                     clanInvite.setStatus(ClanInviteStatus.getByStatus(set.getInt("STATUS")));
                     clanInvite.setGame(ninjaGame);
 
-                    db.store(clanInvite);
+                    LOGGER.debug(clanInvite.getCode() + " : " + clanInvite.getDateRequested());
+//                    db.store(clanInvite);
                 } catch (SQLException e) {
                     LOGGER.error("Error", e);
                 }

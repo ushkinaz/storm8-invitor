@@ -25,7 +25,8 @@ public class ClanDao {
 
     public void insertNewClan(String clanCode, String gameCode) {
         try {
-            connection.createStatement().executeUpdate(String.format("INSERT INTO CLANS (code, game, date_requested) VALUES ('%s, %s', CURRENT_TIMESTAMP )", clanCode, gameCode));
+            //connection.createStatement().executeUpdate(String.format("INSERT INTO CLANS (code, game, date_requested) VALUES ('%s, %s', CURRENT_TIMESTAMP )", clanCode, gameCode));
+            connection.createStatement().executeUpdate(String.format("INSERT INTO CLANS (code, date_requested) VALUES ('%s', CURRENT_TIMESTAMP )", clanCode));
         } catch (SQLException e) {
             LOGGER.debug("Already there?", e);
         }
@@ -64,7 +65,7 @@ public class ClanDao {
             queryString = "SELECT code FROM Clans WHERE Status = " + status.getStatus();
         }
 
-        queryString += String.format(" AND GAME = '%s'", gameCode);
+//        queryString += String.format(" AND GAME = '%s'", gameCode);
 
         try {
             return connection.createStatement().executeQuery(queryString);

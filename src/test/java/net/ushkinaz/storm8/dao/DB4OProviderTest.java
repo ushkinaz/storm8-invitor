@@ -5,6 +5,7 @@ package net.ushkinaz.storm8.dao;
  */
 
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
 import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -67,6 +68,22 @@ public class DB4OProviderTest {
         db.commit();
         List<ClanInvite> set = db.queryByExample(ClanInvite.class);
         assertThat(set.size(), is(1));
+    }
+
+    @Test
+    public void testPlay() throws Exception {
+        final Storm8Module module = new Storm8Module("storm8.db");
+        Injector injector = Guice.createInjector(module);
+
+        db4OProvider = module.getDb4oOProvider();
+
+        db = injector.getInstance(ObjectContainer.class);
+
+        ObjectSet<Game> games = db.query(Game.class);
+        ObjectSet<ClanInvite> invites = db.query(ClanInvite.class);
+
+        Assert.assertNotNull(invites);
+        Assert.assertNotNull(games);
     }
 
     @Test

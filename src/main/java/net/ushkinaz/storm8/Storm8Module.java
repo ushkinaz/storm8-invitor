@@ -20,7 +20,6 @@ import net.ushkinaz.storm8.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 
@@ -31,6 +30,7 @@ public class Storm8Module extends AbstractModule {
     private DB4OProvider db4oOProvider;
     private XMLBinderFactory xmlBinderFactory;
     protected String dbFile;
+    private DBConnector dbConnector;
 
 
     public Storm8Module(String dbFile) {
@@ -46,10 +46,9 @@ public class Storm8Module extends AbstractModule {
         db4oOProvider = createDB4OProvider();
         bind(ObjectContainer.class).toProvider(db4oOProvider);
 
-        final DBConnector connector;
         try {
-            connector = new DBConnector("Storm.db");
-            bind(Connection.class).toProvider(connector);
+            dbConnector = new DBConnector("Storm.db");
+            bind(Connection.class).toProvider(dbConnector);
         } catch (IOException e) {
             LOGGER.error("DB connection error", e);
             throw new IllegalStateException(e);
@@ -57,7 +56,6 @@ public class Storm8Module extends AbstractModule {
     }
 
     protected DB4OProvider createDB4OProvider() {
-        new File(dbFile).delete();
         return new DB4OProvider(dbFile);
     }
 
@@ -65,7 +63,8 @@ public class Storm8Module extends AbstractModule {
         return db4oOProvider;
     }
 
-    public XMLBinderFactory getXmlBinderFactory() {
-        return xmlBinderFactory;
+    public void shutdown() {
+        dbConnector.shutdown();
+        db4oOProvider.shutdown();
     }
 }

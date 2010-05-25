@@ -9,12 +9,12 @@
         </layout>
     </appender>
 
-    <logger name="org.apache.commons" additivity="true">
+    <logger name="org.apache.commons" additivity="false">
         <level value="error"/>
     </logger>
 
     <root>
-        <priority value="info"/>
+        <priority value="debug"/>
         <appender-ref ref="console"/>
     </root>
 
