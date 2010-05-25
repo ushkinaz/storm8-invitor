@@ -5,7 +5,7 @@
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/com/db4o/db4o/7.12/db4o-7.12-javadoc.jar!/" />
-      <root url="http://developer.db4o.com/Documentation/Reference/db4o-7.12/java/reference/" />
+      <root url="http://developer.db4o.com/Documentation/Reference/db4o-7.12/java/api/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/com/db4o/db4o/7.12/db4o-7.12-sources.jar!/" />
