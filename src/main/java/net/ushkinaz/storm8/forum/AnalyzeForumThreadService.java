@@ -47,7 +47,9 @@ public class AnalyzeForumThreadService {
             initHttpClient();
             LOGGER.info("Topic: " + topicId);
             int count = getPagesCount(httpClient, topicId);
-            LOGGER.debug("Pages: " + count);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Pages: " + count);
+            }
 
             callback.codesFound(walkThroughPages(topicId, count));
 
@@ -70,7 +72,9 @@ public class AnalyzeForumThreadService {
                 Matcher matcher = postPattern.matcher(pageBuffer);
                 while (matcher.find()) {
                     String post = matcher.group(1);
-                    LOGGER.debug("Post: " + post);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Post: " + post);
+                    }
                     parsePost(post, codes);
                 }
             } catch (IOException e) {

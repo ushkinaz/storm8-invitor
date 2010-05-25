@@ -28,7 +28,9 @@ public class ClanDao {
             //connection.createStatement().executeUpdate(String.format("INSERT INTO CLANS (code, game, date_requested) VALUES ('%s, %s', CURRENT_TIMESTAMP )", clanCode, gameCode));
             connection.createStatement().executeUpdate(String.format("INSERT INTO CLANS (code, date_requested) VALUES ('%s', CURRENT_TIMESTAMP )", clanCode));
         } catch (SQLException e) {
-            LOGGER.debug("Already there?", e);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Already there?", e);
+            }
         }
     }
 

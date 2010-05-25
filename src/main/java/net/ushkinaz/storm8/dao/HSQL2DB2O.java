@@ -65,7 +65,9 @@ public class HSQL2DB2O {
                     clanInvite.setStatus(ClanInviteStatus.getByStatus(set.getInt("STATUS")));
                     clanInvite.setGame(ninjaGame);
 
-                    LOGGER.debug(clanInvite.getCode() + " : " + clanInvite.getDateRequested());
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(clanInvite.getCode() + " : " + clanInvite.getDateRequested());
+                    }
 //                    db.store(clanInvite);
                 } catch (SQLException e) {
                     LOGGER.error("Error", e);

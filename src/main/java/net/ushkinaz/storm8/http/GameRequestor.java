@@ -68,7 +68,9 @@ public class GameRequestor {
     public String postRequest(String requestURL, PostBodyFactory postBodyFactory) throws IOException {
         PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
         int status = httpClient.executeMethod(postMethod);
-        LOGGER.debug("HTTP result: " + status);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("HTTP result: " + status);
+        }
         randomlySleep();
         return postMethod.getResponseBodyAsString();
     }
@@ -76,7 +78,7 @@ public class GameRequestor {
     /**
      * Creates PostMethod.
      *
-     * @param requestURL url to request
+     * @param requestURL      url to request
      * @param postBodyFactory create body
      * @return post method
      */

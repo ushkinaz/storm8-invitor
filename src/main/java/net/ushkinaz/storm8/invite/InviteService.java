@@ -67,7 +67,9 @@ public class InviteService {
 
     private void invite(String clanCode, GameRequestor gameRequestor) throws IOException {
         if (clanDao.isInvited(clanCode, gameRequestor.getGame().getGameCode())) {
-            LOGGER.debug("Skipping:" + clanCode);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Skipping:" + clanCode);
+            }
             return;
         }
 
