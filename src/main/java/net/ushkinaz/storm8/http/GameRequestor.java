@@ -66,6 +66,9 @@ public class GameRequestor {
      * @throws IOException exception
      */
     public String postRequest(String requestURL, PostBodyFactory postBodyFactory) throws IOException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("URL: " + requestURL);
+        }
         PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
         int status = httpClient.executeMethod(postMethod);
         if (LOGGER.isDebugEnabled()) {
