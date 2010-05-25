@@ -7,6 +7,8 @@ import com.db4o.constraints.UniqueFieldValueConstraint;
 import com.google.inject.Provider;
 import net.ushkinaz.storm8.domain.ClanInvite;
 
+import java.util.List;
+
 /**
  * @author Dmitry Sidorenko
  * @date May 25, 2010
@@ -16,15 +18,14 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
     private EmbeddedConfiguration configuration;
     private ObjectContainer db;
-    private static final String STORM8_DB = "storm8.db";
 
-    public DB4OProvider() {
+    public DB4OProvider(String dbFile) {
         LOGGER.info("Initializing DB");
         configuration = Db4oEmbedded.newConfiguration();
 
         configureDatabase();
 
-        db = Db4oEmbedded.openFile(configuration, STORM8_DB);
+        db = Db4oEmbedded.openFile(configuration, dbFile);
     }
 
 
@@ -46,5 +47,14 @@ public class DB4OProvider implements Provider<ObjectContainer> {
         configuration.common().add(new UniqueFieldValueConstraint(ClanInvite.class, "code"));
     }
 
+    public void  addInvite(ClanInvite clanInvite){
+        final ClanInvite clanInviteQuery = new ClanInvite();
+        clanInviteQuery.setGame(clanInvite.getGame());
+        clanInviteQuery.setCode(clanInvite.getCode());
+        List<ClanInvite> clans = db.queryByExample(clanInviteQuery);
+        if (clans.size() == 0) {
+            db.store(clanInvite);
+        }
+    }
 
 }

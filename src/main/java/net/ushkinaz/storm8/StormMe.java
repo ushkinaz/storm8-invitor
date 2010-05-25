@@ -27,11 +27,11 @@ public class StormMe {
         this.configurator = configurator;
         this.service = service;
         this.digger = digger;
-        this.dbConnector = dbConnector; 
+        this.dbConnector = dbConnector;
     }
 
     public static void main(String[] args) throws Exception {
-        Injector injector = Guice.createInjector(new Storm8Module());
+        Injector injector = Guice.createInjector(new Storm8Module("storm8.db"));
 
         StormMe stormMe = injector.getInstance(StormMe.class);
 

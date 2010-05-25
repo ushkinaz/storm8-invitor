@@ -3,7 +3,7 @@ package net.ushkinaz.storm8.domain;
 import com.db4o.ObjectContainer;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import net.ushkinaz.storm8.Storm8Module;
+import net.ushkinaz.storm8.Storm8TestModule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +18,7 @@ public class ClanInviteTest {
 
     @Before
     public void setUp() {
-        Injector injector = Guice.createInjector(new Storm8Module());
+        Injector injector = Guice.createInjector(new Storm8TestModule());
 
         connector = injector.getInstance(ObjectContainer.class);
     }

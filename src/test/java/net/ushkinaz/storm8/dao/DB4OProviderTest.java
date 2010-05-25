@@ -9,6 +9,7 @@ import com.db4o.constraints.UniqueFieldValueConstraintViolationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.Storm8Module;
+import net.ushkinaz.storm8.Storm8TestModule;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import org.junit.After;
@@ -28,7 +29,7 @@ public class DB4OProviderTest {
 
     @Before
     public void setup() {
-        final Storm8Module module = new Storm8Module();
+        final Storm8Module module = new Storm8TestModule();
         Injector injector = Guice.createInjector(module);
 
         db4OProvider = module.getDb4oOProvider();
@@ -53,10 +54,16 @@ public class DB4OProviderTest {
         clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
 
         db.store(clanInvite);
-        db.store(clanInvite);
+
+        ClanInvite clanInvite1;
+        clanInvite1 = new ClanInvite();
+        clanInvite1.setCode("S223s");
+        clanInvite1.setGame("NL");
+        clanInvite1.setStatus(ClanInviteStatus.ACCEPTED);
+
+        db.store(clanInvite1);
 
         db.commit();
-
         List<ClanInvite> set = db.queryByExample(ClanInvite.class);
         assertThat(set.size(), is(1));
     }
