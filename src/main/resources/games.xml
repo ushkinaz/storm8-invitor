@@ -3,6 +3,20 @@
     <Game name="Ninja">
         <domain type="String" value="nl.storm8.com"/>
         <clan_uri type="String" value="/group.php"/>
+<!--
+        <links>
+            <uri name="home" uri="/home.php"/>
+            <uri name="group" uri="/group.php"/>
+            <uri name="bank" uri="/bank.php"/>
+            <uri name="profile" uri="/profile.php"/>
+            <uri name="favor" uri="/favor.php"/>
+            <uri name="hospital" uri="/hospital.php"/>
+            <uri name="hospital" uri="/hospital.php"/>
+
+            <uri name="news-attacks" uri="/ajax/getNewsFeedStories.php?selectedTab=fight"/>
+
+        </links>
+-->
         <cookies type="Map">
             <Key type="String" value="st"/>
             <Value type="String"
