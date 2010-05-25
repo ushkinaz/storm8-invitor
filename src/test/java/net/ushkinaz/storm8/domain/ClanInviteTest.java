@@ -32,13 +32,14 @@ public class ClanInviteTest {
         ClanInvite clanInvite;
         clanInvite = new ClanInvite();
         clanInvite.setCode("S223s");
-        clanInvite.setGame("NL");
+        final Game game = new Game();
+        clanInvite.setGame(game);
         clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
 
         ClanInvite clanInvite1;
         clanInvite1 = new ClanInvite();
         clanInvite1.setCode("S223s");
-        clanInvite1.setGame("NL");
+        clanInvite1.setGame(game);
         clanInvite1.setStatus(ClanInviteStatus.ACCEPTED);
 
         Assert.assertEquals(clanInvite, clanInvite1);

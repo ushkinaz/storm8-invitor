@@ -10,7 +10,7 @@ public class ClanInvite {
     private String code;
     private Date dateRequested;
     private Date dateUpdated;
-    private String game;
+    private Game game;
     private String name;
     private ClanInviteStatus status;
 
@@ -42,11 +42,11 @@ public class ClanInvite {
         this.dateUpdated = dateUpdated;
     }
 
-    public String getGame() {
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(String game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 

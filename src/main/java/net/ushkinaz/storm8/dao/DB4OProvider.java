@@ -6,6 +6,7 @@ import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.constraints.UniqueFieldValueConstraint;
 import com.google.inject.Provider;
 import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.Game;
 
 import java.util.List;
 
@@ -44,7 +45,9 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
     private void configureDatabase() {
         configuration.common().objectClass(ClanInvite.class).objectField("code").indexed(true);
-        configuration.common().add(new UniqueFieldValueConstraint(ClanInvite.class, "code"));
+
+        configuration.common().objectClass(Game.class).objectField("domain").indexed(true);
+        configuration.common().add(new UniqueFieldValueConstraint(Game.class, "domain"));
     }
 
     public void  addInvite(ClanInvite clanInvite){

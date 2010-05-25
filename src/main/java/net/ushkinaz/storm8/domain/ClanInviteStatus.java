@@ -19,4 +19,26 @@ public enum ClanInviteStatus {
     public int getStatus() {
         return status;
     }
+
+    public static ClanInviteStatus getByStatus(int status) {
+        ClanInviteStatus clanInviteStatus = null;
+        switch (status) {
+            case 1:
+                clanInviteStatus = REQUESTED;
+                break;
+            case 2:
+                clanInviteStatus = PENDING;
+                break;
+            case 4:
+                clanInviteStatus = ACCEPTED;
+                break;
+            case 8:
+                clanInviteStatus = NOT_FOUND;
+                break;
+        }
+        assert clanInviteStatus != null;
+        assert clanInviteStatus.getStatus() == status;
+
+        return clanInviteStatus;
+    }
 }

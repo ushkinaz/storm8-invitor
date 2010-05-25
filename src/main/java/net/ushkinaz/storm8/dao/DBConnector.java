@@ -18,16 +18,17 @@ public class DBConnector implements Provider<Connection> {
     private static final Logger LOGGER = getLogger(DBConnector.class);
 
     static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
-    static final String DB_LOCATION = "Storm.db";
     private Connection conn;
+    private String dbFile;
 
     @Inject
-    public DBConnector() throws IOException {
+    public DBConnector(String dbFile) throws IOException {
+        this.dbFile = dbFile;
         //TODO: avoid IO in guice module init
         initDB();
     }
 
-    protected void initDB() throws IOException {
+    private void initDB() throws IOException {
         try {
             try {
                 Class.forName(JDBC_DRIVER);
@@ -35,7 +36,7 @@ public class DBConnector implements Provider<Connection> {
                 LOGGER.error("ERROR: failed to load HSQLDB JDBC driver.", e);
                 throw new IOException(e);
             }
-            conn = DriverManager.getConnection("jdbc:hsqldb:file:" + DB_LOCATION + ";shutdown=true", "SA", "");
+            conn = DriverManager.getConnection("jdbc:hsqldb:file:" + dbFile + ";shutdown=true", "SA", "");
         } catch (SQLException e) {
             LOGGER.error("Error", e);
             throw new IOException(e);

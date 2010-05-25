@@ -48,7 +48,7 @@ public class Storm8Module extends AbstractModule {
 
         final DBConnector connector;
         try {
-            connector = new DBConnector();
+            connector = new DBConnector("Storm.db");
             bind(Connection.class).toProvider(connector);
         } catch (IOException e) {
             LOGGER.error("DB connection error", e);

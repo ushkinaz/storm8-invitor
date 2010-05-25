@@ -12,6 +12,7 @@ import net.ushkinaz.storm8.Storm8Module;
 import net.ushkinaz.storm8.Storm8TestModule;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
+import net.ushkinaz.storm8.domain.Game;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,7 +51,7 @@ public class DB4OProviderTest {
         ClanInvite clanInvite;
         clanInvite = new ClanInvite();
         clanInvite.setCode("S223s");
-        clanInvite.setGame("NL");
+        clanInvite.setGame(new Game());
         clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
 
         db.store(clanInvite);
@@ -58,7 +59,7 @@ public class DB4OProviderTest {
         ClanInvite clanInvite1;
         clanInvite1 = new ClanInvite();
         clanInvite1.setCode("S223s");
-        clanInvite1.setGame("NL");
+        clanInvite1.setGame(new Game());
         clanInvite1.setStatus(ClanInviteStatus.ACCEPTED);
 
         db.store(clanInvite1);
