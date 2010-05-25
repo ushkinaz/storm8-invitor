@@ -1,44 +1,48 @@
 package net.ushkinaz.storm8.domain;
 
-import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
-import com.db4o.config.EmbeddedConfiguration;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import net.ushkinaz.storm8.Storm8Module;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  * Date: 25.05.2010
  * Created by Dmitry Sidorenko.
  */
 public class ClanInviteTest {
+    private ObjectContainer connector;
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        Injector injector = Guice.createInjector(new Storm8Module());
 
-        EmbeddedConfiguration configuration = Db4oEmbedded.newConfiguration();
-        configuration.common().objectClass(ClanInvite.class).objectField("code").indexed(true);
-
-
-        ObjectContainer db = Db4oEmbedded.openFile(configuration, "storm8.db");
-        ClanInvite clanInvite = new ClanInvite();
-        clanInvite.setCode("S223s");
-        clanInvite.setGame("NL");
-        clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
-        db.store(clanInvite);
-
-        List<ClanInvite> set = db.queryByExample(ClanInvite.class);
-        set.hashCode();
-    }
-
-    @Test
-    public void testME() {
-
+        connector = injector.getInstance(ObjectContainer.class);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void shutdown() {
+    }
+
+    @Test
+    public void testEquals() {
+        ClanInvite clanInvite;
+        clanInvite = new ClanInvite();
+        clanInvite.setCode("S223s");
+        clanInvite.setGame("NL");
+        clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
+
+        ClanInvite clanInvite1;
+        clanInvite1 = new ClanInvite();
+        clanInvite1.setCode("S223s");
+        clanInvite1.setGame("NL");
+        clanInvite1.setStatus(ClanInviteStatus.ACCEPTED);
+
+        Assert.assertEquals(clanInvite, clanInvite1);
+        Assert.assertNotSame(clanInvite, clanInvite1);
 
     }
 }

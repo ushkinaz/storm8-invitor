@@ -65,4 +65,46 @@ public class ClanInvite {
     public void setStatus(ClanInviteStatus status) {
         this.status = status;
     }
+
+
+    @Override
+    public String toString() {
+        return "ClanInvite{" +
+                "code='" + code + '\'' +
+                ", dateRequested=" + dateRequested +
+                ", dateUpdated=" + dateUpdated +
+                ", game='" + game + '\'' +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ClanInvite)) return false;
+
+        ClanInvite that = (ClanInvite) o;
+
+        if (code != null ? !code.equals(that.code) : that.code != null) return false;
+        if (dateRequested != null ? !dateRequested.equals(that.dateRequested) : that.dateRequested != null)
+            return false;
+        if (dateUpdated != null ? !dateUpdated.equals(that.dateUpdated) : that.dateUpdated != null) return false;
+        if (game != null ? !game.equals(that.game) : that.game != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (status != that.status) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = code != null ? code.hashCode() : 0;
+        result = 31 * result + (dateRequested != null ? dateRequested.hashCode() : 0);
+        result = 31 * result + (dateUpdated != null ? dateUpdated.hashCode() : 0);
+        result = 31 * result + (game != null ? game.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
+    }
 }

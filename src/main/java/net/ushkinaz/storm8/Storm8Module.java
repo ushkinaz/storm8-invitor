@@ -9,8 +9,10 @@ package net.ushkinaz.storm8;
  * Time: 23:30:39
  */
 
+import com.db4o.ObjectContainer;
 import com.google.inject.AbstractModule;
 import javolution.xml.XMLBinding;
+import net.ushkinaz.storm8.dao.DB4OProvider;
 import net.ushkinaz.storm8.dao.DBConnector;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import net.ushkinaz.storm8.forum.CodesDigger;
@@ -25,11 +27,17 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class Storm8Module extends AbstractModule {
     private static final Logger LOGGER = getLogger(InviteService.class);
+    private DB4OProvider db4oOProvider;
+    private XMLBinderFactory xmlBinderFactory;
 
     protected void configure() {
         bind(CodesDigger.class).to(ForumCodesDigger.class);
 
-        bind(XMLBinding.class).toProvider(new XMLBinderFactory());
+        xmlBinderFactory = new XMLBinderFactory();
+        bind(XMLBinding.class).toProvider(xmlBinderFactory);
+
+        db4oOProvider = new DB4OProvider();
+        bind(ObjectContainer.class).toProvider(db4oOProvider);
 
         final DBConnector connector;
         try {
@@ -41,5 +49,11 @@ public class Storm8Module extends AbstractModule {
         }
     }
 
+    public DB4OProvider getDb4oOProvider() {
+        return db4oOProvider;
+    }
 
+    public XMLBinderFactory getXmlBinderFactory() {
+        return xmlBinderFactory;
+    }
 }
