@@ -1,0 +1,16 @@
+{ \
++hide-user-agent{Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17} \
++add-header{Accept-Charset: utf-8, iso-8859-1, utf-16, *;q=0.7} \
++add-header{Accept: application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5,application/youtube-client} \
++add-header{Referer: http://nl.storm8.com/missions.php?jid=15&cat=3&formNonce=2fb7b621077b1a196437966fbe18854cbf3d3caf&h=7026330d7cf8964f2e4ebe62505e903535ce44ad} \
++add-header{Cookie: asc=1ec7c54864b2d968f89aa6453b067a9d4bff8a2f; st=2792593%2Cc2e17ffa909fd6d4a6b1bbe219fed884ffddb425%2C1274554582%2C12%2C%2Ca1.54%2C14%2C4%2C10003%2C2010-05-22+11%3A56%3A22%2C%2Cv1_1274554582_5e4680101c1b52f0674b973b4a03b1aaf3043356} \
+-set-image-blocker \
++filter{kill-small} \
+}
+.storm8.com
+
+{ \
++filter{ninja-add-bg} \
+}
+static.storm8.com/nl/css/global.css*
+

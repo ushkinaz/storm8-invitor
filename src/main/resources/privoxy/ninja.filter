@@ -1,0 +1,5 @@
+FILTER: kill-small Kill automatic refresh tags (for dial-on-demand setups).
+s/media="only screen and \(max-device-width\: 480px\)"//g
+
+FILTER: ninja-add-bg add background to body style
+s/body {/body {background-image: url\(http:\/\/img340.imageshack.us\/img340\/9928\/bgdefaultc.jpg);background-color: black;background-repeat:y-repeat/g
