@@ -9,10 +9,12 @@ import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Game;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 /**
  * Convertor from HSQL to db4obj
@@ -21,13 +23,17 @@ import java.sql.SQLException;
  */
 public class HSQL2DB2O {
     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(HSQL2DB2O.class);
+    private static final String STORM8_DB = "storm8.db";
 
     public static void main(String[] args) throws IOException, SQLException {
-        Injector injector = Guice.createInjector(new Storm8Module("storm8.db"));
-        ObjectContainer db = injector.getInstance(ObjectContainer.class);
+        //Clear DB
+        new File(STORM8_DB).delete();
+
+        Injector injector = Guice.createInjector(new Storm8Module(STORM8_DB));
+        final ObjectContainer db = injector.getInstance(ObjectContainer.class);
 
 
-        db.ext().backup("storm8.bak");
+//        db.ext().backup("storm8.bak");
 
         StormConfigurator configurator = injector.getInstance(StormConfigurator.class);
 
@@ -46,6 +52,7 @@ public class HSQL2DB2O {
             @Override
             public void run() {
                 dbConnector.shutdown();
+                db.close();
             }
         });
 
@@ -55,24 +62,31 @@ public class HSQL2DB2O {
         ResultSet set = connection.createStatement().executeQuery(queryString);
 
         try {
+            int count = 0;
             while (set.next()) {
                 try {
                     ClanInvite clanInvite = new ClanInvite();
-                    clanInvite.setCode(set.getString("CODE"));
-                    clanInvite.setName(set.getString("NAME"));
+                    clanInvite.setCode(set.getString("CODE").toUpperCase());
+                    String name = set.getString("NAME");
+                    //Bug workaround
+                    if (name != null && !name.equals("I")) {
+                        clanInvite.setName(name);
+                    }
                     clanInvite.setDateRequested(set.getDate("DATE_REQUESTED"));
                     clanInvite.setDateUpdated(set.getDate("DATE_UPDATED"));
                     clanInvite.setStatus(ClanInviteStatus.getByStatus(set.getInt("STATUS")));
                     clanInvite.setGame(ninjaGame);
 
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug(clanInvite.getCode() + " : " + clanInvite.getDateRequested());
+                        LOGGER.debug(MessageFormat.format("{2}: {0} know as  {1} : ", clanInvite.getCode(), (clanInvite.getName() != null) ? clanInvite.getName() : "NoBody", clanInvite.getDateRequested()));
                     }
-//                    db.store(clanInvite);
+                    db.store(clanInvite);
+                    count++;
                 } catch (SQLException e) {
                     LOGGER.error("Error", e);
                 }
             }
+            LOGGER.debug(MessageFormat.format("Converted {0} invites", count));
         } catch (SQLException e) {
             LOGGER.error(e);
         } finally {
