@@ -11,7 +11,7 @@
             <uri name="profile" uri="/profile.php"/>
             <uri name="favor" uri="/favor.php"/>
             <uri name="hospital" uri="/hospital.php"/>
-            <uri name="hospital" uri="/hospital.php"/>
+            <uri name="investment" uri="/investment_slot.php"/>
 
             <uri name="news-attacks" uri="/ajax/getNewsFeedStories.php?selectedTab=fight"/>
 
