@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
+//TODO: store where parsing stopped last time, to avoid reparsing
 public class AnalyzeForumThreadService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeForumThreadService.class);
 

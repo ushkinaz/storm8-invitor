@@ -5,11 +5,10 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.forum.CodesDigger;
+import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 
 public class StormMe {
@@ -39,7 +38,7 @@ public class StormMe {
 
     }
 
-    private void doIt() throws IOException {
+    private void doIt() throws ServerWorkflowException {
         Game ninja = configurator.getGame("Ninja");
 
 //        digger.digCodes(ninja);

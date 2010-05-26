@@ -8,8 +8,6 @@ import com.google.inject.Provider;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Game;
 
-import java.util.List;
-
 /**
  * @author Dmitry Sidorenko
  * @date May 25, 2010
@@ -27,6 +25,8 @@ public class DB4OProvider implements Provider<ObjectContainer> {
         configureDatabase();
 
         db = Db4oEmbedded.openFile(configuration, dbFile);
+
+        db.ext().backup("storm8.bak");
     }
 
 
@@ -45,16 +45,6 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
     private void configureDatabase() {
         configuration.common().add(new UniqueFieldValueConstraint(Game.class, "domain"));
-    }
-
-    public void  addInvite(ClanInvite clanInvite){
-        final ClanInvite clanInviteQuery = new ClanInvite();
-        clanInviteQuery.setGame(clanInvite.getGame());
-        clanInviteQuery.setCode(clanInvite.getCode());
-        List<ClanInvite> clans = db.queryByExample(clanInviteQuery);
-        if (clans.size() == 0) {
-            db.store(clanInvite);
-        }
     }
 
 }

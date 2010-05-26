@@ -2,7 +2,10 @@ package net.ushkinaz.storm8.invite;
 
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
+import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
 import java.io.FileWriter;
@@ -31,7 +34,7 @@ public class InviteParser {
         this.clanDao = clanDao;
     }
 
-    public void parseResult(String response, String clanCode, String gameCode) throws IOException {
+    public void parseResult(String response, ClanInvite clanInvite, Game game) throws ServerWorkflowException {
         String clanName;
 
         Matcher matcherSuccess = successPattern.matcher(response);
@@ -42,32 +45,39 @@ public class InviteParser {
 
         if (matcherSuccess.matches()) {
             clanName = matcherSuccess.group(1);
-            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING, gameCode);
+            clanInvite.setName(clanName);
+            clanInvite.setStatus(ClanInviteStatus.PENDING);
+            clanDao.updateClanDB(clanInvite);
             LOGGER.info("Requested: " + clanName);
         } else if (matcherAlreadyInvited.matches()) {
             clanName = matcherAlreadyInvited.group(1);
-            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.PENDING, gameCode);
+            clanInvite.setName(clanName);
+            clanInvite.setStatus(ClanInviteStatus.PENDING);
+            clanDao.updateClanDB(clanInvite);
             LOGGER.info("Pending: " + clanName);
         } else if (matcherInClan.matches()) {
             clanName = matcherInClan.group(1);
-            clanDao.updateClanDB(clanCode, clanName, ClanInviteStatus.ACCEPTED, gameCode);
+            clanInvite.setName(clanName);
+            clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
+            clanDao.updateClanDB(clanInvite);
             LOGGER.info("InClan: " + clanName);
         } else if (matcherNotFound.matches()) {
-            clanDao.updateClanDB(clanCode, null, ClanInviteStatus.NOT_FOUND, gameCode);
-            LOGGER.info("Unable to find clan with code: " + clanCode);
+            clanInvite.setStatus(ClanInviteStatus.NOT_FOUND);
+            clanDao.updateClanDB(clanInvite);
+            LOGGER.info("Unable to find clan with code: " + clanInvite.getCode());
         } else if (matcherNotAndroid.matches()) {
             LOGGER.error("Server does not like us!");
-            throw new IOException("Server does not like us!\n" + response);
+            throw new ServerWorkflowException("Server does not like us!\n" + response);
         } else {
             LOGGER.info("Unknown error");
-            logUnknownError(response, clanCode);
+            logUnknownError(response, clanInvite);
         }
     }
 
-    private void logUnknownError(String response, String clanCode) {
+    private void logUnknownError(String response, ClanInvite clanInvite) {
         PrintWriter writer = null;
         try {
-            String fileName = clanCode + ".resp";
+            String fileName = clanInvite.getCode() + ".resp";
             writer = new PrintWriter(new FileWriter(fileName));
             writer.write(response);
             LOGGER.info("Response is written to " + fileName);

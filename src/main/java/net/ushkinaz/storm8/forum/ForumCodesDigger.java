@@ -5,6 +5,7 @@ import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Game;
 
 import java.util.Collection;
@@ -48,7 +49,8 @@ public class ForumCodesDigger implements CodesDigger {
 
         public void codesFound(Collection<String> codes) {
             for (String code : codes) {
-                ForumCodesDigger.this.clanDao.insertNewClan(code, game.getGameCode());
+                ClanInvite clanInvite = new ClanInvite(code, game);
+                ForumCodesDigger.this.clanDao.insertNewClanInvite(clanInvite);
             }
         }
     }
