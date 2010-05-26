@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Ninja Live! proxy</title>
+</head>
+<body>
+
+<table style="height:800px">
+    <tbody>
+    <tr id="frames">
+    </tr>
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    var frames = [
+        ["home.php", "Home"],
+        ["fight.php", "Attack"],
+        ["equipment.php", "Equipment"],
+        ["group.php", "Clan"],
+        ["bank.php", "Bank"],
+        ["hospital.php", "Healer"],
+    ]
+    for (i = 0; i < frames.length; i++) {
+        document.getElementById("frames").innerHTML += "<td><iframe id='home' src='http://nl.storm8.com/" + frames[i][0] + "' width='340px' height='100%'></iframe></td>"
+    }
+
+</script>
+</body>
+</html>
