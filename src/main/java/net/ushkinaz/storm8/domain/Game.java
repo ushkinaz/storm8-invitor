@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.domain;
 
+import com.db4o.config.annotations.Indexed;
 import javolution.xml.XMLFormat;
 import javolution.xml.XMLSerializable;
 import javolution.xml.stream.XMLStreamException;
@@ -16,6 +17,7 @@ public class Game implements XMLSerializable {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(Game.class);
 
+    @Indexed
     private String name;
     private String domain;
     private String clan_uri;

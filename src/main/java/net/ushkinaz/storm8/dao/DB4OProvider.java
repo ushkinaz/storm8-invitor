@@ -44,9 +44,6 @@ public class DB4OProvider implements Provider<ObjectContainer> {
     }
 
     private void configureDatabase() {
-        configuration.common().objectClass(ClanInvite.class).objectField("code").indexed(true);
-
-        configuration.common().objectClass(Game.class).objectField("domain").indexed(true);
         configuration.common().add(new UniqueFieldValueConstraint(Game.class, "domain"));
     }
 

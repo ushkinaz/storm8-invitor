@@ -42,7 +42,7 @@ public class StormMe {
     private void doIt() throws IOException {
         Game ninja = configurator.getGame("Ninja");
 
-//        digger.digCodes(ninja.getGameCode());
+//        digger.digCodes(ninja);
 
         //TODO: read codes from file
 //

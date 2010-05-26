@@ -1,5 +1,7 @@
 package net.ushkinaz.storm8.domain;
 
+import com.db4o.config.annotations.Indexed;
+
 import java.sql.Date;
 
 /**
@@ -10,8 +12,10 @@ public class ClanInvite {
     private String code;
     private Date dateRequested;
     private Date dateUpdated;
+    @Indexed
     private Game game;
     private String name;
+    @Indexed
     private ClanInviteStatus status;
 
 
