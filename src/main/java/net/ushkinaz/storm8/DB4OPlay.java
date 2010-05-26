@@ -27,7 +27,7 @@ public class DB4OPlay {
 
         StormConfigurator configurator = injector.getInstance(StormConfigurator.class);
 
-        Game ninjaGame = configurator.getGame("Ninja");
+        Game ninjaGame = configurator.getGame("ninja");
 
         ClanInvite inviteExample = new ClanInvite();
 

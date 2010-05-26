@@ -39,7 +39,7 @@ public class StormMe {
     }
 
     private void doIt() throws ServerWorkflowException {
-        Game ninja = configurator.getGame("Ninja");
+        Game ninja = configurator.getGame("ninja");
 
 //        digger.digCodes(ninja);
 

@@ -48,7 +48,7 @@ public class ExploreMe {
     };
 
     private void doIt() throws IOException {
-        Game ninja = configurator.getGame("Ninja");
+        Game ninja = configurator.getGame("ninja");
 
         requestor = new GameRequestor(ninja);
         int i = 0;

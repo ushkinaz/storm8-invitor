@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8;
 
+import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javolution.xml.XMLBinding;
@@ -24,10 +25,12 @@ public class StormConfigurator {
     private Map<String, Game> games = new HashMap<String, Game>(10);
 
     private XMLBinding binding;
+    ObjectContainer db;
 
     @Inject
-    public StormConfigurator(XMLBinding binding) {
+    public StormConfigurator(XMLBinding binding, ObjectContainer db) {
         this.binding = binding;
+        this.db = db;
         configure();
     }
 
@@ -36,7 +39,7 @@ public class StormConfigurator {
     }
 
     public Game getGame(String game) {
-        return games.get(game);
+        return games.get(game.toLowerCase());
     }
 
     protected void configure() {
@@ -48,7 +51,7 @@ public class StormConfigurator {
             reader.close();
 
             for (Game game : gamesList) {
-                games.put(game.getName(), game);
+                games.put(game.getId().toLowerCase(), game);
             }
 
         } catch (XMLStreamException e) {

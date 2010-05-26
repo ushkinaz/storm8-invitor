@@ -4,6 +4,7 @@ import com.db4o.config.annotations.Indexed;
 import javolution.xml.XMLFormat;
 import javolution.xml.XMLSerializable;
 import javolution.xml.stream.XMLStreamException;
+import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.Map;
 /**
  * @author Dmitry Sidorenko
  */
-public class Game implements XMLSerializable {
+public class Game extends Identifiable implements XMLSerializable {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(Game.class);
 
@@ -22,6 +23,7 @@ public class Game implements XMLSerializable {
     private String domain;
     private String clan_uri;
     private Map<String, String> cookies;
+    private Integer forumId;
     private List<Topic> topics;
 
     public Game() {
@@ -33,12 +35,12 @@ public class Game implements XMLSerializable {
         return name;
     }
 
-    public String getGameURL(){
-        return "http://" + domain  + "/";
+    public String getGameURL() {
+        return "http://" + domain + "/";
     }
 
-    public String getClansURL(){
-        return "http://" + domain  + clan_uri;
+    public String getClansURL() {
+        return "http://" + domain + clan_uri;
     }
 
     public String getDomain() {
@@ -96,25 +98,24 @@ public class Game implements XMLSerializable {
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
-    protected static final XMLFormat<Game> GAME_XML = new XMLFormat<Game>(Game.class) {
+    protected static final XMLFormat<Game> GAME_XML = new XMLDBFormat<Game>(Game.class) {
+
         public void write(Game g, XMLFormat.OutputElement xml) throws XMLStreamException {
-            xml.setAttribute("name", g.name);
+            super.write(g, xml);
+            xml.add(g.name, "name");
             xml.add(g.domain, "domain");
             xml.add(g.clan_uri, "clan_uri");
             xml.add(g.cookies, "cookies");
-            xml.add(g.topics, "topics");
+            xml.add(g.forumId, "forumId");
         }
 
         public void read(InputElement xml, Game g) throws XMLStreamException {
-            g.name = xml.getAttribute("name", "");
+            super.read(xml, g);
+            g.name = xml.get("name");
             g.domain = xml.get("domain");
             g.clan_uri = xml.get("clan_uri");
             g.cookies = xml.get("cookies");
-            g.topics = xml.get("topics");
+            g.forumId = xml.get("forumId");
         }
     };
-
-    public String getGameCode() {
-        return domain.substring(0, 2);
-    }
 }

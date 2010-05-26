@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Games type="List">
-    <Game name="Ninja">
+    <Game id="ninja">
+        <name type="String" value="Ninja Live"/>
         <domain type="String" value="nl.storm8.com"/>
         <clan_uri type="String" value="/group.php"/>
 <!--
@@ -24,12 +25,10 @@
             <Key type="String" value="asc"/>
             <Value type="String" value="1ec7c54864b2d968f89aa6453b067a9d4bff8a2f;"/>
         </cookies>
-        <topics type="java.util.ArrayList">
-            <Topic topicId="11134"/>
-            <Topic topicId="90434"/>
-        </topics>
+        <forumId>65</forumId>
     </Game>
-    <Game name="Mobsters">
+    <Game id="mobsters">
+        <name type="String" value="Mobsters Live"/>
         <domain type="String" value="im.storm8.com"/>
         <clan_uri type="String" value="/group.php"/>
         <cookies type="Map">
@@ -39,9 +38,5 @@
             <Key type="String" value="asc"/>
             <Value type="String" value="1ec7c54864b2d968f89aa6453b067a9d4bff8a2f;"/>
         </cookies>
-        <topics type="java.util.ArrayList">
-            <Topic topicId="11134"/>
-            <Topic topicId="90434"/>
-        </topics>
     </Game>
 </Games>

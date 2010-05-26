@@ -5,8 +5,9 @@ import com.db4o.ObjectContainer;
 import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.constraints.UniqueFieldValueConstraint;
 import com.google.inject.Provider;
-import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.Topic;
+import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
 
 /**
  * @author Dmitry Sidorenko
@@ -26,6 +27,9 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
         db = Db4oEmbedded.openFile(configuration, dbFile);
 
+        //Baaaaah! Evolution ruined our IoC!
+        XMLDBFormat.setDb(db);
+
         db.ext().backup("storm8.bak");
     }
 
@@ -44,7 +48,8 @@ public class DB4OProvider implements Provider<ObjectContainer> {
     }
 
     private void configureDatabase() {
-        configuration.common().add(new UniqueFieldValueConstraint(Game.class, "domain"));
+        configuration.common().add(new UniqueFieldValueConstraint(Game.class, "id"));
+        configuration.common().add(new UniqueFieldValueConstraint(Topic.class, "id"));
     }
 
 }
