@@ -5,6 +5,8 @@ import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.Game;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,22 +34,23 @@ public class ForumCodesDigger implements CodesDigger {
     }
 
 
-    public void digCodes(String gameCode) {
+    public void digCodes(Game game) {
         for (Integer topic : topics) {
-            forumThreadService.analyze(topic, new MyForumAnalyzeCallback(gameCode));
+            forumThreadService.analyze(topic, new MyForumAnalyzeCallback(game));
         }
     }
 
     private class MyForumAnalyzeCallback implements AnalyzeForumThreadService.ForumAnalyzeCallback {
-        private String gameCode;
+        private Game game;
 
-        public MyForumAnalyzeCallback(String gameCode) {
-            this.gameCode = gameCode;
+        public MyForumAnalyzeCallback(Game game) {
+            this.game = game;
         }
 
         public void codesFound(Collection<String> codes) {
             for (String code : codes) {
-                ForumCodesDigger.this.clanDao.insertNewClan(code, gameCode);
+                ClanInvite clanInvite = new ClanInvite(code, game);
+                ForumCodesDigger.this.clanDao.insertNewClanInvite(clanInvite);
             }
         }
     }

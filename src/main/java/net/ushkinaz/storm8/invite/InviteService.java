@@ -3,14 +3,15 @@ package net.ushkinaz.storm8.invite;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.dao.ClanDao;
+import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.http.GameRequestor;
+import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Collection;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -38,44 +39,36 @@ public class InviteService {
      * @param game game to use invitations
      * @throws IOException an exception
      */
-    public void invite(Game game) throws IOException {
+    public void invite(Game game) throws ServerWorkflowException {
         GameRequestor gameRequestor = new GameRequestor(game);
         goThroughDB(gameRequestor);
     }
 
-    private void goThroughDB(GameRequestor gameRequestor) throws IOException {
-        ResultSet set = clanDao.getByStatus(ClanInviteStatus.NOT_FOUND, gameRequestor.getGame().getGameCode());
-        try {
-            while (set.next()) {
-                try {
-                    String code = set.getString(1);
-                    invite(code, gameRequestor);
-                } catch (SQLException e) {
-                    LOGGER.error("Error", e);
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Error", e);
-        } finally {
-            try {
-                set.close();
-            } catch (SQLException e) {
-                LOGGER.error("Error", e);
-            }
+    private void goThroughDB(GameRequestor gameRequestor) throws ServerWorkflowException {
+        Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.NOT_FOUND);
+
+        for (ClanInvite invite : invites) {
+            invite(gameRequestor, invite);
         }
     }
 
-    private void invite(String clanCode, GameRequestor gameRequestor) throws IOException {
-        if (clanDao.isInvited(clanCode, gameRequestor.getGame().getGameCode())) {
+    // String clanCode, GameRequestor gameRequestor
+
+    private void invite(GameRequestor gameRequestor, ClanInvite clanInvite) throws ServerWorkflowException {
+        if (clanInvite.isInvited()) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Skipping:" + clanCode);
+                LOGGER.debug("Skipping:" + clanInvite);
             }
             return;
         }
 
-        clanDao.insertNewClan(clanCode, gameRequestor.getGame().getGameCode());
-        String responseBody = gameRequestor.postRequest(gameRequestor.getGame().getClansURL(), new InviteClanPostBodyFactory(clanCode));
+        clanDao.insertNewClanInvite(clanInvite);
+        try {
+            String responseBody = gameRequestor.postRequest(gameRequestor.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
 
-        inviteParser.parseResult(responseBody, clanCode, gameRequestor.getGame().getGameCode());
+            inviteParser.parseResult(responseBody, clanInvite, gameRequestor.getGame());
+        } catch (IOException e) {
+            LOGGER.error("IO error: ", e);
+        }
     }
 }

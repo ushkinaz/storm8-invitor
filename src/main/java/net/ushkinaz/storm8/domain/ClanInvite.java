@@ -1,6 +1,6 @@
 package net.ushkinaz.storm8.domain;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Date: 25.05.2010
@@ -16,6 +16,21 @@ public class ClanInvite {
 
 
     public ClanInvite() {
+    }
+
+    public ClanInvite(Game game) {
+        this.game = game;
+    }
+
+    /**
+     * We've just found this clan code somewhere. Sore it.
+     *
+     * @param code code
+     * @param game game. Really.
+     */
+    public ClanInvite(String code, Game game) {
+        this.code = code;
+        this.game = game;
     }
 
     public String getCode() {
@@ -106,5 +121,9 @@ public class ClanInvite {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
+    }
+
+    public boolean isInvited() {
+        return status != null;
     }
 }
