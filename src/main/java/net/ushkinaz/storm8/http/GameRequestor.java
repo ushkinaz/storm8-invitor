@@ -28,6 +28,8 @@ public class GameRequestor {
     static final String ACCEPT = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5,application/youtube-client";
     static final String HTTP_PROXY_HOST = "http.proxyHost";
     static final String HTTP_PROXY_PORT = "http.proxyPort";
+    private static final int SLEEP_BASE = 1;
+    private static final int SLEEP = 2;
 
     private Random random;
     private Game game;
@@ -102,7 +104,7 @@ public class GameRequestor {
     private void randomlySleep() {
         if (!LOGGER.isDebugEnabled()) {
             try {
-                Thread.sleep(random.nextInt(100));
+                Thread.sleep(random.nextInt(SLEEP_BASE + SLEEP));
             } catch (InterruptedException e) {
                 LOGGER.error("Error", e);
             }

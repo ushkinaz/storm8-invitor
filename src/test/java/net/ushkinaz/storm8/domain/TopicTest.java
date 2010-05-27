@@ -32,7 +32,7 @@ public class TopicTest {
         topic.setTopicId(11138);
         topic.setPages(100);
         topic.setLastProcessedPage(0);
-        topic.setDateUpdated(null);
+        topic.setProcessedDate(null);
     }
 
     @Test

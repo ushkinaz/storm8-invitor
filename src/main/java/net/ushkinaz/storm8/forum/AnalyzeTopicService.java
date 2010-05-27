@@ -8,8 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.text.MessageFormat;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +19,6 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-//TODO: store where parsing stopped last time, to avoid reparsing
 public class AnalyzeTopicService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeTopicService.class);
 
@@ -42,7 +42,7 @@ public class AnalyzeTopicService {
         blackList = new HashSet<String>();
     }
 
-    public void analyze(Topic topic, ForumAnalyzeCallback callback) {
+    public void searchForCodes(Topic topic, ForumAnalyzeCallback callback) {
         try {
             initHttpClient();
             LOGGER.info("Topic: " + topic);
@@ -51,19 +51,19 @@ public class AnalyzeTopicService {
                 LOGGER.debug("Pages: " + count);
             }
 
-            callback.codesFound(walkThroughPages(topic.getTopicId(), count));
+            walkThroughPages(topic, count, callback);
 
         } catch (IOException e) {
             LOGGER.error("Error", e);
         }
     }
 
-    private Collection<String> walkThroughPages(int topicId, int count) {
-        Collection<String> codes = new HashSet<String>(1000);
-        for (int page = 1; page <= count; page++) {
+    private void walkThroughPages(Topic topic, int count, ForumAnalyzeCallback callback) {
+        //Page 0 and page 1 are the same. Ignore the fact.
+        for (int page = topic.getLastProcessedPage(); page <= count; page++) {
             LOGGER.info("Page: " + page);
             try {
-                GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topicId, page));
+                GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topic.getTopicId(), page));
                 int statusCode = httpClient.executeMethod(pageMethod);
                 if (statusCode != 200) {
                     throw new IOException("Can't access topic page");
@@ -72,17 +72,16 @@ public class AnalyzeTopicService {
                 Matcher matcher = postPattern.matcher(pageBuffer);
                 while (matcher.find()) {
                     String post = matcher.group(1);
-                    parsePost(post, codes);
+                    parsePost(post, callback);
                 }
+                topic.setLastProcessedPage(page);
             } catch (IOException e) {
                 LOGGER.error("Error", e);
             }
         }
-
-        return codes;
     }
 
-    private void parsePost(String post, Collection<String> codes) {
+    private void parsePost(String post, ForumAnalyzeCallback callback) {
         Matcher matcher = codePattern.matcher(post);
         while (matcher.find()) {
             String code = matcher.group(1).toUpperCase();
@@ -90,7 +89,7 @@ public class AnalyzeTopicService {
                 continue;
             }
             LOGGER.info("Found code: " + code);
-            codes.add(code);
+            callback.codeFound(code);
         }
     }
 
@@ -116,6 +115,6 @@ public class AnalyzeTopicService {
     }
 
     public interface ForumAnalyzeCallback {
-        void codesFound(Collection<String> codes);
+        void codeFound(String code);
     }
 }

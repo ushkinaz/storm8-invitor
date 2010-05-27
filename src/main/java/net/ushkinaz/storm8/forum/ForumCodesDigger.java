@@ -6,8 +6,6 @@ import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
 
-import java.util.Collection;
-
 public class ForumCodesDigger implements CodesDigger {
     private AnalyzeTopicService topicService;
     private AnalyzeForumService forumService;
@@ -23,11 +21,13 @@ public class ForumCodesDigger implements CodesDigger {
     public void digCodes(Game game) {
         forumService.findTopics(game);
 
+        for (Topic topic : game.getTopics().values()) {
+            topicService.searchForCodes(topic, new MyForumAnalyzeCallback(game));
+        }
+
+        //Store updated topics list
         db.store(game);
         db.commit();
-//        for (Topic topic : game.getTopics()) {
-//            topicService.analyze(topic, new MyForumAnalyzeCallback(game));
-//        }
     }
 
     private class MyForumAnalyzeCallback implements AnalyzeTopicService.ForumAnalyzeCallback {
@@ -37,11 +37,10 @@ public class ForumCodesDigger implements CodesDigger {
             this.game = game;
         }
 
-        public void codesFound(Collection<String> codes) {
-            for (String code : codes) {
-                ClanInvite clanInvite = new ClanInvite(code, game);
+        public void codeFound(String code) {
+            ClanInvite clanInvite = new ClanInvite(code, game);
+            if (db.queryByExample(clanInvite).size() == 0) {
                 db.store(clanInvite);
-//                ForumCodesDigger.this.clanDao.insertNewClanInvite(clanInvite);
             }
         }
     }

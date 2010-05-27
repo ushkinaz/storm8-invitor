@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Collection;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +24,6 @@ public class AnalyzeForumService {
     private final static String FORUM_URL = "http://forums.storm8.com/forumdisplay.php?f={0,number,######}";
 
     private static final Pattern topicPattern = Pattern.compile("t=(\\d*)\\&amp;page=(\\d*)\"\\>Last Page");
-    //private static final Pattern topicPattern = Pattern.compile("<a href=\"showthread.php?s=\\w*&amp;t=(\\d*)&amp;page=(\\d*)\">Last Page</a>");
 
     private HttpClient httpClient;
 
@@ -56,14 +55,16 @@ public class AnalyzeForumService {
                 int lastPage = Integer.parseInt(matcher.group(2));
                 LOGGER.info("Found topic: " + topicId);
 
-                Topic topic = new Topic(topicId);
-                int index = game.getTopics().indexOf(topic);
-                if (index >= 0) {
-                    topic = game.getTopics().get(index);
+                Topic topic;
+
+                if (game.getTopics().containsKey(topicId)) {
+                    topic = game.getTopics().get(topicId);
+                }else{
+                    topic = new Topic(topicId);
                 }
 
                 topic.setPages(lastPage);
-                game.getTopics().add(topic);
+                game.getTopics().put(topicId, topic);
             }
         } catch (IOException e) {
             LOGGER.error("Error", e);

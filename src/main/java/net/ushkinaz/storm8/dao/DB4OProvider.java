@@ -4,10 +4,13 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.constraints.UniqueFieldValueConstraint;
+import com.db4o.defragment.Defragment;
 import com.google.inject.Provider;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
 import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
+
+import java.io.IOException;
 
 /**
  * @author Dmitry Sidorenko
@@ -26,6 +29,7 @@ public class DB4OProvider implements Provider<ObjectContainer> {
         configureDatabase();
 
         db = Db4oEmbedded.openFile(configuration, dbFile);
+        LOGGER.info("DB init ok");
 
         //Baaaaah! Evolution ruined our IoC!
         XMLDBFormat.setDb(db);

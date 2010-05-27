@@ -5,7 +5,7 @@ import javolution.xml.XMLFormat;
 import javolution.xml.XMLSerializable;
 import javolution.xml.stream.XMLStreamException;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * @author Dmitry Sidorenko
@@ -19,7 +19,7 @@ public class Topic implements XMLSerializable {
     private int topicId;
     private int pages;
     private int lastProcessedPage;
-    private Date dateUpdated;
+    private Date processedDate;
 
     public Topic() {
     }
@@ -53,15 +53,6 @@ public class Topic implements XMLSerializable {
         this.lastProcessedPage = lastProcessedPage;
     }
 
-    public Date getDateUpdated() {
-        return dateUpdated;
-    }
-
-    public void setDateUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
-    }
-
-
     @SuppressWarnings({"UnusedDeclaration"})
     protected static final XMLFormat<Topic> TOPIC_XML = new XMLFormat<Topic>(Topic.class) {
         public void write(Topic topic, OutputElement xml) throws XMLStreamException {
@@ -88,5 +79,23 @@ public class Topic implements XMLSerializable {
     @Override
     public int hashCode() {
         return topicId;
+    }
+
+    public Date getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(Date processedDate) {
+        this.processedDate = processedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "topicId=" + topicId +
+                ", pages=" + pages +
+                ", lastProcessedPage=" + lastProcessedPage +
+                ", processedDate=" + processedDate +
+                '}';
     }
 }

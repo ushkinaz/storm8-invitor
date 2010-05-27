@@ -6,10 +6,7 @@ import javolution.xml.XMLSerializable;
 import javolution.xml.stream.XMLStreamException;
 import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Dmitry Sidorenko
@@ -23,20 +20,16 @@ public class Game extends Identifiable implements XMLSerializable {
     private String name;
     private String domain;
     private String clan_uri;
-    private Map<String, String> cookies;
-    private List<Topic> topics;
+    private Map<String, String> cookies = new HashMap<String, String>(5);
+    private Map<Integer, Topic> topics = new HashMap<Integer, Topic>(10);
     private Integer forumId;
 
 
     public Game() {
-        cookies = new HashMap<String, String>(10);
-        topics = new ArrayList<Topic>();
     }
 
     public Game(String id) {
         super(id);
-        cookies = new HashMap<String, String>(10);
-        topics = new ArrayList<Topic>();
     }
 
     public String getName() {
@@ -71,7 +64,7 @@ public class Game extends Identifiable implements XMLSerializable {
         this.domain = domain;
     }
 
-    public List<Topic> getTopics() {
+    public Map<Integer, Topic> getTopics() {
         return topics;
     }
 
