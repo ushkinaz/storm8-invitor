@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.domain;
 
+import com.db4o.config.annotations.Indexed;
 import javolution.xml.XMLFormat;
 import javolution.xml.XMLSerializable;
 import javolution.xml.stream.XMLStreamException;
@@ -11,8 +12,10 @@ import java.sql.Date;
  */
 public class Topic implements XMLSerializable {
     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(Topic.class);
+    private static final long serialVersionUID = -4998697492471291093L;
 
 
+    @Indexed
     private int topicId;
     private int pages;
     private int lastProcessedPage;

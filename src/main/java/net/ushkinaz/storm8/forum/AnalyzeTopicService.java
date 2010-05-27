@@ -1,7 +1,7 @@
 package net.ushkinaz.storm8.forum;
 
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.CodesReader;
+import net.ushkinaz.storm8.domain.Topic;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
@@ -19,11 +19,11 @@ import java.util.regex.Pattern;
  * Created by Dmitry Sidorenko.
  */
 //TODO: store where parsing stopped last time, to avoid reparsing
-public class AnalyzeForumThreadService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeForumThreadService.class);
+public class AnalyzeTopicService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeTopicService.class);
 
-    private final static String FORUM_THREAD_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
-    private final static String FORUM_THREAD_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}&page={1,number,######}";
+    private final static String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
+    private final static String FORUM_TOPIC_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}&page={1,number,######}";
 
 
     private static final Pattern pagePattern = Pattern.compile(".*page=(\\d*)\" title=\"Last Page.*", Pattern.DOTALL);
@@ -38,21 +38,20 @@ public class AnalyzeForumThreadService {
     private HashSet<String> blackList;
 
     @Inject
-    public AnalyzeForumThreadService(CodesReader codesReader) {
+    public AnalyzeTopicService() {
         blackList = new HashSet<String>();
-        codesReader.readFromFile("black.list", blackList);
     }
 
-    public void analyze(int topicId, ForumAnalyzeCallback callback) {
+    public void analyze(Topic topic, ForumAnalyzeCallback callback) {
         try {
             initHttpClient();
-            LOGGER.info("Topic: " + topicId);
-            int count = getPagesCount(httpClient, topicId);
+            LOGGER.info("Topic: " + topic);
+            int count = getPagesCount(httpClient, topic.getTopicId());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Pages: " + count);
             }
 
-            callback.codesFound(walkThroughPages(topicId, count));
+            callback.codesFound(walkThroughPages(topic.getTopicId(), count));
 
         } catch (IOException e) {
             LOGGER.error("Error", e);
@@ -64,10 +63,10 @@ public class AnalyzeForumThreadService {
         for (int page = 1; page <= count; page++) {
             LOGGER.info("Page: " + page);
             try {
-                GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_THREAD_PAGE_URL, topicId, page));
+                GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topicId, page));
                 int statusCode = httpClient.executeMethod(pageMethod);
                 if (statusCode != 200) {
-                    throw new IOException("Can't access thread page");
+                    throw new IOException("Can't access topic page");
                 }
                 String pageBuffer = pageMethod.getResponseBodyAsString();
                 Matcher matcher = postPattern.matcher(pageBuffer);
@@ -103,10 +102,10 @@ public class AnalyzeForumThreadService {
 
     private int getPagesCount(HttpClient httpClient, Object topicId) throws IOException {
         int count = 0;
-        GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_THREAD_URL, topicId));
+        GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
         int statusCode = httpClient.executeMethod(pagesMethod);
         if (statusCode != 200) {
-            throw new IOException("Can't access thread page");
+            throw new IOException("Can't access topic page");
         }
         String page = pagesMethod.getResponseBodyAsString();
         Matcher matcher = pagePattern.matcher(page);

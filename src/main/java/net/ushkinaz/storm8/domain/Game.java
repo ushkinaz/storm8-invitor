@@ -17,14 +17,15 @@ import java.util.Map;
 public class Game extends Identifiable implements XMLSerializable {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(Game.class);
+    private static final long serialVersionUID = 5170559993039725638L;
 
     @Indexed
     private String name;
     private String domain;
     private String clan_uri;
     private Map<String, String> cookies;
-    private Integer forumId;
     private List<Topic> topics;
+    private Integer forumId;
 
 
     public Game() {
@@ -34,10 +35,20 @@ public class Game extends Identifiable implements XMLSerializable {
 
     public Game(String id) {
         super(id);
+        cookies = new HashMap<String, String>(10);
+        topics = new ArrayList<Topic>();
     }
 
     public String getName() {
         return name;
+    }
+
+    public Integer getForumId() {
+        return forumId;
+    }
+
+    public void setForumId(Integer forumId) {
+        this.forumId = forumId;
     }
 
     public String getGameURL() {

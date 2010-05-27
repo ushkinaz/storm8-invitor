@@ -1,6 +1,5 @@
 package net.ushkinaz.storm8;
 
-import net.ushkinaz.storm8.forum.AnalyzeForumThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
