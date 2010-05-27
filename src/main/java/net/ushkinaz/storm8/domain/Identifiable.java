@@ -8,6 +8,13 @@ import com.db4o.config.annotations.Indexed;
  */
 public class Identifiable {
 
+    public Identifiable() {
+    }
+
+    public Identifiable(String id) {
+        this.id = id;
+    }
+
     @Indexed
     private String id;
 

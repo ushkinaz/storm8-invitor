@@ -26,9 +26,14 @@ public class Game extends Identifiable implements XMLSerializable {
     private Integer forumId;
     private List<Topic> topics;
 
+
     public Game() {
         cookies = new HashMap<String, String>(10);
         topics = new ArrayList<Topic>();
+    }
+
+    public Game(String id) {
+        super(id);
     }
 
     public String getName() {

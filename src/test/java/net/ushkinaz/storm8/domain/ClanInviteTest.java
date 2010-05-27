@@ -1,31 +1,14 @@
 package net.ushkinaz.storm8.domain;
 
-import com.db4o.ObjectContainer;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import net.ushkinaz.storm8.Storm8TestModule;
-import org.junit.After;
+import net.ushkinaz.storm8.GuiceAbstractTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Date: 25.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class ClanInviteTest {
-    private ObjectContainer connector;
-
-    @Before
-    public void setUp() {
-        Injector injector = Guice.createInjector(new Storm8TestModule());
-
-        connector = injector.getInstance(ObjectContainer.class);
-    }
-
-    @After
-    public void shutdown() {
-    }
+public class ClanInviteTest extends GuiceAbstractTest {
 
     @Test
     public void testEquals() {

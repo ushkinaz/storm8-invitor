@@ -3,8 +3,8 @@ package net.ushkinaz.storm8;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.Game;
-import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
@@ -16,21 +16,27 @@ import java.util.Map;
 
 public class StormConfiguratorTest {
     private StormConfigurator stormConfigurator;
+    private Storm8Module module;
 
-    @Test
-    public void testStormConfigurator() throws Exception {
-        final Storm8Module module = new Storm8TestModule();
+    @Before
+    public void setup(){
+        module = new Storm8TestModule();
         Injector injector = Guice.createInjector(module);
 
         stormConfigurator = injector.getInstance(StormConfigurator.class);
+    }
+
+    @Before
+    public void shutdown(){
+        module.shutdown();
+    }
+
+
+    @Test
+    public void testStormConfigurator() throws Exception {
 
         Map<String, Game> games = stormConfigurator.getGames();
 
         Assert.assertNotNull(games);
-    }
-
-    @Test
-    public void testConfigure() throws Exception {
-        stormConfigurator.db.query(Game.class);
     }
 }

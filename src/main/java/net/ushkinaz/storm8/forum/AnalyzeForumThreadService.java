@@ -73,9 +73,6 @@ public class AnalyzeForumThreadService {
                 Matcher matcher = postPattern.matcher(pageBuffer);
                 while (matcher.find()) {
                     String post = matcher.group(1);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Post: " + post);
-                    }
                     parsePost(post, codes);
                 }
             } catch (IOException e) {

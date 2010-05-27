@@ -5,6 +5,8 @@ import com.db4o.query.Query;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 import net.ushkinaz.storm8.domain.Identifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
  * Created by Dmitry Sidorenko.
  */
 public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XMLDBFormat.class);
+
     private static final String ID_ATTRIBUTE = "id";
 
     protected static ObjectContainer db;
@@ -27,7 +31,10 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
      */
     @Override
     public T newInstance(Class<T> cls, XMLFormat.InputElement xml) throws XMLStreamException {
-        assert db != null;
+        if (db == null) {
+            LOGGER.warn("No database is set. Operating in detached mode. Objects read from XML will not be updated in DB");
+            return super.newInstance(cls, xml);
+        }
 
         final String id = xml.getAttribute(ID_ATTRIBUTE, "");
 

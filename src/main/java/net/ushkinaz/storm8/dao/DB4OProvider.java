@@ -42,6 +42,7 @@ public class DB4OProvider implements Provider<ObjectContainer> {
         if (db != null && !db.ext().isClosed()) {
             LOGGER.info("DB shutdown");
             db.close();
+            XMLDBFormat.setDb(null);
             LOGGER.info("DB shutdown done");
             db = null;
         }
