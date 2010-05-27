@@ -17,9 +17,10 @@ public class XMLBinderFactory implements Provider<XMLBinding> {
 
     public XMLBinding get() {
         XMLBinding binding = new XMLBinding();
+        binding.setAlias(String.class, "String");
+        binding.setAlias(Integer.class, "Integer");
 
         binding.setAlias(ArrayList.class, "List");
-        binding.setAlias(String.class, "String");
         binding.setAlias(HashMap.class, "Map");
 
         binding.setAlias(Game.class, "Game");

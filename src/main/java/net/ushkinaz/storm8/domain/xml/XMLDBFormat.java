@@ -23,23 +23,23 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
         super(forClass);
     }
 
-    @Override
-    public T newInstance(Class<T> cls, XMLFormat.InputElement xml) throws XMLStreamException {
-        assert db != null;
-
-        final String id = xml.getAttribute(ID_ATTRIBUTE, "");
-
-        Query query = db.query();
-        query.constrain(cls);
-        query.descend(ID_ATTRIBUTE).constrain(id);
-        List<T> gamesDB = query.execute();
-        if (gamesDB.size() > 0) {
-            assert gamesDB.size() == 1;
-            return gamesDB.get(0);
-        } else {
-            return super.newInstance(cls, xml);
-        }
-    }
+//    @Override
+//    public T newInstance(Class<T> cls, XMLFormat.InputElement xml) throws XMLStreamException {
+//        assert db != null;
+//
+//        final String id = xml.getAttribute(ID_ATTRIBUTE, "");
+//
+//        Query query = db.query();
+//        query.constrain(cls);
+//        query.descend(ID_ATTRIBUTE).constrain(id);
+//        List<T> gamesDB = query.execute();
+//        if (gamesDB.size() > 0) {
+//            assert gamesDB.size() == 1;
+//            return gamesDB.get(0);
+//        } else {
+//            return super.newInstance(cls, xml);
+//        }
+//    }
 
     @Override
     public void write(T obj, OutputElement xml) throws XMLStreamException {

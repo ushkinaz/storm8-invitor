@@ -25,7 +25,7 @@
             <Key type="String" value="asc"/>
             <Value type="String" value="1ec7c54864b2d968f89aa6453b067a9d4bff8a2f;"/>
         </cookies>
-        <forumId>65</forumId>
+        <forumId type="Integer" value="65"/>
     </Game>
     <Game id="mobsters">
         <name type="String" value="Mobsters Live"/>
@@ -38,5 +38,6 @@
             <Key type="String" value="asc"/>
             <Value type="String" value="1ec7c54864b2d968f89aa6453b067a9d4bff8a2f;"/>
         </cookies>
+        <forumId type="Integer" value="6"/>
     </Game>
 </Games>
