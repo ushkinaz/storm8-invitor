@@ -25,4 +25,11 @@ public class Storm8TestModule extends Storm8Module {
         new File(dbFile).delete();
         return super.createDB4OProvider();
     }
+
+    @Override
+    public void shutdown() {
+        super.shutdown();
+        //Cleanup
+        new File(dbFile).delete();
+    }
 }
