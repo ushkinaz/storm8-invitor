@@ -52,7 +52,9 @@ public class StormConfigurator {
 
             for (Game game : gamesList) {
                 games.put(game.getId().toLowerCase(), game);
+                db.store(game);
             }
+            db.commit();
 
         } catch (XMLStreamException e) {
             LOGGER.error(e);

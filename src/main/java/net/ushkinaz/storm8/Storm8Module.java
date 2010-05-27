@@ -1,13 +1,11 @@
 package net.ushkinaz.storm8;
 
-
-
 /*
- * Created by IntelliJ IDEA.
- * User: Dmitry Sidorenko
- * Date: 23.05.2010
- * Time: 23:30:39
- */
+* Created by IntelliJ IDEA.
+* User: Dmitry Sidorenko
+* Date: 23.05.2010
+* Time: 23:30:39
+*/
 
 import com.db4o.ObjectContainer;
 import com.google.inject.AbstractModule;
