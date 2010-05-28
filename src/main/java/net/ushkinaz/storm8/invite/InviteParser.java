@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import net.ushkinaz.storm8.dao.ClanDao;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
-import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
@@ -28,6 +27,7 @@ public class InviteParser {
     private static Pattern inClanPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> " + NAME_PATTERN + " is already in your clan.</div>.*", Pattern.DOTALL);
     private static Pattern notFoundPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> Unable to find anyone with that clan code.</div>.*", Pattern.DOTALL);
     private static Pattern notAndroidPattern = Pattern.compile(".*If you are using an Android device, press the back button to exit the game.*", Pattern.DOTALL);
+    private static Pattern yourselfPattern = Pattern.compile(".*You cannot invite yourself to your own clan.*", Pattern.DOTALL);
 
     @Inject
     public InviteParser(ClanDao clanDao) {
@@ -42,6 +42,7 @@ public class InviteParser {
         Matcher matcherInClan = inClanPattern.matcher(response);
         Matcher matcherNotFound = notFoundPattern.matcher(response);
         Matcher matcherNotAndroid = notAndroidPattern.matcher(response);
+        Matcher matcherCleverBoy = yourselfPattern.matcher(response);
 
         if (matcherSuccess.matches()) {
             clanName = matcherSuccess.group(1);
@@ -68,6 +69,8 @@ public class InviteParser {
         } else if (matcherNotAndroid.matches()) {
             LOGGER.error("Server does not like us!");
             throw new ServerWorkflowException("Server does not like us!\n" + response);
+        } else if (matcherCleverBoy.matches()) {
+            LOGGER.warn("Adding yourself? Clever boy!");
         } else {
             LOGGER.info("Unknown error");
             logUnknownError(response, clanInvite);
