@@ -79,11 +79,11 @@ public class InviteService {
             return;
         }
 
-        clanDao.updateClanInvite(clanInvite);
         try {
             String responseBody = gameRequestor.postRequest(gameRequestor.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
 
             inviteParser.parseResult(responseBody, clanInvite);
+            clanDao.updateClanInvite(clanInvite);
         } catch (IOException e) {
             LOGGER.error("IO error: ", e);
         }
