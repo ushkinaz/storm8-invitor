@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.http.GameRequestor;
+import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.apache.commons.httpclient.NameValuePair;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class ExploreMe {
     private void doIt() throws IOException {
         Game ninja = configurator.getGame("ninja");
 
-        requestor = new GameRequestor(ninja);
+        requestor = new GameRequestor(ninja, new HttpClientProvider());
         for (String uri : uris) {
             String body = requestor.postRequest(ninja.getGameURL() + uri, new PostBodyFactory() {
                 public NameValuePair[] createBody() {

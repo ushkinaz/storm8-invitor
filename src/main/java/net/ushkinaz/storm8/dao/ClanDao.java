@@ -1,7 +1,6 @@
 package net.ushkinaz.storm8.dao;
 
 import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -42,8 +41,9 @@ public class ClanDao {
         query.constrain(ClanInvite.class);
         query.descend("status").constrain(status);
 
-        @SuppressWarnings({"UnnecessaryLocalVariable"})
+        //ByExample does not work for some reason
         //db.queryByExample(clanInvite);
+        @SuppressWarnings({"UnnecessaryLocalVariable"})
         List<ClanInvite> clanInvites = query.execute();
         return clanInvites;
     }

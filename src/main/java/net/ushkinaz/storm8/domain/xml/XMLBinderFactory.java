@@ -4,6 +4,8 @@ import com.google.inject.Provider;
 import javolution.xml.XMLBinding;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +15,7 @@ import java.util.HashMap;
  */
 public class XMLBinderFactory implements Provider<XMLBinding> {
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(XMLBinderFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XMLBinderFactory.class);
 
     public XMLBinding get() {
         XMLBinding binding = new XMLBinding();

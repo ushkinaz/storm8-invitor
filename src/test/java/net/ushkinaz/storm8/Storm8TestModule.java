@@ -1,6 +1,8 @@
 package net.ushkinaz.storm8;
 
 import net.ushkinaz.storm8.dao.DB4OProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -9,7 +11,8 @@ import java.io.File;
  * @date May 25, 2010
  */
 public class Storm8TestModule extends Storm8Module {
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(Storm8TestModule.class);
+    @SuppressWarnings({"UnusedDeclaration"})
+    private static final Logger LOGGER = LoggerFactory.getLogger(Storm8TestModule.class);
 
     public Storm8TestModule() {
         super("test.db");

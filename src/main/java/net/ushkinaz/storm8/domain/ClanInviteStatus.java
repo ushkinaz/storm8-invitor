@@ -5,6 +5,7 @@ package net.ushkinaz.storm8.domain;
  * Created by Dmitry Sidorenko.
  */
 public enum ClanInviteStatus {
+    DIGGED(0),
     REQUESTED(1),
     PENDING(2),
     ACCEPTED(4),

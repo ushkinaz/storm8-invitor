@@ -5,6 +5,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Game;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,7 +18,8 @@ import java.util.Collection;
  * @author Dmitry Sidorenko
  */
 public class DB4OPlay {
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(DB4OPlay.class);
+    @SuppressWarnings({"UnusedDeclaration"})
+    private static final Logger LOGGER = LoggerFactory.getLogger(DB4OPlay.class);
 
     public static void main(String[] args) throws IOException, SQLException {
         Injector injector = Guice.createInjector(new Storm8Module("storm8.db"));

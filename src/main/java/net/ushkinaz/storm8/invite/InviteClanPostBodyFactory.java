@@ -3,13 +3,16 @@ package net.ushkinaz.storm8.invite;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.apache.commons.httpclient.NameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Dmitry Sidorenko
  * @date May 25, 2010
  */
 public class InviteClanPostBodyFactory implements PostBodyFactory {
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(InviteClanPostBodyFactory.class);
+    @SuppressWarnings({"UnusedDeclaration"})
+    private static final Logger LOGGER = LoggerFactory.getLogger(InviteClanPostBodyFactory.class);
 
     private static final String FORM_ACTION = "action";
     private static final String FORM_MOBCODE = "mobcode";

@@ -6,7 +6,6 @@ package net.ushkinaz.storm8.http;
  * @author Dmitry Sidorenko
  */
 public class ServerWorkflowException extends Exception {
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(ServerWorkflowException.class);
 
     public ServerWorkflowException() {
     }

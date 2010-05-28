@@ -8,6 +8,8 @@ import net.ushkinaz.storm8.StormConfigurator;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Game;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +24,9 @@ import java.text.MessageFormat;
  * @author Dmitry Sidorenko
  */
 public class HSQL2DB2O {
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(HSQL2DB2O.class);
+    @SuppressWarnings({"UnusedDeclaration"})
+    private static final Logger LOGGER = LoggerFactory.getLogger(HSQL2DB2O.class);
+
     private static final String STORM8_DB = "storm8.db";
 
     public static void main(String[] args) throws IOException, SQLException {
@@ -88,7 +92,7 @@ public class HSQL2DB2O {
             }
             LOGGER.debug(MessageFormat.format("Converted {0} invites", count));
         } catch (SQLException e) {
-            LOGGER.error(e);
+            LOGGER.error("SQL", e);
         } finally {
             db.commit();
             set.close();

@@ -121,6 +121,6 @@ public class ClanInvite {
     }
 
     public boolean isInvited() {
-        return status != null;
+        return !status.equals(ClanInviteStatus.DIGGED) ;
     }
 }

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +39,6 @@ public class StormMe {
         Injector injector = Guice.createInjector(storm8Module);
 
         StormMe stormMe = injector.getInstance(StormMe.class);
-
 
         if (arguments.contains("clean")) {
             ObjectContainer db = injector.getInstance(ObjectContainer.class);

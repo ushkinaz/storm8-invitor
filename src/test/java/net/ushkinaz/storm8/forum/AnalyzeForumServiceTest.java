@@ -5,6 +5,7 @@ package net.ushkinaz.storm8.forum;
  */
 
 import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.http.HttpClientProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class AnalyzeForumServiceTest {
 
     @Test
     public void testFindTopics() throws Exception {
-        analyzeForumService = new AnalyzeForumService();
+        analyzeForumService = new AnalyzeForumService(new HttpClientProvider());
         Game game = new Game("ninja");
         game.setForumId(65);
         analyzeForumService.findTopics(game);

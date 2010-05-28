@@ -4,8 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.dao.ClanDao;
 import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.http.GameRequestor;
+import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
@@ -28,11 +30,13 @@ public class InviteService {
 
     private InviteParser inviteParser;
     private ClanDao clanDao;
+    private HttpClientProvider httpClientProvider;
 
     @Inject
-    public InviteService(ClanDao clanDao, InviteParser inviteParser) throws Exception {
+    public InviteService(ClanDao clanDao, InviteParser inviteParser,  HttpClientProvider httpClientProvider) throws Exception {
         this.clanDao = clanDao;
         this.inviteParser = inviteParser;
+        this.httpClientProvider = httpClientProvider;
     }
 
     /**
@@ -42,12 +46,8 @@ public class InviteService {
      * @param game game to use invitations
      */
     public void invite(Game game) {
-        GameRequestor gameRequestor = new GameRequestor(game);
-        goThroughDB(gameRequestor);
-    }
-
-    private void goThroughDB(final GameRequestor gameRequestor) {
-        Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), null);
+        final GameRequestor gameRequestor = new GameRequestor(game, httpClientProvider);
+        Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.DIGGED);
 
         ExecutorService executorService = new ThreadPoolExecutor(5, 10, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(1000));
         for (final ClanInvite invite : invites) {
@@ -70,8 +70,6 @@ public class InviteService {
             LOGGER.error("Error", e);
         }
     }
-
-    // String clanCode, GameRequestor gameRequestor
 
     private void invite(GameRequestor gameRequestor, ClanInvite clanInvite) throws ServerWorkflowException {
         if (clanInvite.isInvited()) {

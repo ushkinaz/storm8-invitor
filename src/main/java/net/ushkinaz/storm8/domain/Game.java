@@ -5,6 +5,8 @@ import javolution.xml.XMLFormat;
 import javolution.xml.XMLSerializable;
 import javolution.xml.stream.XMLStreamException;
 import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -13,7 +15,8 @@ import java.util.*;
  */
 public class Game extends Identifiable implements XMLSerializable {
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(Game.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
+    
     private static final long serialVersionUID = 5170559993039725638L;
 
     @Indexed

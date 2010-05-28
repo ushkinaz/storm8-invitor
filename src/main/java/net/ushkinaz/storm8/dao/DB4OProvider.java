@@ -4,20 +4,20 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.constraints.UniqueFieldValueConstraint;
-import com.db4o.defragment.Defragment;
 import com.google.inject.Provider;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
 import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
-
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Dmitry Sidorenko
  * @date May 25, 2010
  */
 public class DB4OProvider implements Provider<ObjectContainer> {
-    private static final org.apache.commons.logging.Log LOGGER = org.apache.commons.logging.LogFactory.getLog(DB4OProvider.class);
+    @SuppressWarnings({"UnusedDeclaration"})
+    private static final Logger LOGGER = LoggerFactory.getLogger(DB4OProvider.class);
 
     private EmbeddedConfiguration configuration;
     private ObjectContainer db;

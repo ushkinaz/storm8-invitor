@@ -3,6 +3,7 @@ package net.ushkinaz.storm8.forum;
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
 import org.slf4j.Logger;
@@ -64,6 +65,7 @@ public class ForumCodesDigger implements CodesDigger {
         public void codeFound(String code) {
             ClanInvite clanInvite = new ClanInvite(code, game);
             if (db.queryByExample(clanInvite).size() == 0) {
+                clanInvite.setStatus(ClanInviteStatus.DIGGED);
                 db.store(clanInvite);
             }
         }

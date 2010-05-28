@@ -3,8 +3,8 @@ package net.ushkinaz.storm8.forum;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.domain.Topic;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
+import net.ushkinaz.storm8.http.HttpClientProvider;
+import net.ushkinaz.storm8.http.HttpService;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class AnalyzeTopicService {
+public class AnalyzeTopicService extends HttpService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeTopicService.class);
 
     private final static String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
@@ -34,19 +34,16 @@ public class AnalyzeTopicService {
     private static final Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
 
     private HashSet<String> blackList;
-    private ThreadLocal<HttpClient> httpClientThreadLocal = new ThreadLocal<HttpClient>();
 
     @Inject
-    public AnalyzeTopicService(CodesReader codesReader) {
+    public AnalyzeTopicService(CodesReader codesReader, HttpClientProvider clientProvider) {
+        super(clientProvider);
         blackList = new HashSet<String>();
         codesReader.readFromFile("black.list", blackList);
     }
 
     public void searchForCodes(Topic topic, ForumAnalyzeCallback callback) {
         try {
-            if (httpClientThreadLocal.get() == null) {
-                httpClientThreadLocal.set(initHttpClient());
-            }
             LOGGER.info("Topic: " + topic);
             int count = getPagesCount(topic.getTopicId());
             if (LOGGER.isDebugEnabled()) {
@@ -66,7 +63,7 @@ public class AnalyzeTopicService {
             LOGGER.info("Topic = " + topic.getTopicId() + ", page = " + page);
             try {
                 GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topic.getTopicId(), page));
-                int statusCode = httpClientThreadLocal.get().executeMethod(pageMethod);
+                int statusCode = getClient().executeMethod(pageMethod);
                 if (statusCode != 200) {
                     throw new IOException("Can't access topic page");
                 }
@@ -95,17 +92,10 @@ public class AnalyzeTopicService {
         }
     }
 
-    private HttpClient initHttpClient() {
-        HttpClient httpClient = new HttpClient();
-        httpClient.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
-//        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, "Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
-        return httpClient;
-    }
-
     private int getPagesCount(int topicId) throws IOException {
         int count = 0;
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
-        int statusCode = httpClientThreadLocal.get().executeMethod(pagesMethod);
+        int statusCode = getClient().executeMethod(pagesMethod);
         if (statusCode != 200) {
             throw new IOException("Can't access topic page");
         }
