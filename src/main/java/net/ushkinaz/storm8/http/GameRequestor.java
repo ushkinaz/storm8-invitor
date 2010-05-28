@@ -33,12 +33,11 @@ public class GameRequestor {
 
     private Random random;
     private Game game;
-    private HttpClient httpClient;
+    private ThreadLocal<HttpClient> localHttpClient = new ThreadLocal<HttpClient>();
 
     public GameRequestor(Game game) {
         random = new Random();
         this.game = game;
-        httpClient = initHttpClient();
     }
 
     private HttpClient initHttpClient() {
@@ -68,14 +67,11 @@ public class GameRequestor {
      * @throws IOException exception
      */
     public String postRequest(String requestURL, PostBodyFactory postBodyFactory) throws IOException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("URL: " + requestURL);
+        if (localHttpClient.get() == null) {
+            localHttpClient.set(initHttpClient());
         }
         PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
-        int status = httpClient.executeMethod(postMethod);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("HTTP result: " + status);
-        }
+        int status = localHttpClient.get().executeMethod(postMethod);
         randomlySleep();
         return postMethod.getResponseBodyAsString();
     }

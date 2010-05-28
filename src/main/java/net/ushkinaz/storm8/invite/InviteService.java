@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.dao.ClanDao;
 import net.ushkinaz.storm8.domain.ClanInvite;
-import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -12,6 +11,10 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -37,18 +40,34 @@ public class InviteService {
      * All clan codes should be in DB by that time.
      *
      * @param game game to use invitations
-     * @throws IOException an exception
      */
-    public void invite(Game game) throws ServerWorkflowException {
+    public void invite(Game game) {
         GameRequestor gameRequestor = new GameRequestor(game);
         goThroughDB(gameRequestor);
     }
 
-    private void goThroughDB(GameRequestor gameRequestor) throws ServerWorkflowException {
-        Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.NOT_FOUND);
+    private void goThroughDB(final GameRequestor gameRequestor) {
+        Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), null);
 
-        for (ClanInvite invite : invites) {
-            invite(gameRequestor, invite);
+        ExecutorService executorService = new ThreadPoolExecutor(5, 10, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(1000));
+        for (final ClanInvite invite : invites) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        invite(gameRequestor, invite);
+                    } catch (ServerWorkflowException e) {
+                        //todo: need to re throw
+                        LOGGER.error("Error", e);
+                    }
+                }
+            });
+        }
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(60, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            LOGGER.error("Error", e);
         }
     }
 
@@ -62,11 +81,11 @@ public class InviteService {
             return;
         }
 
-        clanDao.insertNewClanInvite(clanInvite);
+        clanDao.updateClanInvite(clanInvite);
         try {
             String responseBody = gameRequestor.postRequest(gameRequestor.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
 
-            inviteParser.parseResult(responseBody, clanInvite, gameRequestor.getGame());
+            inviteParser.parseResult(responseBody, clanInvite);
         } catch (IOException e) {
             LOGGER.error("IO error: ", e);
         }

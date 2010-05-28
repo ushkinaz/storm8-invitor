@@ -51,7 +51,6 @@ public class ExploreMe {
         Game ninja = configurator.getGame("ninja");
 
         requestor = new GameRequestor(ninja);
-        int i = 0;
         for (String uri : uris) {
             String body = requestor.postRequest(ninja.getGameURL() + uri, new PostBodyFactory() {
                 public NameValuePair[] createBody() {

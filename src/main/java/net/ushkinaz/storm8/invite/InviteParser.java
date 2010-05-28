@@ -34,7 +34,7 @@ public class InviteParser {
         this.clanDao = clanDao;
     }
 
-    public void parseResult(String response, ClanInvite clanInvite, Game game) throws ServerWorkflowException {
+    public void parseResult(String response, ClanInvite clanInvite) throws ServerWorkflowException {
         String clanName;
 
         Matcher matcherSuccess = successPattern.matcher(response);
@@ -47,23 +47,23 @@ public class InviteParser {
             clanName = matcherSuccess.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(ClanInviteStatus.PENDING);
-            clanDao.updateClanDB(clanInvite);
+            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("Requested: " + clanName);
         } else if (matcherAlreadyInvited.matches()) {
             clanName = matcherAlreadyInvited.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(ClanInviteStatus.PENDING);
-            clanDao.updateClanDB(clanInvite);
+            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("Pending: " + clanName);
         } else if (matcherInClan.matches()) {
             clanName = matcherInClan.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
-            clanDao.updateClanDB(clanInvite);
+            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("InClan: " + clanName);
         } else if (matcherNotFound.matches()) {
             clanInvite.setStatus(ClanInviteStatus.NOT_FOUND);
-            clanDao.updateClanDB(clanInvite);
+            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("Unable to find clan with code: " + clanInvite.getCode());
         } else if (matcherNotAndroid.matches()) {
             LOGGER.error("Server does not like us!");
