@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -31,12 +30,14 @@ public class InviteService {
     private InviteParser inviteParser;
     private ClanDao clanDao;
     private HttpClientProvider httpClientProvider;
+    private final ThreadPoolExecutor threadPoolExecutor;
 
     @Inject
     public InviteService(ClanDao clanDao, InviteParser inviteParser, HttpClientProvider httpClientProvider) throws Exception {
         this.clanDao = clanDao;
         this.inviteParser = inviteParser;
         this.httpClientProvider = httpClientProvider;
+        threadPoolExecutor = new ThreadPoolExecutor(0, 20, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     /**
@@ -50,10 +51,9 @@ public class InviteService {
         final GameRequestor gameRequestor = new GameRequestor(game, httpClientProvider);
         Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.DIGGED);
 
-        ExecutorService executorService = new ThreadPoolExecutor(5, 10, 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         final int[] count = {invites.size()};
         for (final ClanInvite invite : invites) {
-            executorService.execute(new Runnable() {
+            threadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -69,12 +69,6 @@ public class InviteService {
                     }
                 }
             });
-        }
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(60, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            LOGGER.error("Error", e);
         }
         LOGGER.debug("<< invite");
     }

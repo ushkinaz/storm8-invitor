@@ -59,7 +59,7 @@ public class StormMe {
             stormMe.invite();
         }
 
-        storm8Module.shutdown();
+//        storm8Module.shutdown();
 
     }
 
