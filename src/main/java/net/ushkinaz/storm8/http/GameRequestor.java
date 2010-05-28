@@ -51,9 +51,9 @@ public class GameRequestor extends HttpService{
             initialState.addCookie(cookie);
         }
 
-        getClient().setState(initialState);
-        getClient().getParams().setCookiePolicy(CookiePolicy.RFC_2109);
-        getClient().getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT);
+        httpClient.setState(initialState);
+        httpClient.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
+        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT);
     }
 
     /**
