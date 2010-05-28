@@ -36,8 +36,6 @@ public class ExploreMe {
 
         exploreMe.doIt();
 
-        storm8Module.shutdown();
-
     }
 
     String[] uris = {

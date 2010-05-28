@@ -1,7 +1,6 @@
 package net.ushkinaz.storm8.invite;
 
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.dao.ClanDao;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -20,7 +19,7 @@ public class InviteParser {
 
     private static final String NAME_PATTERN = "([\\w \\S]*)";
 
-    private final ClanDao clanDao;
+    //private final ClanDao clanDao;
 
     private static Pattern successPattern = Pattern.compile(".*<div class=\"messageBoxSuccess\"><span class=\"success\">Success!</span> You invited " + NAME_PATTERN + " to your clan.</div>.*", Pattern.DOTALL);
     private static Pattern alreadyInvitedPattern = Pattern.compile(".*<div class=\"messageBoxFail\"><span class=\"fail\">Failure:</span> You already invited " + NAME_PATTERN + " to join your clan.</div>.*", Pattern.DOTALL);
@@ -30,8 +29,7 @@ public class InviteParser {
     private static Pattern yourselfPattern = Pattern.compile(".*You cannot invite yourself to your own clan.*", Pattern.DOTALL);
 
     @Inject
-    public InviteParser(ClanDao clanDao) {
-        this.clanDao = clanDao;
+    public InviteParser() {
     }
 
     public void parseResult(String response, ClanInvite clanInvite) throws ServerWorkflowException {
@@ -48,29 +46,26 @@ public class InviteParser {
             clanName = matcherSuccess.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(ClanInviteStatus.PENDING);
-            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("Requested: " + clanName);
         } else if (matcherAlreadyInvited.matches()) {
             clanName = matcherAlreadyInvited.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(ClanInviteStatus.PENDING);
-            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("Pending: " + clanName);
         } else if (matcherInClan.matches()) {
             clanName = matcherInClan.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
-            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("InClan: " + clanName);
         } else if (matcherNotFound.matches()) {
             clanInvite.setStatus(ClanInviteStatus.NOT_FOUND);
-            clanDao.updateClanInvite(clanInvite);
             LOGGER.info("Unable to find clan with code: " + clanInvite.getCode());
         } else if (matcherNotAndroid.matches()) {
             LOGGER.error("Server does not like us!");
             throw new ServerWorkflowException("Server does not like us!\n" + response);
         } else if (matcherCleverBoy.matches()) {
             LOGGER.warn("Adding yourself? Clever boy!");
+            clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
         } else {
             LOGGER.info("Unknown error");
             logUnknownError(response, clanInvite);

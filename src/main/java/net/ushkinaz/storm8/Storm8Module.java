@@ -40,7 +40,7 @@ public class Storm8Module extends AbstractModule {
         bind(ObjectContainer.class).toProvider(db4oOProvider);
 
 
-        Runtime.getRuntime().addShutdownHook(new Thread(){
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 shutdown();
@@ -56,7 +56,7 @@ public class Storm8Module extends AbstractModule {
         return db4oOProvider;
     }
 
-    private void shutdown() {
+    public void shutdown() {
         db4oOProvider.shutdown();
     }
 }

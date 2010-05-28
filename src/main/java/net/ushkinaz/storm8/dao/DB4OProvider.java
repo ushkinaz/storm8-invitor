@@ -23,7 +23,6 @@ public class DB4OProvider implements Provider<ObjectContainer> {
     private ObjectContainer db;
 
     public DB4OProvider(String dbFile) {
-        LOGGER.info("Initializing DB");
         configuration = Db4oEmbedded.newConfiguration();
 
         configureDatabase();
