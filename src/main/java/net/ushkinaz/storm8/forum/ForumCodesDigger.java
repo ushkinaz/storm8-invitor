@@ -30,7 +30,7 @@ public class ForumCodesDigger implements CodesDigger {
         db.store(game);
         db.commit();
 
-        ExecutorService executor = new ThreadPoolExecutor(5, 15, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
+        ExecutorService executor = new ThreadPoolExecutor(5, 15, 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         for (final Topic topic : game.getTopics().values()) {
             executor.execute(new Runnable() {
                 @Override

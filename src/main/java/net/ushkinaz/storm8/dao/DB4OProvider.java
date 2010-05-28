@@ -53,6 +53,8 @@ public class DB4OProvider implements Provider<ObjectContainer> {
     }
 
     private void configureDatabase() {
+        configuration.common().exceptionsOnNotStorable(true);
+
         configuration.common().add(new UniqueFieldValueConstraint(Game.class, "id"));
         configuration.common().objectClass(Game.class).cascadeOnDelete(true);
         configuration.common().objectClass(Game.class).cascadeOnUpdate(true);

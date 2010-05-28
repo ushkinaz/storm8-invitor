@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,7 +30,7 @@ public class InviteService {
     private HttpClientProvider httpClientProvider;
 
     @Inject
-    public InviteService(ClanDao clanDao, InviteParser inviteParser,  HttpClientProvider httpClientProvider) throws Exception {
+    public InviteService(ClanDao clanDao, InviteParser inviteParser, HttpClientProvider httpClientProvider) throws Exception {
         this.clanDao = clanDao;
         this.inviteParser = inviteParser;
         this.httpClientProvider = httpClientProvider;
@@ -46,10 +43,12 @@ public class InviteService {
      * @param game game to use invitations
      */
     public void invite(Game game) {
+        LOGGER.debug(">> invite");
         final GameRequestor gameRequestor = new GameRequestor(game, httpClientProvider);
         Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.DIGGED);
 
-        ExecutorService executorService = new ThreadPoolExecutor(5, 10, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(1000));
+        ExecutorService executorService = new ThreadPoolExecutor(5, 10, 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        int i = 0;
         for (final ClanInvite invite : invites) {
             executorService.execute(new Runnable() {
                 @Override
@@ -69,6 +68,7 @@ public class InviteService {
         } catch (InterruptedException e) {
             LOGGER.error("Error", e);
         }
+        LOGGER.debug("<< invite");
     }
 
     private void invite(GameRequestor gameRequestor, ClanInvite clanInvite) throws ServerWorkflowException {

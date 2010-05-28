@@ -51,14 +51,19 @@ public class StormMe {
             db.commit();
         }
 
+        if (arguments.contains("dig")) {
+            stormMe.dig();
+        }
 
-        stormMe.doIt();
+        if (arguments.contains("invite")) {
+            stormMe.invite();
+        }
 
         storm8Module.shutdown();
 
     }
 
-    private void doIt() throws ServerWorkflowException {
+    private void dig() throws ServerWorkflowException {
         Game game = configurator.getGame("ninja");
         digger.digCodes(game);
         service.invite(game);
@@ -68,6 +73,11 @@ public class StormMe {
             digger.digCodes(game);
         }
 */
+    }
+
+    private void invite() throws ServerWorkflowException {
+        Game game = configurator.getGame("ninja");
+        service.invite(game);
 
 /*
         for (Game game : configurator.getGames().values()) {
@@ -75,5 +85,4 @@ public class StormMe {
         }
 */
     }
-
 }
