@@ -66,7 +66,6 @@ public class StormMe {
     private void dig() throws ServerWorkflowException {
         Game game = configurator.getGame("ninja");
         digger.digCodes(game);
-        service.invite(game);
 
 /*
         for (Game game : configurator.getGames().values()) {

@@ -13,7 +13,10 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -48,7 +51,7 @@ public class InviteService {
         Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.DIGGED);
 
         ExecutorService executorService = new ThreadPoolExecutor(5, 10, 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        int i = 0;
+        final int[] count = {invites.size()};
         for (final ClanInvite invite : invites) {
             executorService.execute(new Runnable() {
                 @Override
@@ -58,6 +61,11 @@ public class InviteService {
                     } catch (ServerWorkflowException e) {
                         //todo: need to re throw
                         LOGGER.error("Error", e);
+                    } finally {
+                        count[0]--;
+                        if (count[0] % 50 == 0) {
+                            LOGGER.info("Remaining invites: " + count[0]);
+                        }
                     }
                 }
             });
