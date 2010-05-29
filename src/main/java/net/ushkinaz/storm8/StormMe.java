@@ -1,6 +1,9 @@
 package net.ushkinaz.storm8;
 
 import com.db4o.ObjectContainer;
+import com.db4o.config.ConfigScope;
+import com.db4o.defragment.Defragment;
+import com.db4o.defragment.DefragmentConfig;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -24,6 +27,7 @@ public class StormMe {
     private StormConfigurator configurator;
     private InviteService service;
     private CodesDigger digger;
+    private static final String STORM_DB = "storm8.db";
 
     @Inject
     private void StormMe(StormConfigurator configurator, InviteService service, CodesDigger digger) {
@@ -35,7 +39,14 @@ public class StormMe {
     public static void main(String[] args) throws Exception {
         Set<String> arguments = new HashSet<String>(Arrays.asList(args));
 
-        final Storm8Module storm8Module = new Storm8Module("storm8.db");
+        if (arguments.contains("defragment")) {
+            DefragmentConfig defragmentConfig = new DefragmentConfig(STORM_DB);
+            defragmentConfig.db4oConfig().generateUUIDs(ConfigScope.GLOBALLY);
+            defragmentConfig.db4oConfig().generateVersionNumbers(ConfigScope.GLOBALLY);
+            Defragment.defrag(defragmentConfig);
+        }
+
+        final Storm8Module storm8Module = new Storm8Module(STORM_DB);
         Injector injector = Guice.createInjector(storm8Module);
 
         StormMe stormMe = injector.getInstance(StormMe.class);
