@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8.forum;
+package net.ushkinaz.storm8.digger.forum;
 
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class AnalyzeTopicService extends HttpService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzeTopicService.class);
+public class TopicAnalyzerService extends HttpService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicAnalyzerService.class);
 
     private final static String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
     private final static String FORUM_TOPIC_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}&page={1,number,######}";
@@ -36,7 +36,7 @@ public class AnalyzeTopicService extends HttpService {
     private HashSet<String> blackList;
 
     @Inject
-    public AnalyzeTopicService(CodesReader codesReader, HttpClientProvider clientProvider) {
+    public TopicAnalyzerService(CodesReader codesReader, HttpClientProvider clientProvider) {
         super(clientProvider);
         blackList = new HashSet<String>();
         codesReader.readFromFile("black.list", blackList);
@@ -44,7 +44,7 @@ public class AnalyzeTopicService extends HttpService {
 
     public void searchForCodes(Topic topic, ForumAnalyzeCallback callback) {
         try {
-            LOGGER.info("Topic: " + topic);
+            LOGGER.info("Searching topic: " + topic);
             int count = getPagesCount(topic.getTopicId());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Topic = " + topic.getTopicId() + " Pages: " + count);

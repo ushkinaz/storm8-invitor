@@ -64,7 +64,7 @@ public class InviteService {
                     } finally {
                         count[0]--;
                         if (count[0] % 50 == 0) {
-                            LOGGER.info("Remaining invites: " + count[0]);
+                            LOGGER.info("Invites to process: " + count[0]);
                         }
                     }
                 }

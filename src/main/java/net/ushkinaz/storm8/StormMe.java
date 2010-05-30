@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Game;
-import net.ushkinaz.storm8.forum.CodesDigger;
+import net.ushkinaz.storm8.digger.forum.CodesDigger;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;

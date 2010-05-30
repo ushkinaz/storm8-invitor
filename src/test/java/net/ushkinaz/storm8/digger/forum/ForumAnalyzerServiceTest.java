@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8.forum;
+package net.ushkinaz.storm8.digger.forum;
 /**
  * Date: 27.05.2010
  * Created by Dmitry Sidorenko.
@@ -9,15 +9,15 @@ import net.ushkinaz.storm8.http.HttpClientProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AnalyzeForumServiceTest {
-    AnalyzeForumService analyzeForumService;
+public class ForumAnalyzerServiceTest {
+    ForumAnalyzerService forumAnalyzerService;
 
     @Test
     public void testFindTopics() throws Exception {
-        analyzeForumService = new AnalyzeForumService(new HttpClientProvider());
+        forumAnalyzerService = new ForumAnalyzerService(new HttpClientProvider());
         Game game = new Game("ninja");
         game.setForumId(65);
-        analyzeForumService.findTopics(game);
+        forumAnalyzerService.findTopics(game);
         Assert.assertEquals(game.getTopics().size(), 11);
     }
 }

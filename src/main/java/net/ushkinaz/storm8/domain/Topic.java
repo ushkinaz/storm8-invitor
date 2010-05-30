@@ -15,7 +15,7 @@ import java.util.Date;
 public class Topic implements XMLSerializable {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(Topic.class);
-    
+
     private static final long serialVersionUID = -4998697492471291093L;
 
 
@@ -24,6 +24,14 @@ public class Topic implements XMLSerializable {
     private int pages;
     private int lastProcessedPage;
     private Date processedDate;
+    /**
+     * Number of posts in the thread, as reported on forum page.
+     */
+    private int posts;
+    /**
+     * Indicates that new posts were added since last check
+     */
+    private transient boolean postsAdded = false;
 
     public Topic() {
     }
@@ -93,13 +101,31 @@ public class Topic implements XMLSerializable {
         this.processedDate = processedDate;
     }
 
+    public int getPosts() {
+        return posts;
+    }
+
+    public void setPosts(int posts) {
+        this.posts = posts;
+    }
+
+    public boolean arePostsAdded() {
+        return postsAdded;
+    }
+
     @Override
     public String toString() {
         return "Topic{" +
                 "topicId=" + topicId +
                 ", pages=" + pages +
+                ", posts=" + posts +
                 ", lastProcessedPage=" + lastProcessedPage +
                 ", processedDate=" + processedDate +
+                ", postsAdded=" + postsAdded +
                 '}';
+    }
+
+    public void setPostsAdded(boolean postsAdded) {
+        this.postsAdded = postsAdded;
     }
 }

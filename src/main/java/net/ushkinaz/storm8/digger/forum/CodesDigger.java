@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8.forum;
+package net.ushkinaz.storm8.digger.forum;
 
 import net.ushkinaz.storm8.domain.Game;
 

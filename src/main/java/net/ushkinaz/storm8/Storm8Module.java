@@ -12,8 +12,8 @@ import com.google.inject.AbstractModule;
 import javolution.xml.XMLBinding;
 import net.ushkinaz.storm8.dao.DB4OProvider;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
-import net.ushkinaz.storm8.forum.CodesDigger;
-import net.ushkinaz.storm8.forum.ForumCodesDigger;
+import net.ushkinaz.storm8.digger.forum.CodesDigger;
+import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
 

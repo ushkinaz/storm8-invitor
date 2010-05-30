@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8.forum;
+package net.ushkinaz.storm8.digger.forum;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
@@ -9,33 +9,41 @@ import net.ushkinaz.storm8.domain.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ForumCodesDigger implements CodesDigger {
     private static final Logger LOGGER = LoggerFactory.getLogger(ForumCodesDigger.class);
 
-    private AnalyzeTopicService topicService;
-    private AnalyzeForumService forumService;
+    private TopicAnalyzerService topicAnalyzerService;
+    private ForumAnalyzerService forumAnalyzerService;
     private ObjectContainer db;
 
     @Inject
-    public ForumCodesDigger(AnalyzeTopicService topicService, AnalyzeForumService forumService, ObjectContainer db) {
-        this.topicService = topicService;
-        this.forumService = forumService;
+    public ForumCodesDigger(TopicAnalyzerService topicAnalyzerService, ForumAnalyzerService forumAnalyzerService, ObjectContainer db) {
+        this.topicAnalyzerService = topicAnalyzerService;
+        this.forumAnalyzerService = forumAnalyzerService;
         this.db = db;
     }
 
     public void digCodes(final Game game) {
-        forumService.findTopics(game);
+        forumAnalyzerService.findTopics(game);
         db.store(game);
         db.commit();
 
         ExecutorService executor = new ThreadPoolExecutor(5, 15, 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
         for (final Topic topic : game.getTopics().values()) {
+            if (!topic.arePostsAdded()) {
+                LOGGER.debug("No new posts: " + topic);
+                continue;
+            }
+
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    topicService.searchForCodes(topic, new MyForumAnalyzeCallback(game));
+                    topicAnalyzerService.searchForCodes(topic, new MyForumAnalyzeCallback(game));
                     db.store(topic);
                     db.commit();
                 }
@@ -55,7 +63,7 @@ public class ForumCodesDigger implements CodesDigger {
         db.commit();
     }
 
-    private class MyForumAnalyzeCallback implements AnalyzeTopicService.ForumAnalyzeCallback {
+    private class MyForumAnalyzeCallback implements TopicAnalyzerService.ForumAnalyzeCallback {
         private Game game;
 
         public MyForumAnalyzeCallback(Game game) {
