@@ -4,14 +4,12 @@ import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.domain.Topic;
 import net.ushkinaz.storm8.http.HttpClientProvider;
-import net.ushkinaz.storm8.http.HttpService;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +17,7 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class TopicAnalyzerService extends HttpService {
+public class TopicAnalyzerService extends PageDigger {
     private static final Logger LOGGER = LoggerFactory.getLogger(TopicAnalyzerService.class);
 
     private final static String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
@@ -30,19 +28,12 @@ public class TopicAnalyzerService extends HttpService {
 
     private static final Pattern postPattern = Pattern.compile("<!-- message -->(.*?)<!-- / message -->", Pattern.DOTALL);
 
-    private static final String CODE_PATTERN = "\\w{5}";
-    private static final Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
-
-    private HashSet<String> blackList;
-
     @Inject
     public TopicAnalyzerService(CodesReader codesReader, HttpClientProvider clientProvider) {
-        super(clientProvider);
-        blackList = new HashSet<String>();
-        codesReader.readFromFile("black.list", blackList);
+        super(codesReader, clientProvider);
     }
 
-    public void searchForCodes(Topic topic, ForumAnalyzeCallback callback) {
+    public void searchForCodes(Topic topic, CodesDiggerCallback callback) {
         try {
             LOGGER.info("Searching topic: " + topic);
             int count = getPagesCount(topic.getTopicId());
@@ -57,7 +48,7 @@ public class TopicAnalyzerService extends HttpService {
         }
     }
 
-    private void walkThroughPages(Topic topic, int count, ForumAnalyzeCallback callback) {
+    private void walkThroughPages(Topic topic, int count, CodesDiggerCallback callback) {
         //Page 0 and page 1 are the same. Ignore the fact.
         for (int page = topic.getLastProcessedPage(); page <= count; page++) {
             LOGGER.info("Topic = " + topic.getTopicId() + ", page = " + page);
@@ -80,18 +71,6 @@ public class TopicAnalyzerService extends HttpService {
         }
     }
 
-    private void parsePost(String post, ForumAnalyzeCallback callback) {
-        Matcher matcher = codePattern.matcher(post);
-        while (matcher.find()) {
-            String code = matcher.group(1).toUpperCase();
-            if (blackList.contains(code)) {
-                continue;
-            }
-            LOGGER.info("Found code: " + code);
-            callback.codeFound(code);
-        }
-    }
-
     private int getPagesCount(int topicId) throws IOException {
         int count = 0;
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
@@ -107,7 +86,4 @@ public class TopicAnalyzerService extends HttpService {
         return count;
     }
 
-    public interface ForumAnalyzeCallback {
-        void codeFound(String code);
-    }
 }

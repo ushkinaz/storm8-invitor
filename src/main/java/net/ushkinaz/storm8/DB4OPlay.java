@@ -4,6 +4,7 @@ import com.db4o.ObjectContainer;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,11 @@ public class DB4OPlay {
 
         Game ninjaGame = configurator.getGame("ninja");
 
-        ClanInvite inviteExample = new ClanInvite();
-
-        Collection<ClanInvite> set = db.queryByExample(inviteExample);
-        set.hashCode();
+        Collection<ClanInvite> set = db.queryByExample(ClanInvite.class);
+        for (ClanInvite clanInvite : set) {
+            clanInvite.setInviteSource(ClanInviteSource.FORUM);
+            db.store(clanInvite);
+        }
+        db.close();
     }
 }

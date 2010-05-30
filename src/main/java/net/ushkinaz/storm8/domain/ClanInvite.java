@@ -19,6 +19,7 @@ public class ClanInvite {
     private String name;
     @Indexed
     private ClanInviteStatus status;
+    private ClanInviteSource inviteSource;
 
 
     public ClanInvite() {
@@ -37,6 +38,14 @@ public class ClanInvite {
     public ClanInvite(String code, Game game) {
         this.code = code;
         this.game = game;
+    }
+
+    public ClanInviteSource getInviteSource() {
+        return inviteSource;
+    }
+
+    public void setInviteSource(ClanInviteSource inviteSource) {
+        this.inviteSource = inviteSource;
     }
 
     public String getCode() {
