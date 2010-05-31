@@ -1,7 +1,6 @@
 package net.ushkinaz.storm8.digger;
 
 import net.ushkinaz.storm8.CodesReader;
-import net.ushkinaz.storm8.digger.forum.PageDigger;
 import net.ushkinaz.storm8.http.HttpClientProvider;
 import org.junit.Test;
 

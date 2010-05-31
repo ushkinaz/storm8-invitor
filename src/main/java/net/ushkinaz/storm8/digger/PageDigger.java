@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8.digger.forum;
+package net.ushkinaz.storm8.digger;
 
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;

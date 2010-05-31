@@ -2,7 +2,9 @@ package net.ushkinaz.storm8.digger.forum;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
+import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.LiveCodesAnalyzerService;
+import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
