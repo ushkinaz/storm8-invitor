@@ -18,7 +18,8 @@ import java.util.List;
 public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLDBFormat.class);
 
-    private static final String ID_ATTRIBUTE = "id";
+    protected static final String ID_ATTRIBUTE = "id";
+    protected static final String REF_ID_ATTRIBUTE = "ref-id";
 
     protected static ObjectContainer db;
 
@@ -36,7 +37,15 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
             return super.newInstance(cls, xml);
         }
 
-        final String id = xml.getAttribute(ID_ATTRIBUTE, "");
+        String id = null;
+        if (xml.getAttribute(REF_ID_ATTRIBUTE, null) != null) {
+            id = xml.getAttribute(REF_ID_ATTRIBUTE, "");
+        }else if (xml.getAttribute(ID_ATTRIBUTE, null) != null){
+            id = xml.getAttribute(ID_ATTRIBUTE, "");
+
+        }else{
+            throw new XMLStreamException(cls.getName() + " xml should have an id attribute.");
+        }
 
         Query query = db.query();
         query.constrain(cls);
@@ -46,7 +55,10 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
             assert gamesDB.size() == 1;
             return gamesDB.get(0);
         } else {
-            return super.newInstance(cls, xml);
+            T entity = super.newInstance(cls, xml);
+            entity.setId(id);
+            db.store(entity);
+            return entity;
         }
     }
 
@@ -57,7 +69,8 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
 
     @Override
     public void read(InputElement xml, T obj) throws XMLStreamException {
-        obj.setId(xml.getAttribute(ID_ATTRIBUTE, ""));
+        //id is read directly in instance creation. 
+        //obj.setId(xml.getAttribute(ID_ATTRIBUTE, ""));
     }
 
     public static void setDb(ObjectContainer db) {

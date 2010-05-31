@@ -15,7 +15,7 @@ public class ForumAnalyzerServiceTest {
     @Test
     public void testFindTopics() throws Exception {
         forumAnalyzerService = new ForumAnalyzerService(new HttpClientProvider());
-        Game game = new Game("ninja");
+        Game game = new Game();
         game.setForumId(65);
         forumAnalyzerService.findTopics(game);
         Assert.assertEquals(game.getTopics().size(), 11);

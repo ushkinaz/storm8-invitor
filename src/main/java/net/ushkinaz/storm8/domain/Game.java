@@ -8,7 +8,8 @@ import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Dmitry Sidorenko
@@ -16,23 +17,17 @@ import java.util.*;
 public class Game extends Identifiable implements XMLSerializable {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
-    
+
     private static final long serialVersionUID = 5170559993039725638L;
 
     @Indexed
     private String name;
     private String domain;
     private String clan_uri;
-    private Map<String, String> cookies = new HashMap<String, String>(5);
     private Map<Integer, Topic> topics = new HashMap<Integer, Topic>(10);
     private Integer forumId;
 
-
     public Game() {
-    }
-
-    public Game(String id) {
-        super(id);
     }
 
     public String getName() {
@@ -75,10 +70,6 @@ public class Game extends Identifiable implements XMLSerializable {
         this.clan_uri = clan_uri;
     }
 
-    public Map<String, String> getCookies() {
-        return cookies;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -111,23 +102,23 @@ public class Game extends Identifiable implements XMLSerializable {
 
     @SuppressWarnings({"UnusedDeclaration"})
     protected static final XMLFormat<Game> GAME_XML = new XMLDBFormat<Game>(Game.class) {
-
         public void write(Game g, XMLFormat.OutputElement xml) throws XMLStreamException {
             super.write(g, xml);
             xml.add(g.name, "name");
             xml.add(g.domain, "domain");
             xml.add(g.clan_uri, "clan_uri");
-            xml.add(g.cookies, "cookies");
             xml.add(g.forumId, "forumId");
         }
 
         public void read(InputElement xml, Game g) throws XMLStreamException {
             super.read(xml, g);
-            g.name = xml.get("name");
-            g.domain = xml.get("domain");
-            g.clan_uri = xml.get("clan_uri");
-            g.cookies = xml.get("cookies");
-            g.forumId = xml.get("forumId");
+            // If there is an "id" attribute, then this is a reference. Ignore the rest.
+            if (xml.getAttribute(REF_ID_ATTRIBUTE, null) == null) {
+                g.name = xml.get("name");
+                g.domain = xml.get("domain");
+                g.clan_uri = xml.get("clan_uri");
+                g.forumId = xml.get("forumId");
+            }
         }
     };
 }

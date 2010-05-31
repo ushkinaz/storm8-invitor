@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
+import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,9 @@ public class DB4OPlay {
 
         db.ext().backup("storm8.bak");
 
-        StormConfigurator configurator = injector.getInstance(StormConfigurator.class);
+        Configuration configuration = injector.getInstance(Configuration.class);
 
-        Game ninjaGame = configurator.getGame("ninja");
+        Game ninjaGame = configuration.getGame("ninja");
 
         Collection<ClanInvite> set = db.queryByExample(ClanInvite.class);
         for (ClanInvite clanInvite : set) {

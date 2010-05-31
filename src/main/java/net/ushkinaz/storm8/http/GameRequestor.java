@@ -1,7 +1,6 @@
 package net.ushkinaz.storm8.http;
 
-import com.google.inject.Inject;
-import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.Player;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
@@ -20,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Sends requests to a given game.
  * Objects can be reused for different requests per game.
  */
-public class GameRequestor extends HttpService{
+public class GameRequestor extends HttpService {
     private static final Logger LOGGER = getLogger(GameRequestor.class);
 
     static final String USER_AGENT = "Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17";
@@ -31,13 +30,12 @@ public class GameRequestor extends HttpService{
     private static final int SLEEP = 2;
 
     private Random random;
-    private Game game;
+    private Player player;
 
-    @Inject
-    public GameRequestor(Game game, HttpClientProvider clientProvider) {
+    public GameRequestor(Player player, HttpClientProvider clientProvider) {
         super(clientProvider);
         random = new Random();
-        this.game = game;
+        this.player = player;
     }
 
 
@@ -46,8 +44,8 @@ public class GameRequestor extends HttpService{
         super.initHttpClient(httpClient);    //To change body of overridden methods use File | Settings | File Templates.
         HttpState initialState = new HttpState();
 
-        for (Map.Entry<String, String> cookieEntry : game.getCookies().entrySet()) {
-            Cookie cookie = new Cookie(game.getDomain(), cookieEntry.getKey(), cookieEntry.getValue(), "/", null, false);
+        for (Map.Entry<String, String> cookieEntry : player.getCookies().entrySet()) {
+            Cookie cookie = new Cookie(player.getGame().getDomain(), cookieEntry.getKey(), cookieEntry.getValue(), "/", null, false);
             initialState.addCookie(cookie);
         }
 
@@ -82,7 +80,7 @@ public class GameRequestor extends HttpService{
 
         PostMethod postMethod = new PostMethod(requestURL);
         postMethod.addRequestHeader("Referer", requestURL);
-        postMethod.addRequestHeader("Origin", game.getGameURL());
+        postMethod.addRequestHeader("Origin", player.getGame().getGameURL());
         postMethod.addRequestHeader("Accept", ACCEPT);
         postMethod.addRequestHeader("Content-type", CONTENT_TYPE);
         postMethod.addRequestHeader("Accept-Charset", ACCEPT_CHARSET);
@@ -99,9 +97,5 @@ public class GameRequestor extends HttpService{
                 LOGGER.error("Error", e);
             }
         }
-    }
-
-    public Game getGame() {
-        return game;
     }
 }

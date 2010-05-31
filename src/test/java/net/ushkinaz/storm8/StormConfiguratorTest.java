@@ -2,6 +2,7 @@ package net.ushkinaz.storm8;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,7 +20,7 @@ public class StormConfiguratorTest {
     private Storm8Module module;
 
     @Before
-    public void setup(){
+    public void setup() {
         module = new Storm8TestModule();
         Injector injector = Guice.createInjector(module);
 
@@ -27,7 +28,7 @@ public class StormConfiguratorTest {
     }
 
     @Before
-    public void shutdown(){
+    public void shutdown() {
         module.shutdown();
     }
 
@@ -35,8 +36,8 @@ public class StormConfiguratorTest {
     @Test
     public void testStormConfigurator() throws Exception {
 
-        Map<String, Game> games = stormConfigurator.getGames();
+        Configuration configuration = stormConfigurator.get();
 
-        Assert.assertNotNull(games);
+        Assert.assertNotNull(configuration);
     }
 }

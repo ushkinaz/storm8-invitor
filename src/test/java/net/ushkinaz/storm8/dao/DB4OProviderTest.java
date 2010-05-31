@@ -34,11 +34,11 @@ public class DB4OProviderTest extends GuiceAbstractTest{
 
         try {
             Game game;
-            game = new Game("one");
+            game = new Game();
 
             db.store(game);
 
-            game = new Game("one");
+            game = new Game();
             db.store(game);
 
             db.commit();

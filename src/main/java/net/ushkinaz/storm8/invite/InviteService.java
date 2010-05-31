@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import net.ushkinaz.storm8.dao.ClanDao;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
-import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -44,12 +44,12 @@ public class InviteService {
      * Invites clans for given game.
      * All clan codes should be in DB by that time.
      *
-     * @param game game to use invitations
+     * @param player members will be invited to his clan
      */
-    public void invite(Game game) {
+    public void invite(final Player player) {
         LOGGER.debug(">> invite");
-        final GameRequestor gameRequestor = new GameRequestor(game, httpClientProvider);
-        Collection<ClanInvite> invites = clanDao.getByStatus(gameRequestor.getGame(), ClanInviteStatus.DIGGED);
+        final GameRequestor gameRequestor = new GameRequestor(player, httpClientProvider);
+        Collection<ClanInvite> invites = clanDao.getByStatus(player.getGame(), ClanInviteStatus.DIGGED);
 
         final int[] count = {invites.size()};
         for (final ClanInvite invite : invites) {
@@ -57,7 +57,7 @@ public class InviteService {
                 @Override
                 public void run() {
                     try {
-                        invite(gameRequestor, invite);
+                        invite(player, invite, gameRequestor);
                     } catch (ServerWorkflowException e) {
                         //todo: need to re throw
                         LOGGER.error("Error", e);
@@ -73,7 +73,7 @@ public class InviteService {
         LOGGER.debug("<< invite");
     }
 
-    private void invite(GameRequestor gameRequestor, ClanInvite clanInvite) throws ServerWorkflowException {
+    private void invite(Player player, ClanInvite clanInvite, GameRequestor gameRequestor) throws ServerWorkflowException {
         if (clanInvite.isInvited()) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Skipping:" + clanInvite);
@@ -82,10 +82,14 @@ public class InviteService {
         }
 
         try {
-            String responseBody = gameRequestor.postRequest(gameRequestor.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
+            String responseBody = gameRequestor.postRequest(player.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
 
             inviteParser.parseResult(responseBody, clanInvite);
             clanDao.updateClanInvite(clanInvite);
+        } catch (ServerWorkflowException e) {
+            // Bad thing happened
+            LOGGER.error("Bad thing happened", e);
+            threadPoolExecutor.shutdownNow();
         } catch (IOException e) {
             LOGGER.error("IO error: ", e);
         }

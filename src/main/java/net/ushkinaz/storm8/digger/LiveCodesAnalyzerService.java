@@ -31,8 +31,8 @@ public class LiveCodesAnalyzerService extends PageDigger {
     }
 
 
-
     public void dig(CodesDiggerCallback callback) {
+        LOGGER.info(">> dig");
         //Page 0 and page 1 are the same. Ignore the fact.
         try {
             GetMethod pageMethod = new GetMethod(SITE_URL);
@@ -50,6 +50,7 @@ public class LiveCodesAnalyzerService extends PageDigger {
         } catch (IOException e) {
             LOGGER.error("Error", e);
         }
+        LOGGER.info("<< dig");
     }
 
 }

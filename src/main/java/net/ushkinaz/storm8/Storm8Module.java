@@ -11,6 +11,7 @@ import com.db4o.ObjectContainer;
 import com.google.inject.AbstractModule;
 import javolution.xml.XMLBinding;
 import net.ushkinaz.storm8.dao.DB4OProvider;
+import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
@@ -39,6 +40,7 @@ public class Storm8Module extends AbstractModule {
         db4oOProvider = createDB4OProvider();
         bind(ObjectContainer.class).toProvider(db4oOProvider);
 
+        bind(Configuration.class).toProvider(StormConfigurator.class);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
