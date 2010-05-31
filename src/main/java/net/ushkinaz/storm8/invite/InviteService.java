@@ -37,7 +37,7 @@ public class InviteService {
         this.clanDao = clanDao;
         this.inviteParser = inviteParser;
         this.httpClientProvider = httpClientProvider;
-        threadPoolExecutor = new ThreadPoolExecutor(0, 20, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        threadPoolExecutor = new ThreadPoolExecutor(0, 10, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     /**

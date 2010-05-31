@@ -44,7 +44,7 @@ public class PageDigger extends HttpService {
             if (blackList.contains(code)) {
                 continue;
             }
-            LOGGER.info("Found code: " + code);
+            LOGGER.info("Code: " + code);
             callback.codeFound(code);
         }
     }

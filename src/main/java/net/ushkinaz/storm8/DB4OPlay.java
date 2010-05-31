@@ -30,18 +30,10 @@ public class DB4OPlay {
 
         db.ext().backup("storm8.bak");
 
-        Configuration configuration = injector.getInstance(Configuration.class);
-
-        Game ninjaGame = configuration.getGame("ninja");
-
-        Collection<ClanInvite> set = db.queryByExample(ClanInvite.class);
-        for (ClanInvite clanInvite : set) {
-            if (clanInvite.getInviteSource() == null) {
-                LOGGER.info("Clan :" + clanInvite);
-                clanInvite.setInviteSource(ClanInviteSource.LIVE_CODES);
-            }
-
-            db.store(clanInvite);
+        Collection<Game> set = db.queryByExample(Game.class);
+        for (Game game : set) {
+            db.store(game);
+            db.commit();
         }
         db.close();
     }
