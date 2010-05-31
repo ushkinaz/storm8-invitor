@@ -1,0 +1,51 @@
+<!DOCTYPE Configuration [
+        <!ELEMENT Configuration (Games|Players)*>
+        <!ATTLIST Configuration
+                id CDATA #REQUIRED>
+        <!ELEMENT Games (Game)*>
+        <!ATTLIST Games
+                type CDATA #REQUIRED>
+        <!ELEMENT Game (name|domain|clan_uri|forumId)*>
+        <!ATTLIST Game
+                id CDATA #REQUIRED>
+        <!ELEMENT name (#PCDATA)>
+        <!ATTLIST name
+                type CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        <!ELEMENT domain (#PCDATA)>
+        <!ATTLIST domain
+                type CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        <!ELEMENT clan_uri (#PCDATA)>
+        <!ATTLIST clan_uri
+                type CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        <!ELEMENT forumId (#PCDATA)>
+        <!ATTLIST forumId
+                type CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        <!ELEMENT Players (Player)*>
+        <!ATTLIST Players
+                type CDATA #REQUIRED>
+        <!ELEMENT Player (cookies|game)*>
+        <!ATTLIST Player
+                code CDATA #REQUIRED
+                id CDATA #REQUIRED
+                name CDATA #REQUIRED
+                type CDATA #REQUIRED>
+        <!ELEMENT cookies (Key|Value)*>
+        <!ATTLIST cookies
+                type CDATA #REQUIRED>
+        <!ELEMENT Key (#PCDATA)>
+        <!ATTLIST Key
+                type CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        <!ELEMENT Value (#PCDATA)>
+        <!ATTLIST Value
+                type CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        <!ELEMENT game (#PCDATA)>
+        <!ATTLIST game
+                ref-id CDATA #REQUIRED
+                type CDATA #REQUIRED>
+        ]>
