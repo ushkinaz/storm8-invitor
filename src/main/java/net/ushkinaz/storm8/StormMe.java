@@ -9,7 +9,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
@@ -23,15 +25,15 @@ import java.util.Set;
 public class StormMe {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(StormMe.class);
-
-    private StormConfigurator configurator;
-    private InviteService service;
-    private CodesDigger digger;
     private static final String STORM_DB = "storm8.db";
 
+    private InviteService service;
+    private CodesDigger digger;
+    private Configuration configuration;
+
     @Inject
-    private void StormMe(StormConfigurator configurator, InviteService service, CodesDigger digger) {
-        this.configurator = configurator;
+    private void StormMe(Configuration configuration, InviteService service, CodesDigger digger) {
+        this.configuration = configuration;
         this.service = service;
         this.digger = digger;
     }
@@ -75,7 +77,7 @@ public class StormMe {
     }
 
     private void dig() throws ServerWorkflowException {
-        Game game = configurator.getGame("ninja");
+        Game game = configuration.getGame("ninja");
 
         digger.digCodes(game);
 
@@ -87,8 +89,8 @@ public class StormMe {
     }
 
     private void invite() throws ServerWorkflowException {
-        Game game = configurator.getGame("ninja");
-        service.invite(game);
+        Player player = configuration.getPlayer("ush-ninja");
+        service.invite(player);
 
 /*
         for (Game game : configurator.getGames().values()) {

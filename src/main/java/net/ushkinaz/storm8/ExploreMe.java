@@ -3,7 +3,8 @@ package net.ushkinaz.storm8;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.PostBodyFactory;
@@ -20,12 +21,12 @@ public class ExploreMe {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(ExploreMe.class);
 
-    private StormConfigurator configurator;
+    private Configuration configuration;
     private GameRequestor requestor;
 
     @Inject
-    private void ExploreMe(StormConfigurator configurator) {
-        this.configurator = configurator;
+    private void ExploreMe(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public static void main(String[] args) throws Exception {
@@ -47,11 +48,11 @@ public class ExploreMe {
     };
 
     private void doIt() throws IOException {
-        Game ninja = configurator.getGame("ninja");
+        Player ninja = configuration.getPlayer("ush-ninja");
 
         requestor = new GameRequestor(ninja, new HttpClientProvider());
         for (String uri : uris) {
-            String body = requestor.postRequest(ninja.getGameURL() + uri, new PostBodyFactory() {
+            String body = requestor.postRequest(ninja.getGame().getGameURL() + uri, new PostBodyFactory() {
                 public NameValuePair[] createBody() {
                     return new NameValuePair[0];
                 }

@@ -8,15 +8,11 @@ import com.db4o.config.annotations.Indexed;
  */
 public class Identifiable {
 
-    public Identifiable() {
-    }
-
-    public Identifiable(String id) {
-        this.id = id;
-    }
-
     @Indexed
     private String id;
+
+    public Identifiable() {
+    }
 
     public String getId() {
         return id;
@@ -25,4 +21,5 @@ public class Identifiable {
     public void setId(String id) {
         this.id = id;
     }
+
 }
