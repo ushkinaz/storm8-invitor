@@ -71,6 +71,7 @@ public class ForumCodesDigger implements CodesDigger {
 
         public MyCodesDiggerCallback(Game game, ClanInviteSource inviteSource) {
             this.game = game;
+            this.inviteSource = inviteSource;
         }
 
         public void codeFound(String code) {

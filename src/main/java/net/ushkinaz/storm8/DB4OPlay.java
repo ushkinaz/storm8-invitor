@@ -35,7 +35,11 @@ public class DB4OPlay {
 
         Collection<ClanInvite> set = db.queryByExample(ClanInvite.class);
         for (ClanInvite clanInvite : set) {
-            clanInvite.setInviteSource(ClanInviteSource.FORUM);
+            if (clanInvite.getInviteSource() == null) {
+                LOGGER.info("Clan :" + clanInvite);
+                clanInvite.setInviteSource(ClanInviteSource.LIVE_CODES);
+            }
+
             db.store(clanInvite);
         }
         db.close();

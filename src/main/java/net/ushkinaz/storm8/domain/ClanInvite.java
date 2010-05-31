@@ -100,12 +100,13 @@ public class ClanInvite {
     @Override
     public String toString() {
         return "ClanInvite{" +
-                "code='" + code + '\'' +
-                ", game='" + game + '\'' +
+                "game=" + game +
+                ", code='" + code + '\'' +
                 ", name='" + name + '\'' +
-                ", status=" + status +
+                ", inviteSource=" + inviteSource +
                 ", dateRequested=" + dateRequested +
                 ", dateUpdated=" + dateUpdated +
+                ", status=" + status +
                 '}';
     }
 
