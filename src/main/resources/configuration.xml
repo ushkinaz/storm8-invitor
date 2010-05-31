@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Configuration id="production">
+<!DOCTYPE Configuration SYSTEM "configuration.dtd">
+<Configuration id="production" xmlns:Configuration="https://storm8-invitor.googlecode.com/hg/src/main/resources/configuration.dtd">
     <Games type="List">
         <Game id="ninja">
             <name type="String" value="Ninja Live"/>
