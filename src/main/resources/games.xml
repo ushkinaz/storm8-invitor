@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Games type="List">
+    <Game id="ninja">
+        <name type="String" value="Ninja Live"/>
+        <domain type="String" value="nl.storm8.com"/>
+        <clan_uri type="String" value="/group.php"/>
+        <cookies type="Map">
+            <Key type="String" value="st"/>
+            <Value type="String"
+                   value="2792593%2Cc2e17ffa909fd6d4a6b1bbe219fed884ffddb425%2C1274554582%2C12%2C%2Ca1.54%2C14%2C4%2C10003%2C2010-05-22+11%3A56%3A22%2C%2Cv1_1274554582_5e4680101c1b52f0674b973b4a03b1aaf3043356"/>
+            <Key type="String" value="asc"/>
+            <Value type="String" value="1ec7c54864b2d968f89aa6453b067a9d4bff8a2f;"/>
+        </cookies>
+        <forumId type="Integer" value="65"/>
+    </Game>
+    <Game id="mobsters">
+        <name type="String" value="Mobsters Live"/>
+        <domain type="String" value="im.storm8.com"/>
+        <clan_uri type="String" value="/group.php"/>
+        <cookies type="Map">
+            <Key type="String" value="st"/>
+            <Value type="String" value="4652614%2Cc2e17ffa909fd6d4a6b1bbe219fed884ffddb425%2C1274853360%2C0%2C%2Ca1.54%2C18%2C3%2C10003%2C2010-05-25+22%3A56%3A00%2C%2Cv1_1274853360_639d5b5e495369468c8a91e5e9ea4f32fd34a12d"/>
+            <Key type="String" value="asc"/>
+            <Value type="String" value="2abae6dc8b274986bbc2d3e7cbda24957b8f08f9;"/>
+        </cookies>
+        <forumId type="Integer" value="24"/>
+    </Game>
+    <Game id="ww">
+        <name type="String" value="WW Live"/>
+        <domain type="String" value="wwar.storm8.com"/>
+        <clan_uri type="String" value="/aindex.php"/>
+        <cookies type="Map">
+            <Key type="String" value="st"/>
+            <Value type="String" value="st=7897352%2Cc2e17ffa909fd6d4a6b1bbe219fed884ffddb425%2C1274813754%2C0%2C%2Ca1.54%2C7%2C5%2C10003%2C2010-05-25+11%3A55%3A54%2C%2Cv1_1274813754_f364ad5a91b3be3776b6c9481aa566571cdc077d"/>
+            <Key type="String" value="asc"/>
+            <Value type="String" value="1cabea65b6d6e0f3e409e1863d3d447aae45c369;"/>
+        </cookies>
+        <forumId type="Integer" value="14"/>
+    </Game>
+</Games>
