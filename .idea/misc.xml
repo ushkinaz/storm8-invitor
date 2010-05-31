@@ -285,10 +285,6 @@
       </list>
     </option>
   </component>
-  <component name="ProjectResources">
-    <resource url="https://storm8-invitor.googlecode.com/hg/src/main/resources/configuration.dtd" location="C:/Users/Dmitry Sidorenko/.IntelliJIdea90/system/extResources/598007df_configuration.dtd" />
-    <resource url="configuration.dtd" location="$PROJECT_DIR$/src/main/resources/configuration.dtd" />
-  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
