@@ -85,7 +85,9 @@ public class GameRequestor extends HttpService {
         postMethod.addRequestHeader("Content-type", CONTENT_TYPE);
         postMethod.addRequestHeader("Accept-Charset", ACCEPT_CHARSET);
 
-        postMethod.setRequestBody(postBodyFactory.createBody());
+        if (postBodyFactory != null) {
+            postMethod.setRequestBody(postBodyFactory.createBody());
+        }
         return postMethod;
     }
 
