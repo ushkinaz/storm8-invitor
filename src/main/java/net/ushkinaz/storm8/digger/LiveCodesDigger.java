@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class LiveCodesAnalyzerService extends PageDigger implements CodesDigger {
+public class LiveCodesDigger extends PageDigger implements CodesDigger {
 // ------------------------------ FIELDS ------------------------------
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LiveCodesAnalyzerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LiveCodesDigger.class);
 
     private final static String SITE_URL = "http://getninjaslivecodes.com/";
 
@@ -32,7 +32,7 @@ public class LiveCodesAnalyzerService extends PageDigger implements CodesDigger 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
-    private LiveCodesAnalyzerService(HttpClientProvider clientProvider, CodesReader codesReader, ObjectContainer db) {
+    private LiveCodesDigger(HttpClientProvider clientProvider, CodesReader codesReader, ObjectContainer db) {
         super(codesReader, clientProvider);
         this.db = db;
         setCodePattern("<li>(\\w{5})</li>");
