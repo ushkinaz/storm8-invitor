@@ -19,8 +19,8 @@
     </organization>
 
     <scm>
-        <connection>https://storm8-invitor.googlecode.com/hg/</connection>
-        <developerConnection>https://storm8-invitor.googlecode.com/hg/</developerConnection>
+        <connection>scm:hg:https://storm8-invitor.googlecode.com/hg/</connection>
+        <developerConnection>scm:hg:https://storm8-invitor.googlecode.com/hg/</developerConnection>
     </scm>
 
     <issueManagement>
