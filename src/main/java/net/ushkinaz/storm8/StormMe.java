@@ -37,11 +37,17 @@ public class StormMe {
     private CodesDigger codesDigger;
     private Configuration configuration;
     private EquipmentAnalyzerService equipmentAnalyzerService;
+    private ClanBrowser clanBrowser;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Inject
 
+    @Inject
+    public void setClanBrowser(ClanBrowser clanBrowser) {
+        this.clanBrowser = clanBrowser;
+    }
+
+    @Inject
     public void setCodesDigger(@GetCodesLive CodesDigger codesDigger) {
         this.codesDigger = codesDigger;
     }
@@ -104,6 +110,10 @@ public class StormMe {
             stormMe.inventory();
         }
 
+        if (arguments.contains("scan-targets")) {
+            stormMe.scanTargets();
+        }
+
         if (arguments.contains("dig")) {
             stormMe.dig();
         }
@@ -111,6 +121,12 @@ public class StormMe {
         if (arguments.contains("invite")) {
             stormMe.invite();
         }
+    }
+
+    private void scanTargets() {
+        Player player = configuration.getPlayer("ush-ninja");
+        clanBrowser.setPlayer(player);
+        clanBrowser.getGoodTarget();
     }
 
     private void inventory() {

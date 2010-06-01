@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.ushkinaz.storm8.digger.MatcherHelper.match;
+import static net.ushkinaz.storm8.digger.MatcherHelper.matchInteger;
+
 /**
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
@@ -35,6 +38,7 @@ public class EquipmentAnalyzerService {
 
     private GameRequestorProvider gameRequestorProvider;
     private ObjectContainer db;
+    private final MatcherHelper matcherHelper = new MatcherHelper();
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -64,7 +68,7 @@ public class EquipmentAnalyzerService {
         for (int cat = 1; cat <= 3; cat++) {
             String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
             Matcher matcherEquipment = equipmentPattern.matcher(pageBuffer);
-            while (matcherEquipment.find()) {
+            while (MatcherHelper.isMatchFound(matcherEquipment)) {
                 String equipmentInfo = matcherEquipment.group(1);
 
                 Integer id = matchInteger(imagePattern.matcher(equipmentInfo));
@@ -91,19 +95,4 @@ public class EquipmentAnalyzerService {
         LOGGER.info("<< dig");
     }
 
-    private String match(Matcher nameMatcher) {
-        String result = null;
-        if (nameMatcher.find()) {
-            result = nameMatcher.group(1);
-        }
-        return result;
-    }
-
-    private int matchInteger(Matcher nameMatcher) {
-        String result = match(nameMatcher);
-        if (result == null) {
-            result = "0";
-        }
-        return Integer.parseInt(result.replace(",", ""));
-    }
 }

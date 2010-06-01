@@ -1,15 +1,19 @@
 package net.ushkinaz.storm8;
 
+import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.Player;
+import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.GameRequestorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.MessageFormat;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.ushkinaz.storm8.digger.MatcherHelper.*;
 
 /**
  * @author Dmitry Sidorenko
@@ -22,14 +26,14 @@ public class ClanBrowser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClanBrowser.class);
 
     private static final String LIST_URL = "group_member.php?groupMemberRange=";
-    //http://nl.storm8.com/profile.php?puid=2324979&formNonce=7e0bfa44a92ecdb53fc6edaeecb39e9530b10f2e&h=9185e932f51d6adbd85756b21853213c87041f9c
     private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?puid=(\\d*)&(.*?)\">(.*?)</a><br/>");
-    private static final Pattern itemPattern = Pattern.compile("src=\"http://static\\.storm8\\.com/nl/images/equipment/med/(\\d*)m\\.png\\?v=\\d*\"></div>.*?<div>x(\\d*)</div>", Pattern.DOTALL);
 
     private GameRequestorProvider gameRequestorProvider;
     private GameRequestor gameRequestor;
     private Player player;
     private String clanURL;
+    private VictimExaminator victimExaminator;
+    private ObjectContainer db;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -37,6 +41,17 @@ public class ClanBrowser {
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
+
+
+    @Inject
+    public void setDb(ObjectContainer db) {
+        this.db = db;
+    }
+
+    @Inject
+    public void setVictimExaminator(VictimExaminator victimExaminator) {
+        this.victimExaminator = victimExaminator;
+    }
 
     @Inject
     public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
@@ -57,37 +72,35 @@ public class ClanBrowser {
         return "";
     }
 
-    private void scanClan(int scanFrom) {
-        String requestURL = clanURL + scanFrom;
+    private void scanClan(int scanFromIndex) {
+        String requestURL = clanURL + scanFromIndex;
         String body = gameRequestor.postRequest(requestURL, null);
         Matcher matcher = profilePattern.matcher(body);
-        while (matcher.find()) {
-            scanFrom++;
-            String puid = matcher.group(1);
-            String timestamp = matcher.group(2);
-            String name = matcher.group(3);
-            String profileURL = MessageFormat.format("{0}profile.php?puid={1}&{2}", player.getGame().getGameURL(), puid, timestamp);
+        while (isMatchFound(matcher)) {
+            LOGGER.info("Scan index: " + scanFromIndex);
+            scanFromIndex++;
+            int puid = matchInteger(matcher);
+            String timestamp = match(matcher, 2);
+            String name = match(matcher, 3);
+            String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timestamp);
+
             LOGGER.info(name + " = " + profileURL);
-            try {
-                inventory(profileURL);
-            } catch (PageExpiredException e) {
-                LOGGER.info("Page expired");
-                scanClan(scanFrom);
+            String profile = gameRequestor.postRequest(profileURL, null);
+            if (profile.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
+                //Restart scan
+                scanClan(scanFromIndex);
                 break;
             }
-        }
-    }
 
-    private void inventory(String profileURL) throws PageExpiredException {
-        String profile = gameRequestor.postRequest(profileURL, null);
-        Matcher itemMatcher = itemPattern.matcher(profile);
-        if (profile.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
-            throw new PageExpiredException();
-        }
-        while (itemMatcher.find()) {
-            String itemId = itemMatcher.group(1);
-            String itemQuantity = itemMatcher.group(2);
-            LOGGER.info("Item: " + itemId + " quantity:" + itemQuantity);
+            Victim victim = new Victim(puid, player.getGame());
+            List<Victim> victims = db.queryByExample(victim);
+            victim.setName(name);
+            if (victims.size() > 0) {
+                victim = victims.get(0);
+            }
+            victimExaminator.examine(victim, profile);
+            db.store(victim);
+            db.commit();
         }
     }
 }
