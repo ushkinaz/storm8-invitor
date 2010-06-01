@@ -9,29 +9,68 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Dmitry Sidorenko
  */
 public class Game extends Identifiable implements XMLSerializable {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
 
     private static final long serialVersionUID = 5170559993039725638L;
 
+    @SuppressWarnings({"UnusedDeclaration"})
+    protected static final XMLFormat<Game> GAME_XML = new XMLDBFormat<Game>(Game.class) {
+        public void write(Game g, XMLFormat.OutputElement xml) throws XMLStreamException {
+            super.write(g, xml);
+            xml.add(g.name, "name");
+            xml.add(g.domain, "domain");
+            xml.add(g.clan_uri, "clan_uri");
+            xml.add(g.forumId, "forumId");
+        }
+
+        public void read(InputElement xml, Game g) throws XMLStreamException {
+            super.read(xml, g);
+            // If there is an "id" attribute, then this is a reference. Ignore the rest.
+            if (xml.getAttribute(REF_ID_ATTRIBUTE, null) == null) {
+                g.name = xml.get("name");
+                g.domain = xml.get("domain");
+                g.clan_uri = xml.get("clan_uri");
+                g.forumId = xml.get("forumId");
+            }
+        }
+    };
+
     @Indexed
     private String name;
     private String domain;
     private String clan_uri;
-    private Map<Integer, Topic> topics = new HashMap<Integer, Topic>(10);
     private Integer forumId;
+    private Map<Integer, Topic> topics = new HashMap<Integer, Topic>(10);
+    private Set<Equipment> equipment = new HashSet<Equipment>();
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public Game() {
     }
 
-    public String getName() {
-        return name;
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public Set<Equipment> getEquipment() {
+        return equipment;
     }
 
     public Integer getForumId() {
@@ -42,24 +81,12 @@ public class Game extends Identifiable implements XMLSerializable {
         this.forumId = forumId;
     }
 
-    public String getGameURL() {
-        return "http://" + domain + "/";
-    }
-
-    public String getClansURL() {
-        return "http://" + domain + clan_uri;
-    }
-
-    public String getDomain() {
-        return domain;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
     }
 
     public Map<Integer, Topic> getTopics() {
@@ -69,6 +96,8 @@ public class Game extends Identifiable implements XMLSerializable {
     public void setClan_uri(String clan_uri) {
         this.clan_uri = clan_uri;
     }
+
+// ------------------------ CANONICAL METHODS ------------------------
 
     @Override
     public boolean equals(Object o) {
@@ -100,25 +129,13 @@ public class Game extends Identifiable implements XMLSerializable {
                 '}';
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected static final XMLFormat<Game> GAME_XML = new XMLDBFormat<Game>(Game.class) {
-        public void write(Game g, XMLFormat.OutputElement xml) throws XMLStreamException {
-            super.write(g, xml);
-            xml.add(g.name, "name");
-            xml.add(g.domain, "domain");
-            xml.add(g.clan_uri, "clan_uri");
-            xml.add(g.forumId, "forumId");
-        }
+// -------------------------- OTHER METHODS --------------------------
 
-        public void read(InputElement xml, Game g) throws XMLStreamException {
-            super.read(xml, g);
-            // If there is an "id" attribute, then this is a reference. Ignore the rest.
-            if (xml.getAttribute(REF_ID_ATTRIBUTE, null) == null) {
-                g.name = xml.get("name");
-                g.domain = xml.get("domain");
-                g.clan_uri = xml.get("clan_uri");
-                g.forumId = xml.get("forumId");
-            }
-        }
-    };
+    public String getClansURL() {
+        return "http://" + domain + clan_uri;
+    }
+
+    public String getGameURL() {
+        return "http://" + domain + "/";
+    }
 }

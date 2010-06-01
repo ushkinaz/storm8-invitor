@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  * Created by Dmitry Sidorenko.
  */
 public class LiveCodesAnalyzerService extends PageDigger implements CodesDigger {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LiveCodesAnalyzerService.class);
 
     private final static String SITE_URL = "http://getninjaslivecodes.com/";
@@ -27,12 +29,19 @@ public class LiveCodesAnalyzerService extends PageDigger implements CodesDigger 
 
     private ObjectContainer db;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     @Inject
     private LiveCodesAnalyzerService(HttpClientProvider clientProvider, CodesReader codesReader, ObjectContainer db) {
         super(codesReader, clientProvider);
         this.db = db;
         setCodePattern("<li>(\\w{5})</li>");
     }
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface CodesDigger ---------------------
 
     @Override
     public void digCodes(Game game) {
@@ -50,7 +59,6 @@ public class LiveCodesAnalyzerService extends PageDigger implements CodesDigger 
                 String strCodes = matcherCodes.group(1);
                 parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
             }
-
         } catch (IOException e) {
             LOGGER.error("Error", e);
         }
