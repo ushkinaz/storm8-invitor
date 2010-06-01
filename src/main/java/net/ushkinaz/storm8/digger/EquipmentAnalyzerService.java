@@ -2,6 +2,7 @@ package net.ushkinaz.storm8.digger;
 
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.Equipment;
+import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.HttpClientProvider;
@@ -9,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +27,9 @@ public class EquipmentAnalyzerService {
     private static final Pattern attackPattern = Pattern.compile("<div class=\"equipmentInfoItem\">Attack: (\\d*?)</div>");
     private static final Pattern defencePattern = Pattern.compile("<div class=\"equipmentInfoItem\">Defense: (\\d*?)</div>");
     private static final Pattern upkeepPattern = Pattern.compile("Upkeep: .*?([\\d,]*?)</span>", Pattern.DOTALL);
+    private static final Pattern imagePattern = Pattern.compile("http://static.storm8.com/nl/images/equipment/med/(\\d*)m.png\\?v=");
+
+    //
     private HttpClientProvider clientProvider;
 
     @Inject
@@ -38,7 +40,7 @@ public class EquipmentAnalyzerService {
 
     public void dig(Player player) {
         LOGGER.info(">> dig");
-        List<Equipment> equipments = new ArrayList<Equipment>();
+        Game game = player.getGame();
         try {
             GameRequestor gameRequestor = new GameRequestor(player, clientProvider);
 
@@ -51,15 +53,17 @@ public class EquipmentAnalyzerService {
                     int attack = matchInteger(attackPattern.matcher(equipmentInfo));
                     int defence = matchInteger(defencePattern.matcher(equipmentInfo));
                     int upkeep = matchInteger(upkeepPattern.matcher(equipmentInfo));
+                    String id = match(imagePattern.matcher(equipmentInfo));
 
                     Equipment equipment = new Equipment();
+                    equipment.setId(id);
                     equipment.setName(name);
                     equipment.setCategory(cat);
                     equipment.setAttack(attack);
                     equipment.setDefence(defence);
                     equipment.setUpkeep(upkeep);
-                    equipment.setGame(player.getGame());
-                    equipments.add(equipment);
+
+                    game.getEquipment().add(equipment);
 
                     LOGGER.debug(name + "=" + attack + ":" + defence + "*" + upkeep);
                 }
