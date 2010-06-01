@@ -83,8 +83,6 @@ public class EquipmentAnalyzerService {
                         game.getEquipment().add(equipment);
                         LOGGER.debug("Item:" + equipment);
                     }
-
-
                 }
             }
         } catch (IOException e) {

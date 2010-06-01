@@ -70,7 +70,6 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
     @Inject
     public void setPageDigger(PageDigger pageDigger) {
         this.pageDigger = pageDigger;
-        //TODO: is it singleton or not?
         pageDigger.setCodePattern("<li>(\\w{5})</li>");
     }
 }
