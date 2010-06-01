@@ -15,11 +15,15 @@ import java.util.regex.Pattern;
  * Created by Dmitry Sidorenko.
  */
 public class PageDigger extends HttpService {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PageDigger.class);
 
     private static final String CODE_PATTERN = "\\w{5}";
-    private Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
     protected HashSet<String> blackList;
+    private Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     protected PageDigger(CodesReader codesReader, HttpClientProvider clientProvider) {
         super(clientProvider);
@@ -27,13 +31,13 @@ public class PageDigger extends HttpService {
         codesReader.readFromFile("black.list", blackList);
     }
 
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     public Pattern getCodePattern() {
         return codePattern;
     }
 
-    protected void setCodePattern(String patternString) {
-        this.codePattern = Pattern.compile(patternString);
-    }
+// -------------------------- OTHER METHODS --------------------------
 
     protected void parsePost(String post, CodesDiggerCallback callback) {
         Matcher matcher = codePattern.matcher(post);
@@ -47,8 +51,13 @@ public class PageDigger extends HttpService {
         }
     }
 
+    protected void setCodePattern(String patternString) {
+        this.codePattern = Pattern.compile(patternString);
+    }
+
+// -------------------------- INNER CLASSES --------------------------
+
     public interface CodesDiggerCallback {
         void codeFound(String code);
     }
-
 }

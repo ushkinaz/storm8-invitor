@@ -15,24 +15,7 @@ import java.util.Map;
  * Created by Dmitry Sidorenko.
  */
 public class Configuration extends Identifiable implements XMLSerializable {
-
-    private List<Game> games = new ArrayList<Game>();
-    private List<Player> players = new ArrayList<Player>();
-
-    private transient Map<String, Game> gamesMap;
-    private transient Map<String, Player> playersMap;
-
-
-    public Configuration() {
-    }
-
-    public List<Game> getGames() {
-        return games;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
+// ------------------------------ FIELDS ------------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
     protected static final XMLFormat<Configuration> CONFIGURATION_XML = new XMLDBFormat<Configuration>(Configuration.class) {
@@ -50,6 +33,29 @@ public class Configuration extends Identifiable implements XMLSerializable {
         }
     };
 
+    private List<Game> games = new ArrayList<Game>();
+    private List<Player> players = new ArrayList<Player>();
+
+    private transient Map<String, Game> gamesMap;
+    private transient Map<String, Player> playersMap;
+
+// --------------------------- CONSTRUCTORS ---------------------------
+
+    public Configuration() {
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public List<Game> getGames() {
+        return games;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
     private void buildMaps() {
         gamesMap = new HashMap<String, Game>(10);
         for (Game game : games) {
@@ -61,7 +67,6 @@ public class Configuration extends Identifiable implements XMLSerializable {
             playersMap.put(player.getId(), player);
         }
     }
-
 
     public Game getGame(String name) {
         return gamesMap.get(name);

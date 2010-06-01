@@ -10,14 +10,20 @@ import org.slf4j.LoggerFactory;
  * @date Jun 1, 2010
  */
 public class GameRequestorProvider {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(GameRequestorProvider.class);
     private HttpClientProvider clientProvider;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
     private GameRequestorProvider(HttpClientProvider clientProvider) {
         this.clientProvider = clientProvider;
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public GameRequestor getRequestor(Player player) {
         return new GameRequestor(player, clientProvider);

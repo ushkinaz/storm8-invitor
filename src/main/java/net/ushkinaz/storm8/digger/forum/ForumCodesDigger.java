@@ -16,11 +16,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ForumCodesDigger implements CodesDigger {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ForumCodesDigger.class);
 
     private TopicAnalyzerService topicAnalyzerService;
     private ForumAnalyzerService forumAnalyzerService;
     private ObjectContainer db;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
     private ForumCodesDigger(TopicAnalyzerService topicAnalyzerService, ForumAnalyzerService forumAnalyzerService, ObjectContainer db) {
@@ -28,6 +32,11 @@ public class ForumCodesDigger implements CodesDigger {
         this.forumAnalyzerService = forumAnalyzerService;
         this.db = db;
     }
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface CodesDigger ---------------------
 
     public void digCodes(final Game game) {
         forumAnalyzerService.findTopics(game);

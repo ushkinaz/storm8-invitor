@@ -16,11 +16,15 @@ import org.slf4j.LoggerFactory;
  * @date May 25, 2010
  */
 public class DB4OProvider implements Provider<ObjectContainer> {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(DB4OProvider.class);
 
     private EmbeddedConfiguration configuration;
     private ObjectContainer db;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public DB4OProvider(String dbFile) {
         configuration = Db4oEmbedded.newConfiguration();
@@ -36,21 +40,6 @@ public class DB4OProvider implements Provider<ObjectContainer> {
         db.ext().backup("storm8.bak");
     }
 
-
-    public ObjectContainer get() {
-        return db;
-    }
-
-    public synchronized void shutdown() {
-        if (db != null && !db.ext().isClosed()) {
-            LOGGER.info("DB shutdown");
-            db.close();
-            XMLDBFormat.setDb(null);
-            LOGGER.info("DB shutdown done");
-            db = null;
-        }
-    }
-
     private void configureDatabase() {
         configuration.common().exceptionsOnNotStorable(true);
 
@@ -61,4 +50,24 @@ public class DB4OProvider implements Provider<ObjectContainer> {
         configuration.common().add(new UniqueFieldValueConstraint(Topic.class, "topicId"));
     }
 
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface Provider ---------------------
+
+    public ObjectContainer get() {
+        return db;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    public synchronized void shutdown() {
+        if (db != null && !db.ext().isClosed()) {
+            LOGGER.info("DB shutdown");
+            db.close();
+            XMLDBFormat.setDb(null);
+            LOGGER.info("DB shutdown done");
+            db = null;
+        }
+    }
 }

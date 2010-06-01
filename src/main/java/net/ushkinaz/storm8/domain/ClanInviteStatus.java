@@ -11,11 +11,17 @@ public enum ClanInviteStatus {
     ACCEPTED(4),
     NOT_FOUND(8);
 
+// ------------------------------ FIELDS ------------------------------
+
     private int status;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     ClanInviteStatus(int status) {
         this.status = status;
     }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
 
     public int getStatus() {
         return status;

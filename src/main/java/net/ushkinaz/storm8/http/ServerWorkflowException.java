@@ -6,6 +6,7 @@ package net.ushkinaz.storm8.http;
  * @author Dmitry Sidorenko
  */
 public class ServerWorkflowException extends Exception {
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public ServerWorkflowException() {
     }
@@ -14,11 +15,11 @@ public class ServerWorkflowException extends Exception {
         super(message);
     }
 
-    public ServerWorkflowException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public ServerWorkflowException(Throwable cause) {
         super(cause);
+    }
+
+    public ServerWorkflowException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

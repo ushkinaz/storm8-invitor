@@ -9,6 +9,8 @@ import java.util.Date;
  * Created by Dmitry Sidorenko.
  */
 public class ClanInvite {
+// ------------------------------ FIELDS ------------------------------
+
     private static final long serialVersionUID = 3140559993012725638L;
 
     private String code;
@@ -21,6 +23,7 @@ public class ClanInvite {
     private ClanInviteStatus status;
     private ClanInviteSource inviteSource;
 
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public ClanInvite() {
     }
@@ -40,13 +43,7 @@ public class ClanInvite {
         this.game = game;
     }
 
-    public ClanInviteSource getInviteSource() {
-        return inviteSource;
-    }
-
-    public void setInviteSource(ClanInviteSource inviteSource) {
-        this.inviteSource = inviteSource;
-    }
+// --------------------- GETTER / SETTER METHODS ---------------------
 
     public String getCode() {
         return code;
@@ -80,6 +77,14 @@ public class ClanInvite {
         this.game = game;
     }
 
+    public ClanInviteSource getInviteSource() {
+        return inviteSource;
+    }
+
+    public void setInviteSource(ClanInviteSource inviteSource) {
+        this.inviteSource = inviteSource;
+    }
+
     public String getName() {
         return name;
     }
@@ -96,19 +101,7 @@ public class ClanInvite {
         this.status = status;
     }
 
-
-    @Override
-    public String toString() {
-        return "ClanInvite{" +
-                "game=" + game +
-                ", code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", inviteSource=" + inviteSource +
-                ", dateRequested=" + dateRequested +
-                ", dateUpdated=" + dateUpdated +
-                ", status=" + status +
-                '}';
-    }
+// ------------------------ CANONICAL METHODS ------------------------
 
     @Override
     public boolean equals(Object o) {
@@ -129,6 +122,21 @@ public class ClanInvite {
         result = 31 * result + game.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ClanInvite{" +
+                "game=" + game +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", inviteSource=" + inviteSource +
+                ", dateRequested=" + dateRequested +
+                ", dateUpdated=" + dateUpdated +
+                ", status=" + status +
+                '}';
+    }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public boolean isInvited() {
         return !status.equals(ClanInviteStatus.DIGGED) ;

@@ -7,5 +7,7 @@ import org.apache.commons.httpclient.NameValuePair;
  * @date May 25, 2010
  */
 public interface PostBodyFactory {
+// -------------------------- OTHER METHODS --------------------------
+
     NameValuePair[] createBody();
 }

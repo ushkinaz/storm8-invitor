@@ -10,11 +10,18 @@ import org.slf4j.LoggerFactory;
  * @date May 28, 2010
  */
 public class HttpClientProvider implements Provider<HttpClient> {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientProvider.class); 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientProvider.class);
 
     static final String HTTP_PROXY_HOST = "http.proxyHost";
     static final String HTTP_PROXY_PORT = "http.proxyPort";
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface Provider ---------------------
 
     @Override
     public HttpClient get() {

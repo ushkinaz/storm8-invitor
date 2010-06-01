@@ -20,8 +20,12 @@ import java.util.Collection;
  * @author Dmitry Sidorenko
  */
 public class DB4OPlay {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(DB4OPlay.class);
+
+// --------------------------- main() method ---------------------------
 
     public static void main(String[] args) throws IOException, SQLException {
         Injector injector = Guice.createInjector(new Storm8Module("storm8.db"));

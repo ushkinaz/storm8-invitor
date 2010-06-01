@@ -19,17 +19,22 @@ import java.util.regex.Pattern;
  * Created by Dmitry Sidorenko.
  */
 public class ForumAnalyzerService extends HttpService {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ForumAnalyzerService.class);
 
     private final static String FORUM_URL = "http://forums.storm8.com/forumdisplay.php?f={0,number,######}";
 
     private static final Pattern topicPattern = Pattern.compile("t=(\\d*)\\&amp;page=(\\d*)\"\\>Last Page");
 
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
     private ForumAnalyzerService(HttpClientProvider clientProvider) {
         super(clientProvider);
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public void findTopics(Game game) {
         LOGGER.info("Forum: " + game.getForumId());

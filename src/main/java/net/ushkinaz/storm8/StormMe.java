@@ -25,6 +25,8 @@ import java.util.Set;
 
 
 public class StormMe {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(StormMe.class);
     private static final String STORM_DB = "storm8.db";
@@ -34,6 +36,8 @@ public class StormMe {
     private CodesDigger codesDigger;
     private Configuration configuration;
 
+// -------------------------- OTHER METHODS --------------------------
+
     @Inject
     private void StormMe(Configuration configuration, InviteService service, @OfficialForum CodesDigger forumDigger, @GetCodesLive CodesDigger codesDigger) {
         this.configuration = configuration;
@@ -41,6 +45,8 @@ public class StormMe {
         this.forumDigger = forumDigger;
         this.codesDigger = codesDigger;
     }
+
+// --------------------------- main() method ---------------------------
 
     public static void main(String[] args) throws Exception {
         Set<String> arguments = new HashSet<String>(Arrays.asList(args));
@@ -75,7 +81,6 @@ public class StormMe {
         if (arguments.contains("invite")) {
             stormMe.invite();
         }
-
     }
 
     private void dig() throws ServerWorkflowException {

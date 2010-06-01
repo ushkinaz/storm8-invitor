@@ -19,6 +19,8 @@ import java.io.FileNotFoundException;
  */
 @Singleton
 public class StormConfigurator implements Provider<Configuration> {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(StormConfigurator.class);
 
@@ -28,6 +30,8 @@ public class StormConfigurator implements Provider<Configuration> {
     private ObjectContainer db;
     private Configuration configuration;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     @Inject
     private StormConfigurator(XMLBinding binding, ObjectContainer db) {
         this.binding = binding;
@@ -36,7 +40,6 @@ public class StormConfigurator implements Provider<Configuration> {
     }
 
     protected void configure() {
-
         try {
             XMLObjectReader reader = XMLObjectReader.newInstance(new FileInputStream(CONFIG_XML));
             reader.setBinding(binding);
@@ -58,9 +61,13 @@ public class StormConfigurator implements Provider<Configuration> {
         }
     }
 
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface Provider ---------------------
+
     @Override
     public Configuration get() {
         return configuration;
     }
-
 }

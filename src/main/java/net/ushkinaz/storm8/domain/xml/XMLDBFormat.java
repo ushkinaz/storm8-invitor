@@ -16,6 +16,8 @@ import java.util.List;
  * Created by Dmitry Sidorenko.
  */
 public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLDBFormat.class);
 
     protected static final String ID_ATTRIBUTE = "id";
@@ -23,9 +25,19 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
 
     protected static ObjectContainer db;
 
+// -------------------------- STATIC METHODS --------------------------
+
+    public static void setDb(ObjectContainer db) {
+        XMLDBFormat.db = db;
+    }
+
+// --------------------------- CONSTRUCTORS ---------------------------
+
     protected XMLDBFormat(Class<T> forClass) {
         super(forClass);
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     /**
      * If object with given ID attribute is already exist in DB, then return that object instead of creating new one.
@@ -42,7 +54,6 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
             id = xml.getAttribute(REF_ID_ATTRIBUTE, "");
         }else if (xml.getAttribute(ID_ATTRIBUTE, null) != null){
             id = xml.getAttribute(ID_ATTRIBUTE, "");
-
         }else{
             throw new XMLStreamException(cls.getName() + " xml should have an id attribute.");
         }
@@ -63,17 +74,13 @@ public abstract class XMLDBFormat<T extends Identifiable> extends XMLFormat<T> {
     }
 
     @Override
-    public void write(T obj, OutputElement xml) throws XMLStreamException {
-        xml.setAttribute(ID_ATTRIBUTE, obj.getId());
-    }
-
-    @Override
     public void read(InputElement xml, T obj) throws XMLStreamException {
-        //id is read directly in instance creation. 
+        //id is read directly in instance creation.
         //obj.setId(xml.getAttribute(ID_ATTRIBUTE, ""));
     }
 
-    public static void setDb(ObjectContainer db) {
-        XMLDBFormat.db = db;
+    @Override
+    public void write(T obj, OutputElement xml) throws XMLStreamException {
+        xml.setAttribute(ID_ATTRIBUTE, obj.getId());
     }
 }

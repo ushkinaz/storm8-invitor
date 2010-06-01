@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  * Created by Dmitry Sidorenko.
  */
 public class TopicAnalyzerService extends PageDigger {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TopicAnalyzerService.class);
 
     private final static String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
@@ -29,10 +31,14 @@ public class TopicAnalyzerService extends PageDigger {
 
     private static final Pattern postPattern = Pattern.compile("<!-- message -->(.*?)<!-- / message -->", Pattern.DOTALL);
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     @Inject
     private TopicAnalyzerService(CodesReader codesReader, HttpClientProvider clientProvider) {
         super(codesReader, clientProvider);
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public void searchForCodes(Topic topic, CodesDiggerCallback callback) {
         try {
@@ -43,10 +49,24 @@ public class TopicAnalyzerService extends PageDigger {
             }
 
             walkThroughPages(topic, count, callback);
-
         } catch (IOException e) {
             LOGGER.error("Error", e);
         }
+    }
+
+    private int getPagesCount(int topicId) throws IOException {
+        int count = 0;
+        GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
+        int statusCode = getClient().executeMethod(pagesMethod);
+        if (statusCode != 200) {
+            throw new IOException("Can't access topic page");
+        }
+        String page = pagesMethod.getResponseBodyAsString();
+        Matcher matcher = pagePattern.matcher(page);
+        if (matcher.matches()) {
+            count = Integer.parseInt(matcher.group(1));
+        }
+        return count;
     }
 
     private void walkThroughPages(Topic topic, int count, CodesDiggerCallback callback) {
@@ -71,20 +91,4 @@ public class TopicAnalyzerService extends PageDigger {
             }
         }
     }
-
-    private int getPagesCount(int topicId) throws IOException {
-        int count = 0;
-        GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
-        int statusCode = getClient().executeMethod(pagesMethod);
-        if (statusCode != 200) {
-            throw new IOException("Can't access topic page");
-        }
-        String page = pagesMethod.getResponseBodyAsString();
-        Matcher matcher = pagePattern.matcher(page);
-        if (matcher.matches()) {
-            count = Integer.parseInt(matcher.group(1));
-        }
-        return count;
-    }
-
 }

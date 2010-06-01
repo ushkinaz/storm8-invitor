@@ -13,10 +13,23 @@ import java.util.Date;
  * @author Dmitry Sidorenko
  */
 public class Topic implements XMLSerializable {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(Topic.class);
 
     private static final long serialVersionUID = -4998697492471291093L;
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    protected static final XMLFormat<Topic> TOPIC_XML = new XMLFormat<Topic>(Topic.class) {
+        public void write(Topic topic, OutputElement xml) throws XMLStreamException {
+            xml.setAttribute("topicId", topic.topicId);
+        }
+
+        public void read(InputElement xml, Topic topic) throws XMLStreamException {
+            topic.topicId = xml.getAttribute("topicId", 0);
+        }
+    };
 
 
     @Indexed
@@ -33,20 +46,23 @@ public class Topic implements XMLSerializable {
      */
     private transient boolean postsAdded = false;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     public Topic() {
     }
-
 
     public Topic(int topicId) {
         this.topicId = topicId;
     }
 
-    public int getTopicId() {
-        return topicId;
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public int getLastProcessedPage() {
+        return lastProcessedPage;
     }
 
-    public void setTopicId(int topicId) {
-        this.topicId = topicId;
+    public void setLastProcessedPage(int lastProcessedPage) {
+        this.lastProcessedPage = lastProcessedPage;
     }
 
     public int getPages() {
@@ -57,24 +73,35 @@ public class Topic implements XMLSerializable {
         this.pages = pages;
     }
 
-    public int getLastProcessedPage() {
-        return lastProcessedPage;
+    public int getPosts() {
+        return posts;
     }
 
-    public void setLastProcessedPage(int lastProcessedPage) {
-        this.lastProcessedPage = lastProcessedPage;
+    public void setPosts(int posts) {
+        this.posts = posts;
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected static final XMLFormat<Topic> TOPIC_XML = new XMLFormat<Topic>(Topic.class) {
-        public void write(Topic topic, OutputElement xml) throws XMLStreamException {
-            xml.setAttribute("topicId", topic.topicId);
-        }
+    public Date getProcessedDate() {
+        return processedDate;
+    }
 
-        public void read(InputElement xml, Topic topic) throws XMLStreamException {
-            topic.topicId = xml.getAttribute("topicId", 0);
-        }
-    };
+    public void setProcessedDate(Date processedDate) {
+        this.processedDate = processedDate;
+    }
+
+    public int getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(int topicId) {
+        this.topicId = topicId;
+    }
+
+    public void setPostsAdded(boolean postsAdded) {
+        this.postsAdded = postsAdded;
+    }
+
+// ------------------------ CANONICAL METHODS ------------------------
 
     @Override
     public boolean equals(Object o) {
@@ -93,26 +120,6 @@ public class Topic implements XMLSerializable {
         return topicId;
     }
 
-    public Date getProcessedDate() {
-        return processedDate;
-    }
-
-    public void setProcessedDate(Date processedDate) {
-        this.processedDate = processedDate;
-    }
-
-    public int getPosts() {
-        return posts;
-    }
-
-    public void setPosts(int posts) {
-        this.posts = posts;
-    }
-
-    public boolean arePostsAdded() {
-        return postsAdded;
-    }
-
     @Override
     public String toString() {
         return "Topic{" +
@@ -125,7 +132,9 @@ public class Topic implements XMLSerializable {
                 '}';
     }
 
-    public void setPostsAdded(boolean postsAdded) {
-        this.postsAdded = postsAdded;
+// -------------------------- OTHER METHODS --------------------------
+
+    public boolean arePostsAdded() {
+        return postsAdded;
     }
 }

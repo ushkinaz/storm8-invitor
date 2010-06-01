@@ -11,15 +11,24 @@ import net.ushkinaz.storm8.domain.Game;
 * @date Jun 1, 2010
 */
 public class DBStoringCallback implements PageDigger.CodesDiggerCallback {
+// ------------------------------ FIELDS ------------------------------
+
     private Game game;
     private ClanInviteSource inviteSource;
     private ObjectContainer db;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public DBStoringCallback(Game game, ClanInviteSource inviteSource, ObjectContainer db) {
         this.game = game;
         this.inviteSource = inviteSource;
         this.db = db;
     }
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface CodesDiggerCallback ---------------------
 
     public void codeFound(String code) {
         ClanInvite clanInvite = new ClanInvite(code, game);
