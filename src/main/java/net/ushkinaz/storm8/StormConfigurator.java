@@ -8,15 +8,11 @@ import javolution.xml.XMLBinding;
 import javolution.xml.XMLObjectReader;
 import javolution.xml.stream.XMLStreamException;
 import net.ushkinaz.storm8.domain.Configuration;
-import net.ushkinaz.storm8.domain.Game;
-import net.ushkinaz.storm8.domain.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Dmitry Sidorenko
@@ -33,7 +29,7 @@ public class StormConfigurator implements Provider<Configuration> {
     private Configuration configuration;
 
     @Inject
-    public StormConfigurator(XMLBinding binding, ObjectContainer db) {
+    private StormConfigurator(XMLBinding binding, ObjectContainer db) {
         this.binding = binding;
         this.db = db;
         configure();

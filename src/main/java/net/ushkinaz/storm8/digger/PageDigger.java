@@ -22,8 +22,7 @@ public class PageDigger extends HttpService {
     private Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
     protected HashSet<String> blackList;
 
-    @Inject
-    public PageDigger(CodesReader codesReader, HttpClientProvider clientProvider) {
+    protected PageDigger(CodesReader codesReader, HttpClientProvider clientProvider) {
         super(clientProvider);
         blackList = new HashSet<String>();
         codesReader.readFromFile("black.list", blackList);

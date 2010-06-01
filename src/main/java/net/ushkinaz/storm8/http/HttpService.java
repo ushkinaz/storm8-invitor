@@ -17,8 +17,7 @@ public class HttpService {
     private HttpClientProvider clientProvider;
     private ThreadLocal<HttpClient> httpClientThreadLocal = new ThreadLocal<HttpClient>();
 
-    @Inject
-    public HttpService(HttpClientProvider clientProvider) {
+    protected HttpService(HttpClientProvider clientProvider) {
         this.clientProvider = clientProvider;
     }
 

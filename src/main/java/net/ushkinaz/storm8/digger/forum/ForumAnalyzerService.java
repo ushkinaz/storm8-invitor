@@ -27,7 +27,7 @@ public class ForumAnalyzerService extends HttpService {
 
 
     @Inject
-    public ForumAnalyzerService(HttpClientProvider clientProvider) {
+    private ForumAnalyzerService(HttpClientProvider clientProvider) {
         super(clientProvider);
     }
 

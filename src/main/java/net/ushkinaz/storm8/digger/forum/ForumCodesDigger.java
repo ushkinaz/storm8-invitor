@@ -23,7 +23,7 @@ public class ForumCodesDigger implements CodesDigger {
     private ObjectContainer db;
 
     @Inject
-    public ForumCodesDigger(TopicAnalyzerService topicAnalyzerService, ForumAnalyzerService forumAnalyzerService, LiveCodesAnalyzerService liveCodesAnalyzerService, ObjectContainer db) {
+    private ForumCodesDigger(TopicAnalyzerService topicAnalyzerService, ForumAnalyzerService forumAnalyzerService, LiveCodesAnalyzerService liveCodesAnalyzerService, ObjectContainer db) {
         this.topicAnalyzerService = topicAnalyzerService;
         this.forumAnalyzerService = forumAnalyzerService;
         this.liveCodesAnalyzerService = liveCodesAnalyzerService;

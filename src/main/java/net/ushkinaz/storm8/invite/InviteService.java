@@ -33,7 +33,7 @@ public class InviteService {
     private final ThreadPoolExecutor threadPoolExecutor;
 
     @Inject
-    public InviteService(ClanDao clanDao, InviteParser inviteParser, HttpClientProvider httpClientProvider) throws Exception {
+    private InviteService(ClanDao clanDao, InviteParser inviteParser, HttpClientProvider httpClientProvider) throws Exception {
         this.clanDao = clanDao;
         this.inviteParser = inviteParser;
         this.httpClientProvider = httpClientProvider;
