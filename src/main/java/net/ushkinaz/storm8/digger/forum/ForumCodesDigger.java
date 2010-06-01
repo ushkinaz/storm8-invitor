@@ -2,6 +2,7 @@ package net.ushkinaz.storm8.digger.forum;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.DBStoringCallback;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
@@ -15,6 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+@Singleton
 public class ForumCodesDigger implements CodesDigger {
 // ------------------------------ FIELDS ------------------------------
 

@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8;
 
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 
+@Singleton
 public class CodesReader {
 // ------------------------------ FIELDS ------------------------------
 

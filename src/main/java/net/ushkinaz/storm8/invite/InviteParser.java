@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.invite;
 
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Singleton
 public class InviteParser {
 // ------------------------------ FIELDS ------------------------------
 
@@ -70,7 +72,7 @@ public class InviteParser {
         clanName = matcherSuccess.group(1);
         clanInvite.setName(clanName);
         clanInvite.setStatus(status);
-        LOGGER.info(clanName + ":" + status);
+        LOGGER.info(status + ":" + clanName);
     }
 
     private void logUnknownError(String response, ClanInvite clanInvite) {
