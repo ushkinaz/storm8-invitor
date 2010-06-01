@@ -61,28 +61,33 @@ public class EquipmentAnalyzerService {
         Game game = player.getGame();
         GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
 
-        for (int cat = 1; cat < 3; cat++) {
+        for (int cat = 1; cat <= 3; cat++) {
             String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
             Matcher matcherEquipment = equipmentPattern.matcher(pageBuffer);
             while (matcherEquipment.find()) {
                 String equipmentInfo = matcherEquipment.group(1);
 
-                String id = match(imagePattern.matcher(equipmentInfo));
-                Equipment equipment = new Equipment();
+                Integer id = matchInteger(imagePattern.matcher(equipmentInfo));
+                if (id == null) {
+                    continue;
+                }
+                Equipment equipment = new Equipment(game);
                 equipment.setId(id);
 
-                if (!game.getEquipment().contains(equipment)) {
+                if (!game.getEquipment().containsKey(id)) {
                     equipment.setName(match(namePattern.matcher(equipmentInfo)));
                     equipment.setCategory(cat);
                     equipment.setAttack(matchInteger(attackPattern.matcher(equipmentInfo)));
                     equipment.setDefence(matchInteger(defencePattern.matcher(equipmentInfo)));
                     equipment.setUpkeep(matchInteger(upkeepPattern.matcher(equipmentInfo)));
 
-                    game.getEquipment().add(equipment);
+                    game.getEquipment().put(id, equipment);
                     LOGGER.debug("Item:" + equipment);
                 }
             }
         }
+        db.store(game);
+        db.commit();
         LOGGER.info("<< dig");
     }
 

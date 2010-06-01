@@ -28,7 +28,6 @@ public class Player extends Identifiable implements XMLSerializable {
             super.write(player, xml);
             xml.setAttribute("name", player.name);
             xml.setAttribute("code", player.code);
-            xml.setAttribute("puid", player.puid);
             xml.add(player.cookies, "cookies");
             xml.add(player.game, "game");
         }
@@ -39,19 +38,12 @@ public class Player extends Identifiable implements XMLSerializable {
             player.code = xml.getAttribute("code", "");
             player.cookies = xml.get("cookies");
             player.game = xml.get("game");
-            player.activeSide = true;
         }
     };
 
     private Game game;
-    @Indexed
-    private int puid;
     private String name;
     private String code;
-    /**
-     * If {@code true}, then this player is active player. In other words - it's me. Only players from configuration xml are considered active
-     */
-    private boolean activeSide;
     private Map<String, String> cookies = new HashMap<String, String>(5);
 
 // --------------------------- CONSTRUCTORS ---------------------------
@@ -122,20 +114,8 @@ public class Player extends Identifiable implements XMLSerializable {
         sb.append("{game=").append(game);
         sb.append(", name='").append(name).append('\'');
         sb.append(", code='").append(code).append('\'');
-        sb.append(", puid='").append(puid).append('\'');
         sb.append('}');
         return sb.toString();
     }
 
-    public int getPuid() {
-        return puid;
-    }
-
-    public void setPuid(int puid) {
-        this.puid = puid;
-    }
-
-    public boolean isActiveSide() {
-        return activeSide;
-    }
 }

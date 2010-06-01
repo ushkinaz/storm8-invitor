@@ -1,5 +1,7 @@
 package net.ushkinaz.storm8.domain;
 
+import com.db4o.config.annotations.Indexed;
+
 /**
  * Date: 01.06.2010
  * Created by Dmitry Sidorenko.
@@ -9,19 +11,32 @@ public class Equipment {
 
     private static final long serialVersionUID = 983043241495015348L;
 
+    @Indexed
+    private int id;
+    @Indexed
+    private Game game;
     private String name;
     private int attack;
     private int defence;
     private int upkeep;
     private int category;
-    private String id;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     public Equipment() {
     }
 
-// --------------------- GETTER / SETTER METHODS ---------------------
+    public Equipment(Game game) {
+        this.game = game;
+    }
+
+    // --------------------- GETTER / SETTER METHODS ---------------------
+
+
+    public Game getGame() {
+        return game;
+    }
+
 
     public int getAttack() {
         return attack;
@@ -47,11 +62,11 @@ public class Equipment {
         this.defence = defence;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -73,6 +88,7 @@ public class Equipment {
 
 // ------------------------ CANONICAL METHODS ------------------------
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,14 +96,17 @@ public class Equipment {
 
         Equipment equipment = (Equipment) o;
 
-        if (id != null ? !id.equals(equipment.id) : equipment.id != null) return false;
+        if (id != equipment.id) return false;
+        if (!game.equals(equipment.game)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = game.hashCode();
+        result = 31 * result + id;
+        return result;
     }
 
     @Override
@@ -95,6 +114,7 @@ public class Equipment {
         final StringBuilder sb = new StringBuilder();
         sb.append("Equipment");
         sb.append("{id='").append(id).append('\'');
+        sb.append(", game=").append(game.getId());
         sb.append(", name=").append(name);
         sb.append(", attack=").append(attack);
         sb.append(", defence=").append(defence);

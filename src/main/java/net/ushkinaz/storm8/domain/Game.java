@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Dmitry Sidorenko
@@ -52,7 +50,7 @@ public class Game extends Identifiable implements XMLSerializable {
     private String clan_uri;
     private Integer forumId;
     private Map<Integer, Topic> topics = new HashMap<Integer, Topic>(10);
-    private Set<Equipment> equipment = new HashSet<Equipment>();
+    private Map<Integer, Equipment> equipment = new HashMap<Integer, Equipment>();
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -69,7 +67,10 @@ public class Game extends Identifiable implements XMLSerializable {
         this.domain = domain;
     }
 
-    public Set<Equipment> getEquipment() {
+    public Map<Integer, Equipment> getEquipment() {
+        if (equipment == null) {
+            equipment = new HashMap<Integer, Equipment>();
+        }
         return equipment;
     }
 
