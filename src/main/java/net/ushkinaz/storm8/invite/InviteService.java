@@ -7,7 +7,7 @@ import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.HttpClientProvider;
+import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
@@ -25,20 +25,26 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Singleton
 public class InviteService {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = getLogger(InviteService.class);
 
     private InviteParser inviteParser;
     private ClanDao clanDao;
-    private HttpClientProvider httpClientProvider;
     private final ThreadPoolExecutor threadPoolExecutor;
+    private GameRequestorProvider gameRequestorProvider;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
-    private InviteService(ClanDao clanDao, InviteParser inviteParser, HttpClientProvider httpClientProvider) throws Exception {
+    private InviteService(ClanDao clanDao, InviteParser inviteParser, GameRequestorProvider gameRequestorProvider) throws Exception {
         this.clanDao = clanDao;
         this.inviteParser = inviteParser;
-        this.httpClientProvider = httpClientProvider;
+        this.gameRequestorProvider = gameRequestorProvider;
         threadPoolExecutor = new ThreadPoolExecutor(0, 10, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     /**
      * Invites clans for given game.
@@ -48,7 +54,7 @@ public class InviteService {
      */
     public void invite(final Player player) {
         LOGGER.debug(">> invite");
-        final GameRequestor gameRequestor = new GameRequestor(player, httpClientProvider);
+        final GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
         Collection<ClanInvite> invites = clanDao.getByStatus(player.getGame(), ClanInviteStatus.DIGGED);
 
         final int[] count = {invites.size()};

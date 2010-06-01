@@ -32,7 +32,7 @@ public class GameRequestor extends HttpService {
     private Random random;
     private Player player;
 
-    public GameRequestor(Player player, HttpClientProvider clientProvider) {
+    protected GameRequestor(Player player, HttpClientProvider clientProvider) {
         super(clientProvider);
         random = new Random();
         this.player = player;

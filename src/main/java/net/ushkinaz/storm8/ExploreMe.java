@@ -6,7 +6,7 @@ import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.HttpClientProvider;
+import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.apache.commons.httpclient.NameValuePair;
 import org.slf4j.Logger;
@@ -18,26 +18,10 @@ import java.io.PrintWriter;
 
 
 public class ExploreMe {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(ExploreMe.class);
-
-    private Configuration configuration;
-    private GameRequestor requestor;
-
-    @Inject
-    private void ExploreMe(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public static void main(String[] args) throws Exception {
-        final Storm8Module storm8Module = new Storm8Module("storm8.db");
-        Injector injector = Guice.createInjector(storm8Module);
-
-        ExploreMe exploreMe = injector.getInstance(ExploreMe.class);
-
-        exploreMe.doIt();
-
-    }
 
     String[] uris = {
             "/ajax/getNewsFeedStories.php?selectedTab=fight",
@@ -47,10 +31,33 @@ public class ExploreMe {
             "/group.php",
     };
 
+    private Configuration configuration;
+    private GameRequestorProvider gameRequestorProvider;
+    private GameRequestor requestor;
+
+// -------------------------- OTHER METHODS --------------------------
+
+    @Inject
+    private void ExploreMe(Configuration configuration, GameRequestorProvider gameRequestorProvider) {
+        this.gameRequestorProvider = gameRequestorProvider;
+        this.configuration = configuration;
+    }
+
+// --------------------------- main() method ---------------------------
+
+    public static void main(String[] args) throws Exception {
+        final Storm8Module storm8Module = new Storm8Module("storm8.db");
+        Injector injector = Guice.createInjector(storm8Module);
+
+        ExploreMe exploreMe = injector.getInstance(ExploreMe.class);
+
+        exploreMe.doIt();
+    }
+
     private void doIt() throws IOException {
         Player ninja = configuration.getPlayer("ush-ninja");
 
-        requestor = new GameRequestor(ninja, new HttpClientProvider());
+        requestor = gameRequestorProvider.getRequestor(ninja);
         for (String uri : uris) {
             String body = requestor.postRequest(ninja.getGame().getGameURL() + uri, new PostBodyFactory() {
                 public NameValuePair[] createBody() {
@@ -76,5 +83,4 @@ public class ExploreMe {
             writer.close();
         }
     }
-
 }
