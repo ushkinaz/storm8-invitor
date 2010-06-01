@@ -2,6 +2,7 @@ package net.ushkinaz.storm8.digger.forum;
 
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
+import net.ushkinaz.storm8.http.HttpHelper;
 import net.ushkinaz.storm8.http.HttpService;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
@@ -40,18 +41,13 @@ public class ForumAnalyzerService extends HttpService {
     private void parseTopics(Game game) {
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_URL, game.getForumId()));
         try {
-            int statusCode = getClient().executeMethod(pagesMethod);
-            if (statusCode != 200) {
-                throw new IOException("Can't access topics page");
-            }
-            String page = pagesMethod.getResponseBodyAsString();
+            String page = HttpHelper.getHttpResponse(getClient(), pagesMethod);
             Matcher matcher = topicPattern.matcher(page);
             while (matcher.find()) {
                 int topicId = Integer.parseInt(matcher.group(1));
                 int lastPage = Integer.parseInt(matcher.group(2));
                 LOGGER.info("Found topic: " + topicId);
 
-//                Pattern postsPattern = Pattern.compile("<t="+topicId+"\\\" onclick=\\\"who\\(\\d*\\); return false;\\\">(\\d*)</a>");
                 Pattern postsPattern = Pattern.compile("t=" + topicId + "\" onclick=\"who\\(\\d*\\); return false;\">([\\d,]*)<");
                 Matcher postsMatcher = postsPattern.matcher(page);
                 int posts = 0;

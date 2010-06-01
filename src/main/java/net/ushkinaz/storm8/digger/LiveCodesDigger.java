@@ -4,6 +4,7 @@ import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.http.HttpHelper;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +51,7 @@ public class LiveCodesDigger extends PageDigger implements CodesDigger {
         LOGGER.info(">> digCodes");
         //Page 0 and page 1 are the same. Ignore the fact.
         try {
-            GetMethod pageMethod = new GetMethod(SITE_URL);
-            int statusCode = getClient().executeMethod(pageMethod);
-            if (statusCode != 200) {
-                throw new IOException("Can't access page");
-            }
-            String pageBuffer = pageMethod.getResponseBodyAsString();
-            Matcher matcherCodes = codesPattern.matcher(pageBuffer);
+            Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern); 
             if (matcherCodes.find()) {
                 String strCodes = matcherCodes.group(1);
                 parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
