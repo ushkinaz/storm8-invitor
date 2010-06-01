@@ -11,17 +11,19 @@ import com.db4o.ObjectContainer;
 import com.google.inject.AbstractModule;
 import javolution.xml.XMLBinding;
 import net.ushkinaz.storm8.dao.DB4OProvider;
-import net.ushkinaz.storm8.domain.Configuration;
-import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
+import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class Storm8Module extends AbstractModule {
+    @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = getLogger(InviteService.class);
+
     private DB4OProvider db4oOProvider;
     private XMLBinderFactory xmlBinderFactory;
     protected String dbFile;
