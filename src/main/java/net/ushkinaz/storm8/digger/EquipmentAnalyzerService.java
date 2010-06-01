@@ -5,7 +5,7 @@ import net.ushkinaz.storm8.domain.Equipment;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.HttpClientProvider;
+import net.ushkinaz.storm8.http.GameRequestorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +29,11 @@ public class EquipmentAnalyzerService {
     private static final Pattern upkeepPattern = Pattern.compile("Upkeep: .*?([\\d,]*?)</span>", Pattern.DOTALL);
     private static final Pattern imagePattern = Pattern.compile("http://static.storm8.com/nl/images/equipment/med/(\\d*)m.png\\?v=");
 
-    //
-    private HttpClientProvider clientProvider;
+    private GameRequestorProvider gameRequestorProvider;
 
     @Inject
-    private EquipmentAnalyzerService(HttpClientProvider clientProvider) {
-        this.clientProvider = clientProvider;
+    private EquipmentAnalyzerService(GameRequestorProvider gameRequestorProvider) {
+        this.gameRequestorProvider = gameRequestorProvider;
     }
 
 
@@ -42,7 +41,7 @@ public class EquipmentAnalyzerService {
         LOGGER.info(">> dig");
         Game game = player.getGame();
         try {
-            GameRequestor gameRequestor = new GameRequestor(player, clientProvider);
+            GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
 
             for (int cat = 1; cat < 3; cat++) {
                 String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
