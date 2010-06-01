@@ -1,9 +1,8 @@
 package net.ushkinaz.storm8.digger.forum;
 
-import com.google.inject.Inject;
-import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.domain.Topic;
+import net.ushkinaz.storm8.http.HttpHelper;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,17 +50,13 @@ public class TopicAnalyzerService extends PageDigger {
     private int getPagesCount(int topicId) throws IOException {
         int count = 0;
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
-        int statusCode = getClient().executeMethod(pagesMethod);
-        if (statusCode != 200) {
-            throw new IOException("Can't access topic page");
-        }
-        String page = pagesMethod.getResponseBodyAsString();
-        Matcher matcher = pagePattern.matcher(page);
+        Matcher matcher = HttpHelper.getHttpMatcher(getClient(), pagesMethod, pagePattern);
         if (matcher.matches()) {
             count = Integer.parseInt(matcher.group(1));
         }
         return count;
     }
+
 
     private void walkThroughPages(Topic topic, int count, CodesDiggerCallback callback) {
         //Page 0 and page 1 are the same. Ignore the fact.
@@ -69,12 +64,7 @@ public class TopicAnalyzerService extends PageDigger {
             LOGGER.info("Topic = " + topic.getTopicId() + ", page = " + page);
             try {
                 GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topic.getTopicId(), page));
-                int statusCode = getClient().executeMethod(pageMethod);
-                if (statusCode != 200) {
-                    throw new IOException("Can't access topic page");
-                }
-                String pageBuffer = pageMethod.getResponseBodyAsString();
-                Matcher matcher = postPattern.matcher(pageBuffer);
+                Matcher matcher = HttpHelper.getHttpMatcher(getClient(), pageMethod, postPattern);
                 while (matcher.find()) {
                     String post = matcher.group(1);
                     parsePost(post, callback);

@@ -37,8 +37,6 @@ public class InviteParser {
 // -------------------------- OTHER METHODS --------------------------
 
     public void parseResult(String response, ClanInvite clanInvite) throws ServerWorkflowException {
-        String clanName;
-
         Matcher matcherSuccess = successPattern.matcher(response);
         Matcher matcherAlreadyInvited = alreadyInvitedPattern.matcher(response);
         Matcher matcherInClan = inClanPattern.matcher(response);
@@ -47,20 +45,11 @@ public class InviteParser {
         Matcher matcherCleverBoy = yourselfPattern.matcher(response);
 
         if (matcherSuccess.matches()) {
-            clanName = matcherSuccess.group(1);
-            clanInvite.setName(clanName);
-            clanInvite.setStatus(ClanInviteStatus.PENDING);
-            LOGGER.info("Requested: " + clanName);
+            updateInvite(clanInvite, matcherSuccess, ClanInviteStatus.PENDING);
         } else if (matcherAlreadyInvited.matches()) {
-            clanName = matcherAlreadyInvited.group(1);
-            clanInvite.setName(clanName);
-            clanInvite.setStatus(ClanInviteStatus.PENDING);
-            LOGGER.info("Pending: " + clanName);
+            updateInvite(clanInvite, matcherAlreadyInvited, ClanInviteStatus.PENDING);
         } else if (matcherInClan.matches()) {
-            clanName = matcherInClan.group(1);
-            clanInvite.setName(clanName);
-            clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
-            LOGGER.info("InClan: " + clanName);
+            updateInvite(clanInvite, matcherSuccess, ClanInviteStatus.ACCEPTED);
         } else if (matcherNotFound.matches()) {
             clanInvite.setStatus(ClanInviteStatus.NOT_FOUND);
             LOGGER.info("Unable to find clan with code: " + clanInvite.getCode());
@@ -74,6 +63,14 @@ public class InviteParser {
             LOGGER.info("Unknown error");
             logUnknownError(response, clanInvite);
         }
+    }
+
+    private void updateInvite(ClanInvite clanInvite, Matcher matcherSuccess, ClanInviteStatus status) {
+        String clanName;
+        clanName = matcherSuccess.group(1);
+        clanInvite.setName(clanName);
+        clanInvite.setStatus(status);
+        LOGGER.info(clanName + ":" + status);
     }
 
     private void logUnknownError(String response, ClanInvite clanInvite) {
