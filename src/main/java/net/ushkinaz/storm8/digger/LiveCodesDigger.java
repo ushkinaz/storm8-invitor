@@ -53,7 +53,6 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
     @Override
     public void digCodes(Game game) {
         LOGGER.info(">> digCodes");
-        //Page 0 and page 1 are the same. Ignore the fact.
         try {
             Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern);
             if (matcherCodes.find()) {
