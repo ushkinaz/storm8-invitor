@@ -25,6 +25,7 @@ public class ClanBrowserTest extends GuiceAbstractTest {
 
     @Test
     public void testGetGoodTarget() throws Exception {
-        clanBrowser.getGoodTarget(configuration.getPlayer("ush-ninja"));
+        clanBrowser.setPlayer(configuration.getPlayer("ush-ninja"));
+        clanBrowser.getGoodTarget();
     }
 }

@@ -9,7 +9,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,20 +44,16 @@ public class TopicAnalyzerService extends HttpService {
 // -------------------------- OTHER METHODS --------------------------
 
     public void searchForCodes(Topic topic, PageDigger.CodesDiggerCallback callback) {
-        try {
-            LOGGER.info("Searching topic: " + topic);
-            int count = getPagesCount(topic.getTopicId());
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Topic = " + topic.getTopicId() + " Pages: " + count);
-            }
-
-            walkThroughPages(topic, count, callback);
-        } catch (IOException e) {
-            LOGGER.error("Error", e);
+        LOGGER.info("Searching topic: " + topic);
+        int count = getPagesCount(topic.getTopicId());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Topic = " + topic.getTopicId() + " Pages: " + count);
         }
+
+        walkThroughPages(topic, count, callback);
     }
 
-    private int getPagesCount(int topicId) throws IOException {
+    private int getPagesCount(int topicId){
         int count = 0;
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_URL, topicId));
         Matcher matcher = HttpHelper.getHttpMatcher(getClient(), pagesMethod, pagePattern);
@@ -72,17 +67,13 @@ public class TopicAnalyzerService extends HttpService {
         //Page 0 and page 1 are the same. Ignore the fact.
         for (int page = topic.getLastProcessedPage(); page <= count; page++) {
             LOGGER.info("Topic = " + topic.getTopicId() + ", page = " + page);
-            try {
-                GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topic.getTopicId(), page));
-                Matcher matcher = HttpHelper.getHttpMatcher(getClient(), pageMethod, postPattern);
-                while (matcher.find()) {
-                    String post = matcher.group(1);
-                    pageDigger.parsePost(post, callback);
-                }
-                topic.setLastProcessedPage(page);
-            } catch (IOException e) {
-                LOGGER.error("Error", e);
+            GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topic.getTopicId(), page));
+            Matcher matcher = HttpHelper.getHttpMatcher(getClient(), pageMethod, postPattern);
+            while (matcher.find()) {
+                String post = matcher.group(1);
+                pageDigger.parsePost(post, callback);
             }
+            topic.setLastProcessedPage(page);
         }
     }
 }

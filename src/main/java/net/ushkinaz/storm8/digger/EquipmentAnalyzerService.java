@@ -11,7 +11,6 @@ import net.ushkinaz.storm8.http.GameRequestorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,33 +59,29 @@ public class EquipmentAnalyzerService {
     public void dig(Player player) {
         LOGGER.info(">> dig");
         Game game = player.getGame();
-        try {
-            GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
+        GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
 
-            for (int cat = 1; cat < 3; cat++) {
-                String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
-                Matcher matcherEquipment = equipmentPattern.matcher(pageBuffer);
-                while (matcherEquipment.find()) {
-                    String equipmentInfo = matcherEquipment.group(1);
+        for (int cat = 1; cat < 3; cat++) {
+            String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
+            Matcher matcherEquipment = equipmentPattern.matcher(pageBuffer);
+            while (matcherEquipment.find()) {
+                String equipmentInfo = matcherEquipment.group(1);
 
-                    String id = match(imagePattern.matcher(equipmentInfo));
-                    Equipment equipment = new Equipment();
-                    equipment.setId(id);
+                String id = match(imagePattern.matcher(equipmentInfo));
+                Equipment equipment = new Equipment();
+                equipment.setId(id);
 
-                    if (!game.getEquipment().contains(equipment)) {
-                        equipment.setName(match(namePattern.matcher(equipmentInfo)));
-                        equipment.setCategory(cat);
-                        equipment.setAttack(matchInteger(attackPattern.matcher(equipmentInfo)));
-                        equipment.setDefence(matchInteger(defencePattern.matcher(equipmentInfo)));
-                        equipment.setUpkeep(matchInteger(upkeepPattern.matcher(equipmentInfo)));
+                if (!game.getEquipment().contains(equipment)) {
+                    equipment.setName(match(namePattern.matcher(equipmentInfo)));
+                    equipment.setCategory(cat);
+                    equipment.setAttack(matchInteger(attackPattern.matcher(equipmentInfo)));
+                    equipment.setDefence(matchInteger(defencePattern.matcher(equipmentInfo)));
+                    equipment.setUpkeep(matchInteger(upkeepPattern.matcher(equipmentInfo)));
 
-                        game.getEquipment().add(equipment);
-                        LOGGER.debug("Item:" + equipment);
-                    }
+                    game.getEquipment().add(equipment);
+                    LOGGER.debug("Item:" + equipment);
                 }
             }
-        } catch (IOException e) {
-            LOGGER.error("Error", e);
         }
         LOGGER.info("<< dig");
     }

@@ -11,7 +11,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,14 +52,10 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
     @Override
     public void digCodes(Game game) {
         LOGGER.info(">> digCodes");
-        try {
-            Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern);
-            if (matcherCodes.find()) {
-                String strCodes = matcherCodes.group(1);
-                pageDigger.parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
-            }
-        } catch (IOException e) {
-            LOGGER.error("Error", e);
+        Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern);
+        if (matcherCodes.find()) {
+            String strCodes = matcherCodes.group(1);
+            pageDigger.parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
         }
         LOGGER.info("<< digCodes");
     }

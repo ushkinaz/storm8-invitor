@@ -11,7 +11,6 @@ import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -109,8 +108,6 @@ public class InviteService {
             // Bad thing happened
             LOGGER.error("Bad thing happened", e);
             threadPoolExecutor.shutdownNow();
-        } catch (IOException e) {
-            LOGGER.error("IO error: ", e);
         }
     }
 }
