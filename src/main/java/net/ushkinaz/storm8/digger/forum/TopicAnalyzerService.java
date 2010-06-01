@@ -30,7 +30,7 @@ public class TopicAnalyzerService extends PageDigger {
     private static final Pattern postPattern = Pattern.compile("<!-- message -->(.*?)<!-- / message -->", Pattern.DOTALL);
 
     @Inject
-    public TopicAnalyzerService(CodesReader codesReader, HttpClientProvider clientProvider) {
+    private TopicAnalyzerService(CodesReader codesReader, HttpClientProvider clientProvider) {
         super(codesReader, clientProvider);
     }
 

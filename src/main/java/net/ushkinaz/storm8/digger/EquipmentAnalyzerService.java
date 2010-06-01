@@ -31,7 +31,7 @@ public class EquipmentAnalyzerService {
     private HttpClientProvider clientProvider;
 
     @Inject
-    public EquipmentAnalyzerService(HttpClientProvider clientProvider) {
+    private EquipmentAnalyzerService(HttpClientProvider clientProvider) {
         this.clientProvider = clientProvider;
     }
 

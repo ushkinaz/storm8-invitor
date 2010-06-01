@@ -22,7 +22,7 @@ public class ClanDao {
     private ObjectContainer db;
 
     @Inject
-    public ClanDao(ObjectContainer db) {
+    private ClanDao(ObjectContainer db) {
         this.db = db;
     }
 

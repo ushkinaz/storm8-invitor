@@ -29,7 +29,7 @@ public class InviteParser {
     private static Pattern yourselfPattern = Pattern.compile(".*You cannot invite yourself to your own clan.*", Pattern.DOTALL);
 
     @Inject
-    public InviteParser() {
+    private InviteParser() {
     }
 
     public void parseResult(String response, ClanInvite clanInvite) throws ServerWorkflowException {

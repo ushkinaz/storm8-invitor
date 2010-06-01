@@ -25,7 +25,7 @@ public class LiveCodesAnalyzerService extends PageDigger {
 //    private static final Pattern codesPattern = Pattern.compile("User Code([s])", Pattern.DOTALL);
 
     @Inject
-    public LiveCodesAnalyzerService(HttpClientProvider clientProvider, CodesReader codesReader) {
+    private LiveCodesAnalyzerService(HttpClientProvider clientProvider, CodesReader codesReader) {
         super(codesReader, clientProvider);
         setCodePattern("<li>(\\w{5})</li>");
     }
