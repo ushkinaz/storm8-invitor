@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.domain.Topic;
-import net.ushkinaz.storm8.http.HttpClientProvider;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,19 +22,14 @@ public class TopicAnalyzerService extends PageDigger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TopicAnalyzerService.class);
 
-    private final static String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
-    private final static String FORUM_TOPIC_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}&page={1,number,######}";
-
-
+    private static final String FORUM_TOPIC_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}";
+    private static final String FORUM_TOPIC_PAGE_URL = "http://forums.storm8.com/showthread.php?t={0,number,######}&page={1,number,######}";
     private static final Pattern pagePattern = Pattern.compile(".*page=(\\d*)\" title=\"Last Page.*", Pattern.DOTALL);
-
     private static final Pattern postPattern = Pattern.compile("<!-- message -->(.*?)<!-- / message -->", Pattern.DOTALL);
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @Inject
-    private TopicAnalyzerService(CodesReader codesReader, HttpClientProvider clientProvider) {
-        super(codesReader, clientProvider);
+    public TopicAnalyzerService() {
     }
 
 // -------------------------- OTHER METHODS --------------------------

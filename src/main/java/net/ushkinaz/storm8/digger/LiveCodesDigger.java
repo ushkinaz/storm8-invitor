@@ -2,10 +2,8 @@ package net.ushkinaz.storm8.digger;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Game;
-import net.ushkinaz.storm8.http.HttpClientProvider;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +29,15 @@ public class LiveCodesDigger extends PageDigger implements CodesDigger {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @Inject
-    private LiveCodesDigger(HttpClientProvider clientProvider, CodesReader codesReader, ObjectContainer db) {
-        super(codesReader, clientProvider);
-        this.db = db;
+    public LiveCodesDigger() {
         setCodePattern("<li>(\\w{5})</li>");
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    @Inject
+    public void setDb(ObjectContainer db) {
+        this.db = db;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------

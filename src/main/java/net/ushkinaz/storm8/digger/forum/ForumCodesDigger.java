@@ -26,11 +26,24 @@ public class ForumCodesDigger implements CodesDigger {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
+    public ForumCodesDigger() {
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     @Inject
-    private ForumCodesDigger(TopicAnalyzerService topicAnalyzerService, ForumAnalyzerService forumAnalyzerService, ObjectContainer db) {
-        this.topicAnalyzerService = topicAnalyzerService;
-        this.forumAnalyzerService = forumAnalyzerService;
+    public void setDb(ObjectContainer db) {
         this.db = db;
+    }
+
+    @Inject
+    public void setForumAnalyzerService(ForumAnalyzerService forumAnalyzerService) {
+        this.forumAnalyzerService = forumAnalyzerService;
+    }
+
+    @Inject
+    public void setTopicAnalyzerService(TopicAnalyzerService topicAnalyzerService) {
+        this.topicAnalyzerService = topicAnalyzerService;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------

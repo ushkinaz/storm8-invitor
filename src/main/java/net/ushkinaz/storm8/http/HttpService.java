@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.http;
 
+import com.google.inject.Inject;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -20,7 +21,13 @@ public class HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected HttpService(HttpClientProvider clientProvider) {
+    protected HttpService() {
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    @Inject
+    public void setClientProvider(HttpClientProvider clientProvider) {
         this.clientProvider = clientProvider;
     }
 

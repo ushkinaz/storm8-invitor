@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.digger;
 
+import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.Equipment;
 import net.ushkinaz.storm8.domain.Game;
@@ -31,8 +32,8 @@ public class EquipmentAnalyzerService {
     private static final Pattern upkeepPattern = Pattern.compile("Upkeep: .*?([\\d,]*?)</span>", Pattern.DOTALL);
     private static final Pattern imagePattern = Pattern.compile("http://static.storm8.com/nl/images/equipment/med/(\\d*)m.png\\?v=");
 
-    @Inject
     private GameRequestorProvider gameRequestorProvider;
+    private ObjectContainer db;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -42,11 +43,17 @@ public class EquipmentAnalyzerService {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
+    @Inject
     public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
         this.gameRequestorProvider = gameRequestorProvider;
     }
 
-// -------------------------- OTHER METHODS --------------------------
+    @Inject
+    public void setDb(ObjectContainer db) {
+        this.db = db;
+    }
+
+    // -------------------------- OTHER METHODS --------------------------
 
     public void dig(Player player) {
         LOGGER.info(">> dig");
@@ -60,17 +67,22 @@ public class EquipmentAnalyzerService {
                 while (matcherEquipment.find()) {
                     String equipmentInfo = matcherEquipment.group(1);
 
+                    String id = match(imagePattern.matcher(equipmentInfo));
                     Equipment equipment = new Equipment();
-                    equipment.setId(match(imagePattern.matcher(equipmentInfo)));
-                    equipment.setName(match(namePattern.matcher(equipmentInfo)));
-                    equipment.setCategory(cat);
-                    equipment.setAttack(matchInteger(attackPattern.matcher(equipmentInfo)));
-                    equipment.setDefence(matchInteger(defencePattern.matcher(equipmentInfo)));
-                    equipment.setUpkeep(matchInteger(upkeepPattern.matcher(equipmentInfo)));
+                    equipment.setId(id);
 
-                    game.getEquipment().add(equipment);
+                    if (!game.getEquipment().contains(equipment)) {
+                        equipment.setName(match(namePattern.matcher(equipmentInfo)));
+                        equipment.setCategory(cat);
+                        equipment.setAttack(matchInteger(attackPattern.matcher(equipmentInfo)));
+                        equipment.setDefence(matchInteger(defencePattern.matcher(equipmentInfo)));
+                        equipment.setUpkeep(matchInteger(upkeepPattern.matcher(equipmentInfo)));
 
-//                    LOGGER.debug(name + "=" + attack + ":" + defence + "*" + upkeep);
+                        game.getEquipment().add(equipment);
+                        LOGGER.debug("Item:" + equipment);
+                    }
+
+
                 }
             }
         } catch (IOException e) {

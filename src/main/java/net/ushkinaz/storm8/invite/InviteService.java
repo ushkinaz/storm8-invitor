@@ -36,12 +36,25 @@ public class InviteService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @Inject
-    private InviteService(ClanDao clanDao, InviteParser inviteParser, GameRequestorProvider gameRequestorProvider) throws Exception {
-        this.clanDao = clanDao;
-        this.inviteParser = inviteParser;
-        this.gameRequestorProvider = gameRequestorProvider;
+    public InviteService() {
         threadPoolExecutor = new ThreadPoolExecutor(0, 10, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    @Inject
+    public void setClanDao(ClanDao clanDao) {
+        this.clanDao = clanDao;
+    }
+
+    @Inject
+    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
+        this.gameRequestorProvider = gameRequestorProvider;
+    }
+
+    @Inject
+    public void setInviteParser(InviteParser inviteParser) {
+        this.inviteParser = inviteParser;
     }
 
 // -------------------------- OTHER METHODS --------------------------

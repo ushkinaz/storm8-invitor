@@ -1,6 +1,5 @@
 package net.ushkinaz.storm8.invite;
 
-import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -32,8 +31,7 @@ public class InviteParser {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @Inject
-    private InviteParser() {
+    public InviteParser() {
     }
 
 // -------------------------- OTHER METHODS --------------------------
