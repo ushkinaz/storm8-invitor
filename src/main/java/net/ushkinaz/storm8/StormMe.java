@@ -8,6 +8,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.digger.CodesDigger;
+import net.ushkinaz.storm8.digger.EquipmentAnalyzerService;
 import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.domain.ClanInvite;
@@ -35,16 +36,41 @@ public class StormMe {
     private CodesDigger forumDigger;
     private CodesDigger codesDigger;
     private Configuration configuration;
+    private EquipmentAnalyzerService equipmentAnalyzerService;
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    @Inject
+
+    public void setCodesDigger(@GetCodesLive CodesDigger codesDigger) {
+        this.codesDigger = codesDigger;
+    }
+
+    @Inject
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    @Inject
+    public void setEquipmentAnalyzerService(EquipmentAnalyzerService equipmentAnalyzerService) {
+        this.equipmentAnalyzerService = equipmentAnalyzerService;
+    }
+
+    @Inject
+    public void setForumDigger(@OfficialForum CodesDigger forumDigger) {
+        this.forumDigger = forumDigger;
+    }
+
+    @Inject
+    public void setService(InviteService service) {
+        this.service = service;
+    }
 
 // -------------------------- OTHER METHODS --------------------------
 
-    @Inject
-    private void StormMe(Configuration configuration, InviteService service, @OfficialForum CodesDigger forumDigger, @GetCodesLive CodesDigger codesDigger) {
-        this.configuration = configuration;
-        this.service = service;
-        this.forumDigger = forumDigger;
-        this.codesDigger = codesDigger;
+    public StormMe() {
     }
+
 
 // --------------------------- main() method ---------------------------
 
@@ -74,6 +100,10 @@ public class StormMe {
             db.commit();
         }
 
+        if (arguments.contains("inventory")) {
+            stormMe.inventory();
+        }
+
         if (arguments.contains("dig")) {
             stormMe.dig();
         }
@@ -81,6 +111,11 @@ public class StormMe {
         if (arguments.contains("invite")) {
             stormMe.invite();
         }
+    }
+
+    private void inventory() {
+        Player player = configuration.getPlayer("ush-ninja");
+        equipmentAnalyzerService.dig(player);
     }
 
     private void dig() throws ServerWorkflowException {
