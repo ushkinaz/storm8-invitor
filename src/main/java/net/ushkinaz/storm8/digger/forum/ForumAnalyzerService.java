@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.digger.forum;
 
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
 import net.ushkinaz.storm8.http.HttpHelper;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
+@Singleton
 public class ForumAnalyzerService extends HttpService {
 // ------------------------------ FIELDS ------------------------------
 

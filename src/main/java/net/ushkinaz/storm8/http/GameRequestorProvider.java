@@ -1,6 +1,7 @@
 package net.ushkinaz.storm8.http;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
  * @author Dmitry Sidorenko
  * @date Jun 1, 2010
  */
+@Singleton
 public class GameRequestorProvider {
 // ------------------------------ FIELDS ------------------------------
 

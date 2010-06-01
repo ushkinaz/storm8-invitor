@@ -72,6 +72,12 @@ public class InviteService {
 
         final int[] count = {invites.size()};
         for (final ClanInvite invite : invites) {
+            if (invite.isInvited()) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Skipping:" + invite);
+                }
+                continue;
+            }
             threadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -89,17 +95,11 @@ public class InviteService {
                 }
             });
         }
+        LOGGER.info(count[0] + " invitation jobs are dispatched.");
         LOGGER.debug("<< invite");
     }
 
     private void invite(Player player, ClanInvite clanInvite, GameRequestor gameRequestor) throws ServerWorkflowException {
-        if (clanInvite.isInvited()) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Skipping:" + clanInvite);
-            }
-            return;
-        }
-
         try {
             String responseBody = gameRequestor.postRequest(player.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
 

@@ -25,7 +25,7 @@ public class ClanDao {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    private ClanDao() {
+    public ClanDao() {
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------

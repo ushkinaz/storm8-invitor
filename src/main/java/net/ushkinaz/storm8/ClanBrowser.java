@@ -1,6 +1,7 @@
 package net.ushkinaz.storm8;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.GameRequestorProvider;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
  * @author Dmitry Sidorenko
  * @date Jun 1, 2010
  */
+@Singleton
 public class ClanBrowser {
 // ------------------------------ FIELDS ------------------------------
 

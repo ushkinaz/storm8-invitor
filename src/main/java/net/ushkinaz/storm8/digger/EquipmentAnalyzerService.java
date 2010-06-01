@@ -2,6 +2,7 @@ package net.ushkinaz.storm8.digger;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.Equipment;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
+@Singleton
 public class EquipmentAnalyzerService {
 // ------------------------------ FIELDS ------------------------------
 
