@@ -9,13 +9,13 @@ import org.junit.Test;
  * Date: 31.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class LiveCodesAnalyzerServiceTest extends GuiceAbstractTest {
+public class LiveCodesDiggerTest extends GuiceAbstractTest {
 
-    private LiveCodesAnalyzerService service;
+    private LiveCodesDigger service;
 
     @Before
     public void setUp() throws Exception {
-        service = injector.getInstance(LiveCodesAnalyzerService.class);
+        service = injector.getInstance(LiveCodesDigger.class);
     }
 
     @Test
