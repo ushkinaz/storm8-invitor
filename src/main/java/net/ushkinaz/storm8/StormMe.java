@@ -8,6 +8,8 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.digger.CodesDigger;
+import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
+import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
@@ -28,14 +30,16 @@ public class StormMe {
     private static final String STORM_DB = "storm8.db";
 
     private InviteService service;
-    private CodesDigger digger;
+    private CodesDigger forumDigger;
+    private CodesDigger codesDigger;
     private Configuration configuration;
 
     @Inject
-    private void StormMe(Configuration configuration, InviteService service, CodesDigger digger) {
+    private void StormMe(Configuration configuration, InviteService service, @OfficialForum CodesDigger forumDigger, @GetCodesLive CodesDigger codesDigger) {
         this.configuration = configuration;
         this.service = service;
-        this.digger = digger;
+        this.forumDigger = forumDigger;
+        this.codesDigger = codesDigger;
     }
 
     public static void main(String[] args) throws Exception {
@@ -72,14 +76,13 @@ public class StormMe {
             stormMe.invite();
         }
 
-//        storm8Module.shutdown();
-
     }
 
     private void dig() throws ServerWorkflowException {
         Game game = configuration.getGame("ninja");
 
-        digger.digCodes(game);
+        forumDigger.digCodes(game);
+        codesDigger.digCodes(game);
 
 /*
         for (Game game : configurator.getGames().values()) {

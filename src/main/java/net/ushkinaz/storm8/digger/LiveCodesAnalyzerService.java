@@ -1,7 +1,10 @@
 package net.ushkinaz.storm8.digger;
 
+import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
+import net.ushkinaz.storm8.domain.ClanInviteSource;
+import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.http.HttpClientProvider;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
@@ -15,24 +18,25 @@ import java.util.regex.Pattern;
  * Date: 23.05.2010
  * Created by Dmitry Sidorenko.
  */
-public class LiveCodesAnalyzerService extends PageDigger {
+public class LiveCodesAnalyzerService extends PageDigger implements CodesDigger {
     private static final Logger LOGGER = LoggerFactory.getLogger(LiveCodesAnalyzerService.class);
 
     private final static String SITE_URL = "http://getninjaslivecodes.com/";
 
-    //private static final Pattern codesPattern = Pattern.compile("<div class=\"entry\">(.*)end #content", Pattern.DOTALL);
     private static final Pattern codesPattern = Pattern.compile("User Codes(.*)\\<\\/ul\\>", Pattern.DOTALL);
-//    private static final Pattern codesPattern = Pattern.compile("User Code([s])", Pattern.DOTALL);
+
+    private ObjectContainer db;
 
     @Inject
-    private LiveCodesAnalyzerService(HttpClientProvider clientProvider, CodesReader codesReader) {
+    private LiveCodesAnalyzerService(HttpClientProvider clientProvider, CodesReader codesReader, ObjectContainer db) {
         super(codesReader, clientProvider);
+        this.db = db;
         setCodePattern("<li>(\\w{5})</li>");
     }
 
-
-    public void dig(CodesDiggerCallback callback) {
-        LOGGER.info(">> dig");
+    @Override
+    public void digCodes(Game game) {
+        LOGGER.info(">> digCodes");
         //Page 0 and page 1 are the same. Ignore the fact.
         try {
             GetMethod pageMethod = new GetMethod(SITE_URL);
@@ -44,13 +48,12 @@ public class LiveCodesAnalyzerService extends PageDigger {
             Matcher matcherCodes = codesPattern.matcher(pageBuffer);
             if (matcherCodes.find()) {
                 String strCodes = matcherCodes.group(1);
-                parsePost(strCodes, callback);
+                parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
             }
 
         } catch (IOException e) {
             LOGGER.error("Error", e);
         }
-        LOGGER.info("<< dig");
+        LOGGER.info("<< digCodes");
     }
-
 }
