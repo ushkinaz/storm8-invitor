@@ -12,6 +12,9 @@ import com.google.inject.AbstractModule;
 import javolution.xml.XMLBinding;
 import net.ushkinaz.storm8.dao.DB4OProvider;
 import net.ushkinaz.storm8.digger.CodesDigger;
+import net.ushkinaz.storm8.digger.LiveCodesAnalyzerService;
+import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
+import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
@@ -43,6 +46,9 @@ public class Storm8Module extends AbstractModule {
         bind(ObjectContainer.class).toProvider(db4oOProvider);
 
         bind(Configuration.class).toProvider(StormConfigurator.class);
+
+        bind(CodesDigger.class).annotatedWith(OfficialForum.class).to(ForumCodesDigger.class);
+        bind(CodesDigger.class).annotatedWith(GetCodesLive.class).to(LiveCodesAnalyzerService.class);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

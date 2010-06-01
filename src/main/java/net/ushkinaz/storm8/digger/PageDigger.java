@@ -1,6 +1,5 @@
 package net.ushkinaz.storm8.digger;
 
-import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
 import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.HttpService;
@@ -51,4 +50,5 @@ public class PageDigger extends HttpService {
     public interface CodesDiggerCallback {
         void codeFound(String code);
     }
+
 }
