@@ -2,6 +2,9 @@ package net.ushkinaz.storm8.domain;
 
 import com.db4o.config.annotations.Indexed;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,11 +27,17 @@ public class Victim {
     private int foundOnIndex;
     /**
      * Last seen inventory of the victim
-     * <ID:quality>
+     * [ID]:[quality]
      */
-    private Map<Integer, Integer> inventory;
+    private Map<Integer, Integer> inventory = new HashMap<Integer, Integer>(30);
     private int clanMembers;
     private int level;
+    private int missions;
+    private int fightsWon;
+    private int fightsLost;
+    private int kills;
+    private int deaths;
+    private List<Resource> clients = new ArrayList<Resource>();
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -42,16 +51,40 @@ public class Victim {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    public Game getGame() {
-        return game;
-    }
-
     public int getClanMembers() {
         return clanMembers;
     }
 
     public void setClanMembers(int clanMembers) {
         this.clanMembers = clanMembers;
+    }
+
+    public List<Resource> getClients() {
+        return clients;
+    }
+
+    public int getDeaths() {
+        return deaths;
+    }
+
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
+    }
+
+    public int getFightsLost() {
+        return fightsLost;
+    }
+
+    public void setFightsLost(int fightsLost) {
+        this.fightsLost = fightsLost;
+    }
+
+    public int getFightsWon() {
+        return fightsWon;
+    }
+
+    public void setFightsWon(int fightsWon) {
+        this.fightsWon = fightsWon;
     }
 
     public int getFoundOnIndex() {
@@ -62,6 +95,10 @@ public class Victim {
         this.foundOnIndex = foundOnIndex;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     public Map<Integer, Integer> getInventory() {
         return inventory;
     }
@@ -70,12 +107,28 @@ public class Victim {
         this.inventory = inventory;
     }
 
+    public int getKills() {
+        return kills;
+    }
+
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+
     public int getLevel() {
         return level;
     }
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public int getMissions() {
+        return missions;
+    }
+
+    public void setMissions(int missions) {
+        this.missions = missions;
     }
 
     public String getName() {
