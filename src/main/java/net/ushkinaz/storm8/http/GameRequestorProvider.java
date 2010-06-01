@@ -18,14 +18,21 @@ public class GameRequestorProvider {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
+    public GameRequestorProvider() {
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     @Inject
-    private GameRequestorProvider(HttpClientProvider clientProvider) {
+    public void setClientProvider(HttpClientProvider clientProvider) {
         this.clientProvider = clientProvider;
     }
 
 // -------------------------- OTHER METHODS --------------------------
 
     public GameRequestor getRequestor(Player player) {
-        return new GameRequestor(player, clientProvider);
+        GameRequestor gameRequestor = new GameRequestor(player);
+        gameRequestor.setClientProvider(clientProvider);
+        return gameRequestor;
     }
 }

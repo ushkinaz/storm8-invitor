@@ -1,12 +1,13 @@
 package net.ushkinaz.storm8.digger;
 
+import com.google.inject.Inject;
 import net.ushkinaz.storm8.CodesReader;
-import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,15 +21,13 @@ public class PageDigger extends HttpService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageDigger.class);
 
     private static final String CODE_PATTERN = "\\w{5}";
-    protected HashSet<String> blackList;
+    private Set<String> blackList;
     private Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected PageDigger(CodesReader codesReader, HttpClientProvider clientProvider) {
-        super(clientProvider);
+    protected PageDigger() {
         blackList = new HashSet<String>();
-        codesReader.readFromFile("black.list", blackList);
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -53,6 +52,11 @@ public class PageDigger extends HttpService {
 
     protected void setCodePattern(String patternString) {
         this.codePattern = Pattern.compile(patternString);
+    }
+
+    @Inject
+    public void setCodesReader(CodesReader codesReader) {
+        codesReader.readFromFile("black.list", blackList);
     }
 
 // -------------------------- INNER CLASSES --------------------------

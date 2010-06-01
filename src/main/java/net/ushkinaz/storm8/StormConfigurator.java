@@ -32,16 +32,13 @@ public class StormConfigurator implements Provider<Configuration> {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @Inject
-    private StormConfigurator(XMLBinding binding, ObjectContainer db) {
-        this.binding = binding;
-        this.db = db;
-        configure();
+    public StormConfigurator() {
     }
 
     protected void configure() {
         try {
             XMLObjectReader reader = XMLObjectReader.newInstance(new FileInputStream(CONFIG_XML));
+            assert binding != null;
             reader.setBinding(binding);
             configuration = reader.read("Configuration", Configuration.class);
 
@@ -61,6 +58,18 @@ public class StormConfigurator implements Provider<Configuration> {
         }
     }
 
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    @Inject
+    public void setBinding(XMLBinding binding) {
+        this.binding = binding;
+    }
+
+    @Inject
+    public void setDb(ObjectContainer db) {
+        this.db = db;
+    }
+
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -68,6 +77,11 @@ public class StormConfigurator implements Provider<Configuration> {
 
     @Override
     public Configuration get() {
+        synchronized (this) {
+            if (configuration == null) {
+                configure();
+            }
+        }
         return configuration;
     }
 }

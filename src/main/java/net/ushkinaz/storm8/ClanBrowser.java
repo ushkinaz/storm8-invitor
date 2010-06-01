@@ -23,15 +23,19 @@ public class ClanBrowser {
 
     private static final String LIST_URL = "group_member.php?groupMemberRange=";
     private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?(.*?)\">(.*?)</a><br/>");
-
     private static final Pattern itemPattern = Pattern.compile("src=\"http://static\\.storm8\\.com/nl/images/equipment/med/(\\d*)m\\.png\\?v=\\d*\"></div>.*?<div>x(\\d*)</div>", Pattern.DOTALL);
 
     private GameRequestorProvider gameRequestorProvider;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
+    public ClanBrowser() {
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     @Inject
-    private ClanBrowser(GameRequestorProvider gameRequestorProvider) {
+    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
         this.gameRequestorProvider = gameRequestorProvider;
     }
 
@@ -40,9 +44,9 @@ public class ClanBrowser {
     public String getGoodTarget(Player player) {
         GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
         try {
-            String clanURL  = player.getGame().getGameURL() + LIST_URL;
+            String clanURL = player.getGame().getGameURL() + LIST_URL;
             int scanFrom = 100;
-            String body = gameRequestor.postRequest(clanURL  + scanFrom, null);
+            String body = gameRequestor.postRequest(clanURL + scanFrom, null);
             Matcher matcher = profilePattern.matcher(body);
             while (matcher.find()) {
                 String url = matcher.group(1);

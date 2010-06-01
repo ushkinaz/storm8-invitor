@@ -1,9 +1,7 @@
 package net.ushkinaz.storm8.digger.forum;
 
-import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
-import net.ushkinaz.storm8.http.HttpClientProvider;
 import net.ushkinaz.storm8.http.HttpService;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
@@ -29,9 +27,7 @@ public class ForumAnalyzerService extends HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @Inject
-    private ForumAnalyzerService(HttpClientProvider clientProvider) {
-        super(clientProvider);
+    public ForumAnalyzerService() {
     }
 
 // -------------------------- OTHER METHODS --------------------------

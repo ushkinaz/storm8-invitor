@@ -25,8 +25,13 @@ public class ClanDao {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
+    private ClanDao() {
+    }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     @Inject
-    private ClanDao(ObjectContainer db) {
+    public void setDb(ObjectContainer db) {
         this.db = db;
     }
 
