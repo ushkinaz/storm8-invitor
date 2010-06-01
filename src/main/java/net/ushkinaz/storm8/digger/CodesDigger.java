@@ -7,5 +7,7 @@ import net.ushkinaz.storm8.domain.Game;
  * Created by Dmitry Sidorenko.
  */
 public interface CodesDigger {
+// -------------------------- OTHER METHODS --------------------------
+
     void digCodes(Game game);
 }

@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class InviteParser {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = getLogger(InviteParser.class);
 
     private static final String NAME_PATTERN = "([\\w \\S]*)";
@@ -28,9 +30,13 @@ public class InviteParser {
     private static Pattern notAndroidPattern = Pattern.compile(".*If you are using an Android device, press the back button to exit the game.*", Pattern.DOTALL);
     private static Pattern yourselfPattern = Pattern.compile(".*You cannot invite yourself to your own clan.*", Pattern.DOTALL);
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     @Inject
     private InviteParser() {
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public void parseResult(String response, ClanInvite clanInvite) throws ServerWorkflowException {
         String clanName;

@@ -12,5 +12,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD, PARAMETER, METHOD})
 @Retention(RUNTIME)
 public @interface OfficialForum {
-
 }

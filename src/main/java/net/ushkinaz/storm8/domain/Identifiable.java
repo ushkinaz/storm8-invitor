@@ -7,12 +7,17 @@ import com.db4o.config.annotations.Indexed;
  * Created by Dmitry Sidorenko.
  */
 public class Identifiable {
+// ------------------------------ FIELDS ------------------------------
 
     @Indexed
     private String id;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     public Identifiable() {
     }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
 
     public String getId() {
         return id;
@@ -21,5 +26,4 @@ public class Identifiable {
     public void setId(String id) {
         this.id = id;
     }
-
 }

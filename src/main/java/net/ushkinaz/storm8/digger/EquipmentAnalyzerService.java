@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  * Created by Dmitry Sidorenko.
  */
 public class EquipmentAnalyzerService {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EquipmentAnalyzerService.class);
 
     private final static String SITE_URL = "http://nl.storm8.com/ajax/getItemList.php?url=/equipment.php&cat=";
@@ -32,10 +34,19 @@ public class EquipmentAnalyzerService {
     @Inject
     private GameRequestorProvider gameRequestorProvider;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     public EquipmentAnalyzerService() {
     }
 
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
+        this.gameRequestorProvider = gameRequestorProvider;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public void dig(Player player) {
         LOGGER.info(">> dig");
@@ -82,9 +93,5 @@ public class EquipmentAnalyzerService {
             result = "0";
         }
         return Integer.parseInt(result.replace(",", ""));
-    }
-
-    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
-        this.gameRequestorProvider = gameRequestorProvider;
     }
 }

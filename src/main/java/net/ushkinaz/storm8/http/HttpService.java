@@ -1,6 +1,5 @@
 package net.ushkinaz.storm8.http;
 
-import com.google.inject.Inject;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -11,15 +10,21 @@ import org.slf4j.LoggerFactory;
  * @author Dmitry Sidorenko
  */
 public class HttpService {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpService.class);
 
     private HttpClientProvider clientProvider;
     private ThreadLocal<HttpClient> httpClientThreadLocal = new ThreadLocal<HttpClient>();
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     protected HttpService(HttpClientProvider clientProvider) {
         this.clientProvider = clientProvider;
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     /**
      * Gets thread local instance of HttpClient.

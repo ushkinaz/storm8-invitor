@@ -17,22 +17,20 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Singleton
 public class ClanDao {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = getLogger(ClanDao.class);
 
     private ObjectContainer db;
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
     private ClanDao(ObjectContainer db) {
         this.db = db;
     }
 
-    public void updateClanInvite(ClanInvite clanInvite) {
-        assert clanInvite != null;
-
-        clanInvite.setDateUpdated(Calendar.getInstance().getTime());
-        db.store(clanInvite);
-        db.commit();
-    }
+// -------------------------- OTHER METHODS --------------------------
 
     public Collection<ClanInvite> getByStatus(Game game, ClanInviteStatus status) {
         ClanInvite clanInvite = new ClanInvite(game);
@@ -46,5 +44,13 @@ public class ClanDao {
         @SuppressWarnings({"UnnecessaryLocalVariable"})
         List<ClanInvite> clanInvites = query.execute();
         return clanInvites;
+    }
+
+    public void updateClanInvite(ClanInvite clanInvite) {
+        assert clanInvite != null;
+
+        clanInvite.setDateUpdated(Calendar.getInstance().getTime());
+        db.store(clanInvite);
+        db.commit();
     }
 }

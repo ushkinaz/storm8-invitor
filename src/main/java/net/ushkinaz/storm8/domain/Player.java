@@ -15,15 +15,37 @@ import java.util.Map;
  * Created by Dmitry Sidorenko.
  */
 public class Player extends Identifiable implements XMLSerializable {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final long serialVersionUID = -1909196133671471773L;
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    protected static final XMLFormat<Player> PLAYER_XML = new XMLDBFormat<Player>(Player.class) {
+        public void write(Player player, XMLFormat.OutputElement xml) throws XMLStreamException {
+            super.write(player, xml);
+            xml.setAttribute("name", player.name);
+            xml.setAttribute("code", player.code);
+            xml.add(player.cookies, "cookies");
+            xml.add(player.game, "game");
+        }
+
+        public void read(InputElement xml, Player player) throws XMLStreamException {
+            super.read(xml, player);
+            player.name = xml.getAttribute("name", "");
+            player.code = xml.getAttribute("code", "");
+            player.cookies = xml.get("cookies");
+            player.game = xml.get("game");
+        }
+    };
 
     private Game game;
     private String name;
     private String code;
     private Map<String, String> cookies = new HashMap<String, String>(5);
 
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
     public Player() {
@@ -34,8 +56,22 @@ public class Player extends Identifiable implements XMLSerializable {
         this.game = game;
     }
 
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public Map<String, String> getCookies() {
         return cookies;
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     public String getName() {
@@ -46,28 +82,7 @@ public class Player extends Identifiable implements XMLSerializable {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Player");
-        sb.append("{game=").append(game);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", code='").append(code).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
-
-    public Game getGame() {
-        return game;
-    }
+// ------------------------ CANONICAL METHODS ------------------------
 
     @Override
     public boolean equals(Object o) {
@@ -91,23 +106,14 @@ public class Player extends Identifiable implements XMLSerializable {
         return result;
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected static final XMLFormat<Player> PLAYER_XML = new XMLDBFormat<Player>(Player.class) {
-
-        public void write(Player player, XMLFormat.OutputElement xml) throws XMLStreamException {
-            super.write(player, xml);
-            xml.setAttribute("name", player.name);
-            xml.setAttribute("code", player.code);
-            xml.add(player.cookies, "cookies");
-            xml.add(player.game, "game");
-        }
-
-        public void read(InputElement xml, Player player) throws XMLStreamException {
-            super.read(xml, player);
-            player.name = xml.getAttribute("name", "");
-            player.code = xml.getAttribute("code", "");
-            player.cookies = xml.get("cookies");
-            player.game = xml.get("game");
-        }
-    };
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Player");
+        sb.append("{game=").append(game);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", code='").append(code).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

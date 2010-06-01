@@ -16,8 +16,15 @@ import java.util.HashMap;
  * @author Dmitry Sidorenko
  */
 public class XMLBinderFactory implements Provider<XMLBinding> {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLBinderFactory.class);
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface Provider ---------------------
 
     public XMLBinding get() {
         XMLBinding binding = new XMLBinding();

@@ -20,6 +20,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Objects can be reused for different requests per game.
  */
 public class GameRequestor extends HttpService {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = getLogger(GameRequestor.class);
 
     static final String USER_AGENT = "Mozilla/5.0 (Linux; U; Android 2.1; ru-ru; HTC Legend Build/ERD79) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17";
@@ -32,12 +34,15 @@ public class GameRequestor extends HttpService {
     private Random random;
     private Player player;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     protected GameRequestor(Player player, HttpClientProvider clientProvider) {
         super(clientProvider);
         random = new Random();
         this.player = player;
     }
 
+// -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void initHttpClient(HttpClient httpClient) {
@@ -61,7 +66,6 @@ public class GameRequestor extends HttpService {
      * @throws IOException exception
      */
     public String postRequest(String requestURL, PostBodyFactory postBodyFactory) throws IOException {
-
         PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
         getClient().executeMethod(postMethod);
         randomlySleep();

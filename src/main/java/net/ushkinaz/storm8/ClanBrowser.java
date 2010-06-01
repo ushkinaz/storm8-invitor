@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
  * @date Jun 1, 2010
  */
 public class ClanBrowser {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(ClanBrowser.class);
 
@@ -26,10 +28,14 @@ public class ClanBrowser {
 
     private GameRequestorProvider gameRequestorProvider;
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     @Inject
     private ClanBrowser(GameRequestorProvider gameRequestorProvider) {
         this.gameRequestorProvider = gameRequestorProvider;
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public String getGoodTarget(Player player) {
         GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);

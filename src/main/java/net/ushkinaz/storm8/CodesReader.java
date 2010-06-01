@@ -10,10 +10,16 @@ import java.io.IOException;
 import java.util.Collection;
 
 public class CodesReader {
+// ------------------------------ FIELDS ------------------------------
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CodesReader.class);
+
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public CodesReader() {
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public void readFromFile(String fileName, Collection<String> list) {
         String newCode;

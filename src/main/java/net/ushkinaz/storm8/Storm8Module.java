@@ -24,17 +24,28 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class Storm8Module extends AbstractModule {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = getLogger(InviteService.class);
+    protected String dbFile;
 
     private DB4OProvider db4oOProvider;
     private XMLBinderFactory xmlBinderFactory;
-    protected String dbFile;
 
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public Storm8Module(String dbFile) {
         this.dbFile = dbFile;
     }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public DB4OProvider getDb4oOProvider() {
+        return db4oOProvider;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
 
     protected void configure() {
         bind(CodesDigger.class).to(ForumCodesDigger.class);
@@ -60,10 +71,6 @@ public class Storm8Module extends AbstractModule {
 
     protected DB4OProvider createDB4OProvider() {
         return new DB4OProvider(dbFile);
-    }
-
-    public DB4OProvider getDb4oOProvider() {
-        return db4oOProvider;
     }
 
     public void shutdown() {
