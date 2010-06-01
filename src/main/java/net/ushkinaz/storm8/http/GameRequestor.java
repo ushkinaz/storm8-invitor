@@ -36,7 +36,7 @@ public class GameRequestor extends HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected GameRequestor(Player player) {
+    public GameRequestor(Player player) {
         random = new Random();
         this.player = player;
     }
@@ -62,13 +62,18 @@ public class GameRequestor extends HttpService {
      * @param requestURL      url
      * @param postBodyFactory factory to create request body
      * @return HTTP response
-     * @throws IOException exception
      */
-    public String postRequest(String requestURL, PostBodyFactory postBodyFactory) throws IOException {
-        PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
-        getClient().executeMethod(postMethod);
-        randomlySleep();
-        return postMethod.getResponseBodyAsString();
+    public String postRequest(String requestURL, PostBodyFactory postBodyFactory){
+        String asString = "";
+        try {
+            PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
+            getClient().executeMethod(postMethod);
+            //randomlySleep();
+            asString = postMethod.getResponseBodyAsString();
+        } catch (IOException e) {
+            LOGGER.error("Error in IO", e);
+        }
+        return asString;
     }
 
     /**

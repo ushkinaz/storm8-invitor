@@ -9,7 +9,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,40 +41,36 @@ public class ForumAnalyzerService extends HttpService {
 
     private void parseTopics(Game game) {
         GetMethod pagesMethod = new GetMethod(MessageFormat.format(FORUM_URL, game.getForumId()));
-        try {
-            String page = HttpHelper.getHttpResponse(getClient(), pagesMethod);
-            Matcher matcher = topicPattern.matcher(page);
-            while (matcher.find()) {
-                int topicId = Integer.parseInt(matcher.group(1));
-                int lastPage = Integer.parseInt(matcher.group(2));
-                LOGGER.info("Found topic: " + topicId);
+        String page = HttpHelper.getHttpResponse(getClient(), pagesMethod);
+        Matcher matcher = topicPattern.matcher(page);
+        while (matcher.find()) {
+            int topicId = Integer.parseInt(matcher.group(1));
+            int lastPage = Integer.parseInt(matcher.group(2));
+            LOGGER.info("Found topic: " + topicId);
 
-                Pattern postsPattern = Pattern.compile("t=" + topicId + "\" onclick=\"who\\(\\d*\\); return false;\">([\\d,]*)<");
-                Matcher postsMatcher = postsPattern.matcher(page);
-                int posts = 0;
-                if (postsMatcher.find()) {
-                    String postsString = postsMatcher.group(1).replace(",", "");
-                    posts = Integer.parseInt(postsString);
-                }
-
-                Topic topic;
-
-                if (game.getTopics().containsKey(topicId)) {
-                    topic = game.getTopics().get(topicId);
-                } else {
-                    topic = new Topic(topicId);
-                }
-
-                topic.setPages(lastPage);
-                int oldPosts = topic.getPosts();
-                if (oldPosts != posts) {
-                    topic.setPosts(posts);
-                    topic.setPostsAdded(true);
-                }
-                game.getTopics().put(topicId, topic);
+            Pattern postsPattern = Pattern.compile("t=" + topicId + "\" onclick=\"who\\(\\d*\\); return false;\">([\\d,]*)<");
+            Matcher postsMatcher = postsPattern.matcher(page);
+            int posts = 0;
+            if (postsMatcher.find()) {
+                String postsString = postsMatcher.group(1).replace(",", "");
+                posts = Integer.parseInt(postsString);
             }
-        } catch (IOException e) {
-            LOGGER.error("Error", e);
+
+            Topic topic;
+
+            if (game.getTopics().containsKey(topicId)) {
+                topic = game.getTopics().get(topicId);
+            } else {
+                topic = new Topic(topicId);
+            }
+
+            topic.setPages(lastPage);
+            int oldPosts = topic.getPosts();
+            if (oldPosts != posts) {
+                topic.setPosts(posts);
+                topic.setPostsAdded(true);
+            }
+            game.getTopics().put(topicId, topic);
         }
     }
 }
