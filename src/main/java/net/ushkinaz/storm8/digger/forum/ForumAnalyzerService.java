@@ -46,7 +46,7 @@ public class ForumAnalyzerService extends HttpService {
         while (matcher.find()) {
             int topicId = Integer.parseInt(matcher.group(1));
             int lastPage = Integer.parseInt(matcher.group(2));
-            LOGGER.info("Found topic: " + topicId);
+            LOGGER.debug("Found topic: " + topicId);
 
             Pattern postsPattern = Pattern.compile("t=" + topicId + "\" onclick=\"who\\(\\d*\\); return false;\">([\\d,]*)<");
             Matcher postsMatcher = postsPattern.matcher(page);
