@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Player;
+import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.PostBodyFactory;

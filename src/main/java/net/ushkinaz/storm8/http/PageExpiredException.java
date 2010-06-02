@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.http;
 
 /**
  * Thrown when game page has expired

@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.guice;
 
 /*
 * Created by IntelliJ IDEA.
@@ -10,6 +10,7 @@ package net.ushkinaz.storm8;
 import com.db4o.ObjectContainer;
 import com.google.inject.AbstractModule;
 import javolution.xml.XMLBinding;
+import net.ushkinaz.storm8.configuration.StormConfigurator;
 import net.ushkinaz.storm8.dao.DB4OProvider;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.LiveCodesDigger;

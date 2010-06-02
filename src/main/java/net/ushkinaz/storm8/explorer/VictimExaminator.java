@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.explorer;
 
 import net.ushkinaz.storm8.domain.Victim;
 import org.slf4j.Logger;

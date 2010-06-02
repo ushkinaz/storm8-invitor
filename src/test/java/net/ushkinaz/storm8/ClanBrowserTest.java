@@ -1,6 +1,7 @@
 package net.ushkinaz.storm8;
 
 import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.explorer.ClanBrowser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

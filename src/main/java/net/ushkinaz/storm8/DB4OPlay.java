@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
+import net.ushkinaz.storm8.guice.Storm8Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

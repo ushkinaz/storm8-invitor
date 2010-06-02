@@ -2,13 +2,13 @@ package net.ushkinaz.storm8;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import net.ushkinaz.storm8.configuration.StormConfigurator;
 import net.ushkinaz.storm8.domain.Configuration;
-import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.guice.Storm8Module;
+import net.ushkinaz.storm8.guice.Storm8TestModule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Map;
 
 /**
  * @author Dmitry Sidorenko
