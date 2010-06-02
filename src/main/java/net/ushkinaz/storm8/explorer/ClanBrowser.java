@@ -63,7 +63,9 @@ public class ClanBrowser {
 // -------------------------- OTHER METHODS --------------------------
 
     public void visitClanMembers(ProfileVisitor profileVisitor) {
+        LOGGER.debug(">> visitClanMembers");
         scanClan(0, profileVisitor);
+        LOGGER.debug("<< visitClanMembers");
     }
 
     private void scanClan(int scanFromIndex, ProfileVisitor profileVisitor) {

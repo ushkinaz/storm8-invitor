@@ -54,6 +54,7 @@ public class ForumCodesDigger implements CodesDigger {
 // --------------------- Interface CodesDigger ---------------------
 
     public void digCodes(final Game game) {
+        LOGGER.debug(">> digCodes");
         forumAnalyzerService.findTopics(game);
         db.store(game);
         db.commit();
@@ -86,5 +87,5 @@ public class ForumCodesDigger implements CodesDigger {
 //        //Store updated topics list
         db.store(game);
         db.commit();
-    }
+        LOGGER.debug("<< digCodes");    }
 }
