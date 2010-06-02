@@ -3,7 +3,8 @@ package net.ushkinaz.storm8;
 import com.db4o.ObjectContainer;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.ClanInvite;
+import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,10 +32,11 @@ public class DB4OPlay {
 
         db.ext().backup("storm8.bak");
 
-        Collection<Game> set = db.queryByExample(Game.class);
-        for (Game game : set) {
-            db.store(game);
-            db.commit();
+        ClanInvite invite = new ClanInvite();
+        invite.setStatus(ClanInviteStatus.NOT_FOUND);
+        Collection<ClanInvite> set = db.queryByExample(invite);
+        for (ClanInvite clanInvite : set) {
+            LOGGER.debug(clanInvite.getCode());
         }
         db.close();
     }

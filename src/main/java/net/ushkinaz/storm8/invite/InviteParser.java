@@ -20,7 +20,7 @@ public class InviteParser {
 
     private static final Logger LOGGER = getLogger(InviteParser.class);
 
-    private static final String NAME_PATTERN = "([\\w \\S]*)";
+    private static final String NAME_PATTERN = "(.*?)";
 
     //private final ClanDao clanDao;
 
@@ -51,7 +51,7 @@ public class InviteParser {
         } else if (matcherAlreadyInvited.matches()) {
             updateInvite(clanInvite, matcherAlreadyInvited, ClanInviteStatus.PENDING);
         } else if (matcherInClan.matches()) {
-            updateInvite(clanInvite, matcherSuccess, ClanInviteStatus.ACCEPTED);
+            updateInvite(clanInvite, matcherInClan, ClanInviteStatus.ACCEPTED);
         } else if (matcherNotFound.matches()) {
             clanInvite.setStatus(ClanInviteStatus.NOT_FOUND);
             LOGGER.info("Unable to find clan with code: " + clanInvite.getCode());
@@ -67,12 +67,17 @@ public class InviteParser {
         }
     }
 
-    private void updateInvite(ClanInvite clanInvite, Matcher matcherSuccess, ClanInviteStatus status) {
+    private void updateInvite(ClanInvite clanInvite, Matcher matcher, ClanInviteStatus status) {
         String clanName;
-        clanName = matcherSuccess.group(1);
-        clanInvite.setName(clanName);
-        clanInvite.setStatus(status);
-        LOGGER.info(status + ":" + clanName);
+        try {
+            clanName = matcher.group(1);
+            clanInvite.setName(clanName);
+            clanInvite.setStatus(status);
+            LOGGER.info(status + ":" + clanName);
+        } catch (IllegalStateException e) {
+            LOGGER.error(matcher.toString());
+            LOGGER.error("match problem", e);
+        }
     }
 
     private void logUnknownError(String response, ClanInvite clanInvite) {

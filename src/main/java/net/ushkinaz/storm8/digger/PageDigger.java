@@ -25,7 +25,7 @@ public class PageDigger {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected PageDigger() {
+    public PageDigger() {
         blackList = new HashSet<String>();
     }
 
