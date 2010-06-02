@@ -2,14 +2,11 @@ package net.ushkinaz.storm8.explorer;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.configuration.CodesReader;
-import net.ushkinaz.storm8.digger.DBStoringCallback;
-import net.ushkinaz.storm8.digger.PageDigger;
-import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.GameRequestorProvider;
+import net.ushkinaz.storm8.http.PageExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +33,6 @@ public class ClanBrowser {
     private GameRequestor gameRequestor;
     private Player player;
     private String clanURL;
-    private VictimExaminator victimExaminator;
     private ObjectContainer db;
 
 // --------------------------- CONSTRUCTORS ---------------------------
@@ -53,11 +49,6 @@ public class ClanBrowser {
     }
 
     @Inject
-    public void setVictimExaminator(VictimExaminator victimExaminator) {
-        this.victimExaminator = victimExaminator;
-    }
-
-    @Inject
     public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
         this.gameRequestorProvider = gameRequestorProvider;
     }
@@ -71,21 +62,16 @@ public class ClanBrowser {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public String getGoodTarget() {
-        scanClan(0);
-        return "";
+    public void visitClanMembers(ProfileVisitor profileVisitor) {
+        scanClan(0, profileVisitor);
     }
 
-    static final Pattern commentsPattern = Pattern.compile("<a href=\"/profile.php\\?(.*?)\">Comments</a>");
-    static final Pattern commentPattern = Pattern.compile("<div style=\"font-weight: bold; width: 250px\">(.*?)</div>", Pattern.DOTALL);
-
-    private void scanClan(int scanFromIndex) {
+    private void scanClan(int scanFromIndex, ProfileVisitor profileVisitor) {
         String requestURL = clanURL + scanFromIndex;
         String body = gameRequestor.postRequest(requestURL, null);
         Matcher matcher = profilePattern.matcher(body);
         while (isMatchFound(matcher)) {
             LOGGER.info("Scan index: " + scanFromIndex);
-            scanFromIndex++;
             int puid = matchInteger(matcher);
             String timestamp = match(matcher, 2);
             String name = match(matcher, 3);
@@ -93,37 +79,25 @@ public class ClanBrowser {
 
             LOGGER.info(name + " = " + profileURL);
             String profileHTML = gameRequestor.postRequest(profileURL, null);
-            if (profileHTML.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
-                //Restart scan
-                LOGGER.info("Restarting scan, timestamp expired");
-                scanClan(scanFromIndex);
+            try {
+                if (profileHTML.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
+                    throw new PageExpiredException();
+                }
+
+                Victim victim = new Victim(puid, player.getGame());
+                List<Victim> victims = db.queryByExample(victim);
+                victim.setName(name);
+                if (victims.size() > 0) {
+                    victim = victims.get(0);
+                }
+                profileVisitor.visitProfile(victim, profileHTML);
+                scanFromIndex++;
+            } catch (PageExpiredException e) {
+                LOGGER.info("Restarting scan, time stamp expired");
+                scanClan(scanFromIndex, profileVisitor);
                 break;
             }
 
-            Victim victim = new Victim(puid, player.getGame());
-            List<Victim> victims = db.queryByExample(victim);
-            victim.setName(name);
-            if (victims.size() > 0) {
-                victim = victims.get(0);
-            }
-
-            PageDigger digger = new PageDigger();
-            digger.setCodesReader(new CodesReader());
-            PageDigger.CodesDiggerCallback callback = new DBStoringCallback(player.getGame(), ClanInviteSource.INGAME_COMMENT, db);
-
-            Matcher matcherComments = commentsPattern.matcher(profileHTML);
-            if (isMatchFound(matcherComments)) {
-                String commentsURL = player.getGame().getGameURL() + "profile.php?" + match(matcherComments);
-                String commentsBody = gameRequestor.postRequest(commentsURL, null);
-                Matcher posts = commentPattern.matcher(commentsBody);
-                while (isMatchFound(posts)) {
-                    digger.parsePost(match(posts), callback);
-                }
-            }
-
-//            victimExaminator.examine(victim, profileHTML);
-//            db.store(victim);
-//            db.commit();
         }
     }
 }

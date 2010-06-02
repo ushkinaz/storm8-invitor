@@ -1,7 +1,10 @@
 package net.ushkinaz.storm8;
 
 import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.explorer.ClanBrowser;
+import net.ushkinaz.storm8.explorer.ProfileVisitor;
+import net.ushkinaz.storm8.http.PageExpiredException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +28,12 @@ public class ClanBrowserTest extends GuiceAbstractTest {
     }
 
     @Test
-    public void testGetGoodTarget() throws Exception {
+    public void testVisitClanMembers() throws Exception {
         clanBrowser.setPlayer(configuration.getPlayer("ush-ninja"));
-        clanBrowser.getGoodTarget();
+        clanBrowser.visitClanMembers(new ProfileVisitor() {
+            @Override
+            public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
+            }
+        });
     }
 }
