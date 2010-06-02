@@ -91,8 +91,8 @@ public class ClanBrowser {
             String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timestamp);
 
             LOGGER.info(name + " = " + profileURL);
-            String profile = gameRequestor.postRequest(profileURL, null);
-            if (profile.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
+            String profileHTML = gameRequestor.postRequest(profileURL, null);
+            if (profileHTML.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
                 //Restart scan
                 LOGGER.info("Restarting scan, timestamp expired");
                 scanClan(scanFromIndex);
@@ -110,7 +110,7 @@ public class ClanBrowser {
             digger.setCodesReader(new CodesReader());
             PageDigger.CodesDiggerCallback callback = new DBStoringCallback(player.getGame(), ClanInviteSource.INGAME_COMMENT, db);
 
-            Matcher matcherComments = commentsPattern.matcher(profile);
+            Matcher matcherComments = commentsPattern.matcher(profileHTML);
             if (isMatchFound(matcherComments)) {
                 String commentsURL = player.getGame().getGameURL() + "profile.php?" + match(matcherComments);
                 String commentsBody = gameRequestor.postRequest(commentsURL, null);
@@ -120,7 +120,7 @@ public class ClanBrowser {
                 }
             }
 
-//            victimExaminator.examine(victim, profile);
+//            victimExaminator.examine(victim, profileHTML);
 //            db.store(victim);
 //            db.commit();
         }
