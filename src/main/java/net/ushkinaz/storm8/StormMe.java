@@ -16,6 +16,7 @@ import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.explorer.ClanBrowser;
+import net.ushkinaz.storm8.explorer.ProfileCodesDigger;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
@@ -39,14 +40,14 @@ public class StormMe {
     private CodesDigger codesDigger;
     private Configuration configuration;
     private EquipmentAnalyzerService equipmentAnalyzerService;
-    private ClanBrowser clanBrowser;
+    private Injector injector;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
 
     @Inject
-    public void setClanBrowser(ClanBrowser clanBrowser) {
-        this.clanBrowser = clanBrowser;
+    public void setInjector(Injector injector) {
+        this.injector = injector;
     }
 
     @Inject
@@ -126,9 +127,6 @@ public class StormMe {
     }
 
     private void scanTargets() {
-        Player player = configuration.getPlayer("ush-ninja");
-        clanBrowser.setPlayer(player);
-        clanBrowser.getGoodTarget();
     }
 
     private void inventory() {
@@ -137,7 +135,15 @@ public class StormMe {
     }
 
     private void dig() throws ServerWorkflowException {
+        Player player = configuration.getPlayer("ush-ninja");
         Game game = configuration.getGame("ninja");
+
+        ClanBrowser clanBrowser = injector.getInstance(ClanBrowser.class);
+        clanBrowser.setPlayer(player);
+
+        ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
+        profileCodesDigger.setPlayer(player);
+        clanBrowser.visitClanMembers(profileCodesDigger);
 
         forumDigger.digCodes(game);
         codesDigger.digCodes(game);

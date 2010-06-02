@@ -1,6 +1,7 @@
 package net.ushkinaz.storm8.explorer;
 
 import net.ushkinaz.storm8.domain.Victim;
+import net.ushkinaz.storm8.http.PageExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 import static net.ushkinaz.storm8.digger.MatcherHelper.isMatchFound;
 import static net.ushkinaz.storm8.digger.MatcherHelper.matchInteger;
 
-public class VictimExaminator {
+public class VictimExaminator implements ProfileVisitor {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(VictimExaminator.class);
 
@@ -19,9 +20,9 @@ public class VictimExaminator {
     public VictimExaminator() {
     }
 
-    public Victim examine(Victim victim, String profile) {
-        inventory(victim, profile);
-        return victim;
+    @Override
+    public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
+        inventory(victim, profileHTML);
     }
 
     private void inventory(Victim victim, String profile) {
@@ -33,4 +34,5 @@ public class VictimExaminator {
             victim.getInventory().put(itemId, itemQuantity);
         }
     }
+
 }

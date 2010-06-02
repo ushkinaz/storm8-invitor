@@ -36,7 +36,7 @@ public class GameRequestor extends HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public GameRequestor(Player player) {
+    protected GameRequestor(Player player) {
         random = new Random();
         this.player = player;
     }
