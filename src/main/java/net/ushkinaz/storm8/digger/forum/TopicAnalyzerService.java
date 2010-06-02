@@ -66,7 +66,9 @@ public class TopicAnalyzerService extends HttpService {
     private void walkThroughPages(Topic topic, int count, PageDigger.CodesDiggerCallback callback) {
         //Page 0 and page 1 are the same. Ignore the fact.
         for (int page = topic.getLastProcessedPage(); page <= count; page++) {
-            LOGGER.info("Topic = " + topic.getTopicId() + ", page = " + page);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Topic = " + topic.getTopicId() + ", page = " + page);
+            }
             GetMethod pageMethod = new GetMethod(MessageFormat.format(FORUM_TOPIC_PAGE_URL, topic.getTopicId(), page));
             Matcher matcher = HttpHelper.getHttpMatcher(getClient(), pageMethod, postPattern);
             while (matcher.find()) {

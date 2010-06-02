@@ -30,7 +30,7 @@ public class VictimExaminator implements ProfileVisitor {
         while (isMatchFound(itemMatcher)) {
             int itemId = matchInteger(itemMatcher);
             int itemQuantity = matchInteger(itemMatcher, 2);
-            LOGGER.info("Item: " + itemId + " quantity:" + itemQuantity);
+            LOGGER.debug("Item: " + itemId + " quantity:" + itemQuantity);
             victim.getInventory().put(itemId, itemQuantity);
         }
     }

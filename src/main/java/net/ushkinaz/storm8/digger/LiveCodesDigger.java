@@ -51,13 +51,13 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
 
     @Override
     public void digCodes(Game game) {
-        LOGGER.info(">> digCodes");
+        LOGGER.debug(">> digCodes");
         Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern);
         if (matcherCodes.find()) {
             String strCodes = matcherCodes.group(1);
             pageDigger.parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
         }
-        LOGGER.info("<< digCodes");
+        LOGGER.debug("<< digCodes");
     }
 
 // -------------------------- OTHER METHODS --------------------------
