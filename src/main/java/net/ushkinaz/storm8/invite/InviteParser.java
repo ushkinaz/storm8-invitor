@@ -62,7 +62,7 @@ public class InviteParser {
             LOGGER.warn("Adding yourself? Clever boy!");
             clanInvite.setStatus(ClanInviteStatus.ACCEPTED);
         } else {
-            LOGGER.info("Unknown error");
+            LOGGER.warn("Unknown error");
             logUnknownError(response, clanInvite);
         }
     }
@@ -73,7 +73,7 @@ public class InviteParser {
             clanName = matcher.group(1);
             clanInvite.setName(clanName);
             clanInvite.setStatus(status);
-            LOGGER.info(status + ":" + clanName);
+            LOGGER.debug(status + ":" + clanName);
         } catch (IllegalStateException e) {
             LOGGER.error(matcher.toString());
             LOGGER.error("match problem", e);
@@ -86,7 +86,7 @@ public class InviteParser {
             String fileName = clanInvite.getCode() + ".resp";
             writer = new PrintWriter(new FileWriter(fileName));
             writer.write(response);
-            LOGGER.info("Response is written to " + fileName);
+            LOGGER.warn("Response is written to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

@@ -76,7 +76,7 @@ public class ClanBrowser {
             String name = match(matcher, 3);
             String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timestamp);
 
-            LOGGER.info(name + " = " + profileURL);
+            LOGGER.debug(name + " = " + profileURL);
             String profileHTML = gameRequestor.postRequest(profileURL, null);
             try {
                 if (profileHTML.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
@@ -92,7 +92,7 @@ public class ClanBrowser {
                 profileVisitor.visitProfile(victim, profileHTML);
                 scanFromIndex++;
             } catch (PageExpiredException e) {
-                LOGGER.info("Restarting scan, time stamp expired");
+                LOGGER.debug("Restarting scan, time stamp expired");
                 scanClan(scanFromIndex, profileVisitor);
                 break;
             }

@@ -60,7 +60,7 @@ public class EquipmentAnalyzerService {
 // -------------------------- OTHER METHODS --------------------------
 
     public void dig(Player player) {
-        LOGGER.info(">> dig");
+        LOGGER.debug(">> dig");
         Game game = player.getGame();
 
         for (int cat = 1; cat <= 3; cat++) {
@@ -90,6 +90,6 @@ public class EquipmentAnalyzerService {
         }
         db.store(game);
         db.commit();
-        LOGGER.info("<< dig");
+        LOGGER.debug("<< dig");
     }
 }

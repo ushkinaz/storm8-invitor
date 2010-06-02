@@ -44,7 +44,7 @@ public class PageDigger {
             if (blackList.contains(code)) {
                 continue;
             }
-            LOGGER.info("Code: " + code);
+            LOGGER.debug("Code: " + code);
             callback.codeFound(code);
         }
     }
