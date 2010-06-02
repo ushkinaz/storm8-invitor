@@ -2,6 +2,9 @@ package net.ushkinaz.storm8;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
+import net.ushkinaz.storm8.digger.DBStoringCallback;
+import net.ushkinaz.storm8.digger.PageDigger;
+import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.http.GameRequestor;
@@ -72,6 +75,9 @@ public class ClanBrowser {
         return "";
     }
 
+    static final Pattern commentsPattern = Pattern.compile("<a href=\"/profile.php\\?(.*?)\">Comments</a>");
+    static final Pattern commentPattern = Pattern.compile("<div style=\"font-weight: bold; width: 250px\">(.*?)</div>", Pattern.DOTALL);
+
     private void scanClan(int scanFromIndex) {
         String requestURL = clanURL + scanFromIndex;
         String body = gameRequestor.postRequest(requestURL, null);
@@ -88,6 +94,7 @@ public class ClanBrowser {
             String profile = gameRequestor.postRequest(profileURL, null);
             if (profile.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
                 //Restart scan
+                LOGGER.info("Restarting scan, timestamp expired");
                 scanClan(scanFromIndex);
                 break;
             }
@@ -98,9 +105,24 @@ public class ClanBrowser {
             if (victims.size() > 0) {
                 victim = victims.get(0);
             }
-            victimExaminator.examine(victim, profile);
-            db.store(victim);
-            db.commit();
+
+            PageDigger digger = new PageDigger();
+            digger.setCodesReader(new CodesReader());
+            PageDigger.CodesDiggerCallback callback = new DBStoringCallback(player.getGame(), ClanInviteSource.INGAME_COMMENT, db);
+
+            Matcher matcherComments = commentsPattern.matcher(profile);
+            if (isMatchFound(matcherComments)) {
+                String commentsURL = player.getGame().getGameURL() + "profile.php?" + match(matcherComments);
+                String commentsBody = gameRequestor.postRequest(commentsURL, null);
+                Matcher posts = commentPattern.matcher(commentsBody);
+                while (isMatchFound(posts)) {
+                    digger.parsePost(match(posts), callback);
+                }
+            }
+
+//            victimExaminator.examine(victim, profile);
+//            db.store(victim);
+//            db.commit();
         }
     }
 }
