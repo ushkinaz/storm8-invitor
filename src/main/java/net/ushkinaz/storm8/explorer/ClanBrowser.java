@@ -62,7 +62,7 @@ public class ClanBrowser {
 
     public void visitClanMembers(ProfileVisitor profileVisitor) {
         LOGGER.debug(">> visitClanMembers");
-        scanClan(0, profileVisitor);
+        scanClan(2480, profileVisitor);
         LOGGER.debug("<< visitClanMembers");
     }
 
@@ -77,7 +77,6 @@ public class ClanBrowser {
             String name = match(matcher, 3);
             String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timestamp);
 
-            LOGGER.debug(name + " = " + profileURL);
             try {
                 String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);
 
