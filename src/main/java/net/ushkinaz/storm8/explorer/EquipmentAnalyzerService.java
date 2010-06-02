@@ -8,6 +8,7 @@ import net.ushkinaz.storm8.domain.Equipment;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
+import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class EquipmentAnalyzerService {
         Game game = player.getGame();
 
         for (int cat = 1; cat <= 3; cat++) {
-            String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
+            String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, PostBodyFactory.NULL);
             Matcher matcherEquipment = equipmentPattern.matcher(pageBuffer);
             while (MatcherHelper.isMatchFound(matcherEquipment)) {
                 String equipmentInfo = matcherEquipment.group(1);

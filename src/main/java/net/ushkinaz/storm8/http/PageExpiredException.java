@@ -5,19 +5,18 @@ package net.ushkinaz.storm8.http;
  *
  * @author Dmitry Sidorenko
  */
-public class PageExpiredException extends Exception {
+public class PageExpiredException extends RuntimeException {
+    private String url;
+
+    public PageExpiredException(String url) {
+        this.url = url;
+    }
+
     public PageExpiredException() {
     }
 
-    public PageExpiredException(String message) {
-        super(message);
-    }
-
-    public PageExpiredException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PageExpiredException(Throwable cause) {
-        super(cause);
+    @Override
+    public String toString() {
+        return String.format("URL expired: %s", url);
     }
 }

@@ -6,6 +6,7 @@ import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.PageExpiredException;
+import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public class ClanBrowser {
 
     private void scanClan(int scanFromIndex, ProfileVisitor profileVisitor) {
         String requestURL = clanURL + scanFromIndex;
-        String body = gameRequestor.postRequest(requestURL, null);
+        String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
         Matcher matcher = profilePattern.matcher(body);
         while (isMatchFound(matcher)) {
             LOGGER.info("Scan index: " + scanFromIndex);
@@ -77,11 +78,8 @@ public class ClanBrowser {
             String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timestamp);
 
             LOGGER.debug(name + " = " + profileURL);
-            String profileHTML = gameRequestor.postRequest(profileURL, null);
             try {
-                if (profileHTML.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
-                    throw new PageExpiredException();
-                }
+                String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);
 
                 Victim victim = new Victim(puid, player.getGame());
                 List<Victim> victims = db.queryByExample(victim);

@@ -67,8 +67,9 @@ public class GameRequestor extends HttpService {
      * @param requestURL      url
      * @param postBodyFactory factory to create request body
      * @return HTTP response
+     * @throws PageExpiredException thrown when timestamp for requestURL is exired
      */
-    public String postRequest(String requestURL, PostBodyFactory postBodyFactory){
+    public String postRequest(String requestURL, PostBodyFactory postBodyFactory) throws PageExpiredException {
         String asString = "";
         try {
             PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
@@ -77,6 +78,9 @@ public class GameRequestor extends HttpService {
             asString = postMethod.getResponseBodyAsString();
         } catch (IOException e) {
             LOGGER.error("Error in IO", e);
+        }
+        if (asString.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
+            throw new PageExpiredException(requestURL);
         }
         return asString;
     }
@@ -98,9 +102,7 @@ public class GameRequestor extends HttpService {
         postMethod.addRequestHeader("Content-type", CONTENT_TYPE);
         postMethod.addRequestHeader("Accept-Charset", ACCEPT_CHARSET);
 
-        if (postBodyFactory != null) {
-            postMethod.setRequestBody(postBodyFactory.createBody());
-        }
+        postMethod.setRequestBody(postBodyFactory.createBody());
         return postMethod;
     }
 

@@ -1,6 +1,5 @@
 package net.ushkinaz.storm8.digger;
 
-import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
@@ -28,9 +27,8 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
 
     private static final Pattern codesPattern = Pattern.compile("User Codes(.*)\\<\\/ul\\>", Pattern.DOTALL);
 
-    private ObjectContainer db;
-
     private PageDigger pageDigger;
+    private DBStoringCallback callback;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -40,8 +38,8 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     @Inject
-    public void setDb(ObjectContainer db) {
-        this.db = db;
+    public void setCallback(DBStoringCallback callback) {
+        this.callback = callback;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -55,7 +53,7 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
         Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern);
         if (matcherCodes.find()) {
             String strCodes = matcherCodes.group(1);
-            pageDigger.parsePost(strCodes, new DBStoringCallback(game, ClanInviteSource.LIVE_CODES, db));
+            pageDigger.parsePost(strCodes, callback.get(game, ClanInviteSource.LIVE_CODES));
         }
         LOGGER.debug("<< digCodes");
     }
