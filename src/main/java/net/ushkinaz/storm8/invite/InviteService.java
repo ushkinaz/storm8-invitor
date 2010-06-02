@@ -7,7 +7,6 @@ import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.ClanInviteStatus;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import org.slf4j.Logger;
 
@@ -28,10 +27,10 @@ public class InviteService {
 
     private static final Logger LOGGER = getLogger(InviteService.class);
 
+    private final ThreadPoolExecutor threadPoolExecutor;
     private InviteParser inviteParser;
     private ClanDao clanDao;
-    private final ThreadPoolExecutor threadPoolExecutor;
-    private GameRequestorProvider gameRequestorProvider;
+    private GameRequestor gameRequestor;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -41,14 +40,15 @@ public class InviteService {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
+
     @Inject
-    public void setClanDao(ClanDao clanDao) {
-        this.clanDao = clanDao;
+    public void setGameRequestor(GameRequestor gameRequestor) {
+        this.gameRequestor = gameRequestor;
     }
 
     @Inject
-    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
-        this.gameRequestorProvider = gameRequestorProvider;
+    public void setClanDao(ClanDao clanDao) {
+        this.clanDao = clanDao;
     }
 
     @Inject
@@ -66,7 +66,6 @@ public class InviteService {
      */
     public void invite(final Player player) {
         LOGGER.debug(">> invite");
-        final GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
         Collection<ClanInvite> invites = clanDao.getByStatus(player.getGame(), ClanInviteStatus.DIGGED);
 
         final int[] count = {invites.size()};

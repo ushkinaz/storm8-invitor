@@ -4,6 +4,9 @@ import java.util.regex.Matcher;
 
 public class MatcherHelper {
 
+    private MatcherHelper() {
+    }
+
     public static boolean isMatchFound(Matcher matcher) {
         return matcher.find();
     }

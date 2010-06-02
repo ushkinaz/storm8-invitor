@@ -2,6 +2,7 @@ package net.ushkinaz.storm8.digger;
 
 import net.ushkinaz.storm8.GuiceAbstractTest;
 import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.explorer.EquipmentAnalyzerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

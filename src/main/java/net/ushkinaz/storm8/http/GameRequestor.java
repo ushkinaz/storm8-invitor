@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.http;
 
+import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.Player;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
@@ -36,12 +37,16 @@ public class GameRequestor extends HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected GameRequestor(Player player) {
+    public GameRequestor() {
         random = new Random();
+    }
+
+    @Inject
+    public void setPlayer(Player player) {
         this.player = player;
     }
 
-// -------------------------- OTHER METHODS --------------------------
+    // -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void initHttpClient(HttpClient httpClient) {

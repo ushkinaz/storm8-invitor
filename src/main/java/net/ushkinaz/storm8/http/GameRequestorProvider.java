@@ -1,8 +1,10 @@
 package net.ushkinaz.storm8.http;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.domain.Player;
+import net.ushkinaz.storm8.guice.PlayerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,7 @@ import java.util.Map;
  * @date Jun 1, 2010
  */
 @Singleton
-public class GameRequestorProvider {
+public class GameRequestorProvider implements Provider<GameRequestor> {
 // ------------------------------ FIELDS ------------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
@@ -22,6 +24,7 @@ public class GameRequestorProvider {
     private HttpClientProvider clientProvider;
 
     private final Map<Player, GameRequestor> requestors = new HashMap<Player, GameRequestor>();
+    private PlayerProvider playerProvider;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -35,19 +38,27 @@ public class GameRequestorProvider {
         this.clientProvider = clientProvider;
     }
 
-// -------------------------- OTHER METHODS --------------------------
+    @Inject
+    public void setPlayerProvider(PlayerProvider playerProvider) {
+        this.playerProvider = playerProvider;
+    }
 
-    public GameRequestor getRequestor(Player player) {
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface Provider ---------------------
+
+    @Override
+    public GameRequestor get() {
         GameRequestor gameRequestor;
         synchronized (requestors) {
-            if (!requestors.containsKey(player)) {
-                gameRequestor = new GameRequestor(player);
+            if (!requestors.containsKey(playerProvider.get())) {
+                gameRequestor = new GameRequestor();
+                gameRequestor.setPlayer(playerProvider.get());
                 gameRequestor.setClientProvider(clientProvider);
-                requestors.put(player, gameRequestor);
+                requestors.put(playerProvider.get(), gameRequestor);
             }
         }
-
-        gameRequestor = requestors.get(player);
-        return gameRequestor;
+        return requestors.get(playerProvider.get());
     }
 }

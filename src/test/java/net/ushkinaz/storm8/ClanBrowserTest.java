@@ -6,6 +6,7 @@ import net.ushkinaz.storm8.explorer.ClanBrowser;
 import net.ushkinaz.storm8.explorer.ProfileVisitor;
 import net.ushkinaz.storm8.http.PageExpiredException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,5 +36,13 @@ public class ClanBrowserTest extends GuiceAbstractTest {
             public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
             }
         });
+    }
+
+    @Test
+    public void testNotSingleton() throws Exception {
+        ClanBrowser br1 = injector.getInstance(ClanBrowser.class);
+        ClanBrowser br2 = injector.getInstance(ClanBrowser.class);
+        
+        Assert.assertNotSame(br1, br2);
     }
 }
