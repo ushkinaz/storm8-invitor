@@ -28,7 +28,7 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
     private static final Pattern codesPattern = Pattern.compile("User Codes(.*)\\<\\/ul\\>", Pattern.DOTALL);
 
     private PageDigger pageDigger;
-    private DBStoringCallback callback;
+    private DBStoringCallbackFactory callbackFactory;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -38,8 +38,8 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     @Inject
-    public void setCallback(DBStoringCallback callback) {
-        this.callback = callback;
+    public void setCallback(DBStoringCallbackFactory callbackFactory) {
+        this.callbackFactory = callbackFactory;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -53,7 +53,7 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
         Matcher matcherCodes = HttpHelper.getHttpMatcher(getClient(), new GetMethod(SITE_URL), codesPattern);
         if (matcherCodes.find()) {
             String strCodes = matcherCodes.group(1);
-            pageDigger.parsePost(strCodes, callback.get(game, ClanInviteSource.LIVE_CODES));
+            pageDigger.parsePost(strCodes, callbackFactory.get(game, ClanInviteSource.LIVE_CODES));
         }
         LOGGER.debug("<< digCodes");
     }

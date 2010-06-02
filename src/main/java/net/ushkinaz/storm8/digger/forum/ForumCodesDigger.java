@@ -4,7 +4,7 @@ import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.ushkinaz.storm8.digger.CodesDigger;
-import net.ushkinaz.storm8.digger.DBStoringCallback;
+import net.ushkinaz.storm8.digger.DBStoringCallbackFactory;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Topic;
@@ -25,7 +25,7 @@ public class ForumCodesDigger implements CodesDigger {
     private TopicAnalyzerService topicAnalyzerService;
     private ForumAnalyzerService forumAnalyzerService;
     private ObjectContainer db;
-    private DBStoringCallback callback;
+    private DBStoringCallbackFactory callbackFactory;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -36,8 +36,8 @@ public class ForumCodesDigger implements CodesDigger {
 
 
     @Inject
-    public void setCallback(DBStoringCallback callback) {
-        this.callback = callback;
+    public void setCallback(DBStoringCallbackFactory callbackFactory) {
+        this.callbackFactory = callbackFactory;
     }
 
     @Inject
@@ -76,7 +76,7 @@ public class ForumCodesDigger implements CodesDigger {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    topicAnalyzerService.searchForCodes(topic, callback.get(game, ClanInviteSource.FORUM));
+                    topicAnalyzerService.searchForCodes(topic, callbackFactory.get(game, ClanInviteSource.FORUM));
                     db.store(topic);
                     db.commit();
                 }
