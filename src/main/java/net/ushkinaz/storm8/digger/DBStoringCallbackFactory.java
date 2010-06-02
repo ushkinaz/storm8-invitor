@@ -12,14 +12,14 @@ import net.ushkinaz.storm8.domain.Game;
  * @author Dmitry Sidorenko
  */
 @Singleton
-public class DBStoringCallback {
+public class DBStoringCallbackFactory {
 // ------------------------------ FIELDS ------------------------------
 
     private ObjectContainer db;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public DBStoringCallback() {
+    public DBStoringCallbackFactory() {
     }
 
     @Inject

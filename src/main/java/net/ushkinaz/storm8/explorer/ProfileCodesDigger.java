@@ -1,7 +1,7 @@
 package net.ushkinaz.storm8.explorer;
 
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.digger.DBStoringCallback;
+import net.ushkinaz.storm8.digger.DBStoringCallbackFactory;
 import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Player;
@@ -32,7 +32,7 @@ public class ProfileCodesDigger implements ProfileVisitor {
     private GameRequestor gameRequestor;
     private PageDigger digger;
     private Player player;
-    private DBStoringCallback callback;
+    private DBStoringCallbackFactory callbackFactory;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -40,8 +40,8 @@ public class ProfileCodesDigger implements ProfileVisitor {
     }
 
     @Inject
-    public void setCallback(DBStoringCallback callback) {
-        this.callback = callback;
+    public void setCallback(DBStoringCallbackFactory callbackFactory) {
+        this.callbackFactory = callbackFactory;
     }
 
     @Inject
@@ -65,7 +65,7 @@ public class ProfileCodesDigger implements ProfileVisitor {
 
     @Override
     public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
-        PageDigger.CodesDiggerCallback callback = this.callback.get(player.getGame(), ClanInviteSource.INGAME_COMMENT);
+        PageDigger.CodesDiggerCallback callback = this.callbackFactory.get(player.getGame(), ClanInviteSource.INGAME_COMMENT);
 
         Matcher matcherComments = commentsPattern.matcher(profileHTML);
         if (isMatchFound(matcherComments)) {
