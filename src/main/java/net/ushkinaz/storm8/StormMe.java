@@ -110,9 +110,24 @@ public class StormMe {
             stormMe.dig();
         }
 
+        if (arguments.contains("dig-comments")) {
+            stormMe.digComments();
+        }
+
         if (arguments.contains("invite")) {
             stormMe.invite();
         }
+    }
+
+    private void digComments() {
+        Player player = configuration.getPlayer("ush-ninja");
+
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
+        ClanBrowser clanBrowser = injector.getInstance(ClanBrowser.class);
+
+        ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
+        profileCodesDigger.setPlayer(player);
+        clanBrowser.visitClanMembers(profileCodesDigger);
     }
 
     private void scanTargets() {
@@ -126,29 +141,15 @@ public class StormMe {
     }
 
     private void dig() throws ServerWorkflowException {
-        Player player = configuration.getPlayer("ush-ninja");
         Game game = configuration.getGame("ninja");
-
-        injector.getInstance(PlayerProvider.class).setPlayer(player);
-        ClanBrowser clanBrowser = injector.getInstance(ClanBrowser.class);
-//        clanBrowser.setPlayer(player);
-
-        ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
-        profileCodesDigger.setPlayer(player);
-        clanBrowser.visitClanMembers(profileCodesDigger);
 
         forumDigger.digCodes(game);
         codesDigger.digCodes(game);
-
-/*
-        for (Game game : configurator.getGames().values()) {
-            digger.digCodes(game);
-        }
-*/
     }
 
     private void invite() throws ServerWorkflowException {
         Player player = configuration.getPlayer("ush-ninja");
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
         InviteService service = injector.getInstance(InviteService.class);
         service.invite(player);
 

@@ -8,6 +8,8 @@ import javolution.xml.XMLBinding;
 import javolution.xml.XMLObjectReader;
 import javolution.xml.stream.XMLStreamException;
 import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.domain.Game;
+import net.ushkinaz.storm8.domain.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,13 +44,13 @@ public class StormConfigurator implements Provider<Configuration> {
             reader.setBinding(binding);
             configuration = reader.read("Configuration", Configuration.class);
 
-//            for (Game game : configuration.getGames()) {
-//                db.store(game);
-//            }
-//            for (Player player : configuration.getPlayers()) {
-//                db.store(player);
-//            }
-//            db.commit();
+            for (Game game : configuration.getGames()) {
+                db.store(game);
+            }
+            for (Player player : configuration.getPlayers()) {
+                db.store(player);
+            }
+            db.commit();
 
             reader.close();
         } catch (XMLStreamException e) {
