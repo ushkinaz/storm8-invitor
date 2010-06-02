@@ -8,7 +8,6 @@ import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.GameRequestor;
 import net.ushkinaz.storm8.http.PostBodyFactory;
-import org.apache.commons.httpclient.NameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +55,7 @@ public class ExploreMe {
     private void doIt() throws IOException {
         Player ninja = configuration.getPlayer("ush-ninja");
         for (String uri : uris) {
-            String body = requestor.postRequest(ninja.getGame().getGameURL() + uri, new PostBodyFactory() {
-                public NameValuePair[] createBody() {
-                    return new NameValuePair[0];
-                }
-            });
+            String body = requestor.postRequest(ninja.getGame().getGameURL() + uri, PostBodyFactory.NULL);
             logResponse(body, uri);
         }
     }

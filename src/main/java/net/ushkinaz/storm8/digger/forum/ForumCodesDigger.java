@@ -25,6 +25,7 @@ public class ForumCodesDigger implements CodesDigger {
     private TopicAnalyzerService topicAnalyzerService;
     private ForumAnalyzerService forumAnalyzerService;
     private ObjectContainer db;
+    private DBStoringCallback callback;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -32,6 +33,12 @@ public class ForumCodesDigger implements CodesDigger {
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
+
+
+    @Inject
+    public void setCallback(DBStoringCallback callback) {
+        this.callback = callback;
+    }
 
     @Inject
     public void setDb(ObjectContainer db) {
@@ -69,7 +76,7 @@ public class ForumCodesDigger implements CodesDigger {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    topicAnalyzerService.searchForCodes(topic, new DBStoringCallback(game, ClanInviteSource.FORUM, db));
+                    topicAnalyzerService.searchForCodes(topic, callback.get(game, ClanInviteSource.FORUM));
                     db.store(topic);
                     db.commit();
                 }
@@ -87,5 +94,6 @@ public class ForumCodesDigger implements CodesDigger {
 //        //Store updated topics list
         db.store(game);
         db.commit();
-        LOGGER.debug("<< digCodes");    }
+        LOGGER.debug("<< digCodes");
+    }
 }

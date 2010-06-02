@@ -10,4 +10,14 @@ public interface PostBodyFactory {
 // -------------------------- OTHER METHODS --------------------------
 
     NameValuePair[] createBody();
+
+    /**
+     * Null object
+     */
+    public static final PostBodyFactory NULL = new PostBodyFactory() {
+        @Override
+        public NameValuePair[] createBody() {
+            return new NameValuePair[0];
+        }
+    };
 }
