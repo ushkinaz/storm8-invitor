@@ -9,7 +9,6 @@ import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.PageExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ public class ProfileCodesDigger implements ProfileVisitor {
 
     static final Pattern commentsPattern = Pattern.compile("<a href=\"/profile.php\\?(.*?)\">Comments</a>");
     static final Pattern commentPattern = Pattern.compile("<div style=\"font-weight: bold; width: 250px\">(.*?)</div>", Pattern.DOTALL);
-    private GameRequestorProvider gameRequestorProvider;
+    private GameRequestor gameRequestor;
     private ObjectContainer db;
     private PageDigger digger;
     private Player player;
@@ -53,8 +52,8 @@ public class ProfileCodesDigger implements ProfileVisitor {
     }
 
     @Inject
-    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
-        this.gameRequestorProvider = gameRequestorProvider;
+    public void setGameRequestor(GameRequestor gameRequestor) {
+        this.gameRequestor = gameRequestor;
     }
 
 
@@ -66,7 +65,6 @@ public class ProfileCodesDigger implements ProfileVisitor {
     @Override
     public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
         PageDigger.CodesDiggerCallback callback = new DBStoringCallback(player.getGame(), ClanInviteSource.INGAME_COMMENT, db);
-        GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
 
         Matcher matcherComments = commentsPattern.matcher(profileHTML);
         if (isMatchFound(matcherComments)) {

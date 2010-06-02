@@ -8,7 +8,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.ushkinaz.storm8.digger.CodesDigger;
-import net.ushkinaz.storm8.digger.EquipmentAnalyzerService;
+import net.ushkinaz.storm8.explorer.EquipmentAnalyzerService;
 import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.domain.ClanInvite;
@@ -17,6 +17,7 @@ import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.explorer.ClanBrowser;
 import net.ushkinaz.storm8.explorer.ProfileCodesDigger;
+import net.ushkinaz.storm8.guice.PlayerProvider;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
@@ -35,11 +36,9 @@ public class StormMe {
     private static final Logger LOGGER = LoggerFactory.getLogger(StormMe.class);
     private static final String STORM_DB = "storm8.db";
 
-    private InviteService service;
     private CodesDigger forumDigger;
     private CodesDigger codesDigger;
     private Configuration configuration;
-    private EquipmentAnalyzerService equipmentAnalyzerService;
     private Injector injector;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -61,18 +60,8 @@ public class StormMe {
     }
 
     @Inject
-    public void setEquipmentAnalyzerService(EquipmentAnalyzerService equipmentAnalyzerService) {
-        this.equipmentAnalyzerService = equipmentAnalyzerService;
-    }
-
-    @Inject
     public void setForumDigger(@OfficialForum CodesDigger forumDigger) {
         this.forumDigger = forumDigger;
-    }
-
-    @Inject
-    public void setService(InviteService service) {
-        this.service = service;
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -131,6 +120,8 @@ public class StormMe {
 
     private void inventory() {
         Player player = configuration.getPlayer("ush-ninja");
+
+        EquipmentAnalyzerService equipmentAnalyzerService = injector.getInstance(EquipmentAnalyzerService.class);
         equipmentAnalyzerService.dig(player);
     }
 
@@ -138,8 +129,9 @@ public class StormMe {
         Player player = configuration.getPlayer("ush-ninja");
         Game game = configuration.getGame("ninja");
 
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
         ClanBrowser clanBrowser = injector.getInstance(ClanBrowser.class);
-        clanBrowser.setPlayer(player);
+//        clanBrowser.setPlayer(player);
 
         ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
         profileCodesDigger.setPlayer(player);
@@ -157,6 +149,7 @@ public class StormMe {
 
     private void invite() throws ServerWorkflowException {
         Player player = configuration.getPlayer("ush-ninja");
+        InviteService service = injector.getInstance(InviteService.class);
         service.invite(player);
 
 /*

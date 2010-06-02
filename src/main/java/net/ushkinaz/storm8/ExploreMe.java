@@ -7,7 +7,6 @@ import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.apache.commons.httpclient.NameValuePair;
 import org.slf4j.Logger;
@@ -33,14 +32,13 @@ public class ExploreMe {
     };
 
     private Configuration configuration;
-    private GameRequestorProvider gameRequestorProvider;
     private GameRequestor requestor;
 
 // -------------------------- OTHER METHODS --------------------------
 
     @Inject
-    private void ExploreMe(Configuration configuration, GameRequestorProvider gameRequestorProvider) {
-        this.gameRequestorProvider = gameRequestorProvider;
+    private void ExploreMe(Configuration configuration, GameRequestor gameRequestor) {
+        this.requestor = gameRequestor;
         this.configuration = configuration;
     }
 
@@ -57,8 +55,6 @@ public class ExploreMe {
 
     private void doIt() throws IOException {
         Player ninja = configuration.getPlayer("ush-ninja");
-
-        requestor = gameRequestorProvider.getRequestor(ninja);
         for (String uri : uris) {
             String body = requestor.postRequest(ninja.getGame().getGameURL() + uri, new PostBodyFactory() {
                 public NameValuePair[] createBody() {

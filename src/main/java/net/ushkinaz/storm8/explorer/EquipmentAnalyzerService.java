@@ -1,13 +1,13 @@
-package net.ushkinaz.storm8.digger;
+package net.ushkinaz.storm8.explorer;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.ushkinaz.storm8.digger.MatcherHelper;
 import net.ushkinaz.storm8.domain.Equipment;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.GameRequestorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +36,8 @@ public class EquipmentAnalyzerService {
     private static final Pattern upkeepPattern = Pattern.compile("Upkeep: .*?([\\d,]*?)</span>", Pattern.DOTALL);
     private static final Pattern imagePattern = Pattern.compile("http://static.storm8.com/nl/images/equipment/med/(\\d*)m.png\\?v=");
 
-    private GameRequestorProvider gameRequestorProvider;
     private ObjectContainer db;
-    private final MatcherHelper matcherHelper = new MatcherHelper();
+    private GameRequestor gameRequestor;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -49,21 +48,20 @@ public class EquipmentAnalyzerService {
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     @Inject
-    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
-        this.gameRequestorProvider = gameRequestorProvider;
-    }
-
-    @Inject
     public void setDb(ObjectContainer db) {
         this.db = db;
     }
 
-    // -------------------------- OTHER METHODS --------------------------
+    @Inject
+    public void setGameRequestor(GameRequestor gameRequestor) {
+        this.gameRequestor = gameRequestor;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public void dig(Player player) {
         LOGGER.info(">> dig");
         Game game = player.getGame();
-        GameRequestor gameRequestor = gameRequestorProvider.getRequestor(player);
 
         for (int cat = 1; cat <= 3; cat++) {
             String pageBuffer = gameRequestor.postRequest(SITE_URL + cat, null);
@@ -94,5 +92,4 @@ public class EquipmentAnalyzerService {
         db.commit();
         LOGGER.info("<< dig");
     }
-
 }

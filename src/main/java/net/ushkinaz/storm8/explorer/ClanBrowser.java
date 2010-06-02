@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.GameRequestorProvider;
 import net.ushkinaz.storm8.http.PageExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import static net.ushkinaz.storm8.digger.MatcherHelper.*;
 
 /**
  * @author Dmitry Sidorenko
- * @date Jun 1, 2010
  */
 public class ClanBrowser {
 // ------------------------------ FIELDS ------------------------------
@@ -29,7 +27,6 @@ public class ClanBrowser {
     private static final String LIST_URL = "group_member.php?groupMemberRange=";
     private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?puid=(\\d*)&(.*?)\">(.*?)</a><br/>");
 
-    private GameRequestorProvider gameRequestorProvider;
     private GameRequestor gameRequestor;
     private Player player;
     private String clanURL;
@@ -49,15 +46,15 @@ public class ClanBrowser {
     }
 
     @Inject
-    public void setGameRequestorProvider(GameRequestorProvider gameRequestorProvider) {
-        this.gameRequestorProvider = gameRequestorProvider;
+    public void setGameRequestor(GameRequestor gameRequestor) {
+        this.gameRequestor = gameRequestor;
     }
 
 
+    @Inject
     public void setPlayer(Player player) {
         this.player = player;
         clanURL = player.getGame().getGameURL() + LIST_URL;
-        gameRequestor = gameRequestorProvider.getRequestor(player);
     }
 
 // -------------------------- OTHER METHODS --------------------------

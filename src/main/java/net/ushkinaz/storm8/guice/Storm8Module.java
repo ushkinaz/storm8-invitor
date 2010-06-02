@@ -18,6 +18,7 @@ import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.Configuration;
+import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ public class Storm8Module extends AbstractModule {
 
     private DB4OProvider db4oOProvider;
     private XMLBinderFactory xmlBinderFactory;
+    private PlayerProvider playerProvider;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -56,6 +58,11 @@ public class Storm8Module extends AbstractModule {
 
         db4oOProvider = createDB4OProvider();
         bind(ObjectContainer.class).toProvider(db4oOProvider);
+
+        playerProvider = new PlayerProvider();
+        bind(Player.class).toProvider(playerProvider);
+
+        bind(PlayerProvider.class).toInstance(playerProvider);
 
         bind(Configuration.class).toProvider(StormConfigurator.class);
 
