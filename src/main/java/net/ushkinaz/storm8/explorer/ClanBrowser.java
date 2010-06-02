@@ -1,7 +1,8 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.explorer;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;
+import net.ushkinaz.storm8.configuration.CodesReader;
 import net.ushkinaz.storm8.digger.DBStoringCallback;
 import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.domain.ClanInviteSource;

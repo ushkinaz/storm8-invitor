@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.guice;
 
 import net.ushkinaz.storm8.dao.DB4OProvider;
 import org.slf4j.Logger;

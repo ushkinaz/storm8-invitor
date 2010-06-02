@@ -1,7 +1,7 @@
 package net.ushkinaz.storm8.digger;
 
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.CodesReader;
+import net.ushkinaz.storm8.configuration.CodesReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

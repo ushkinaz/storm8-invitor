@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.configuration;
 
 import com.google.inject.Singleton;
 import org.slf4j.Logger;

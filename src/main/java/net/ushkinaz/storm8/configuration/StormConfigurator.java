@@ -1,4 +1,4 @@
-package net.ushkinaz.storm8;
+package net.ushkinaz.storm8.configuration;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.Inject;

@@ -1,7 +1,7 @@
 package net.ushkinaz.storm8.digger;
 
 import net.ushkinaz.storm8.GuiceAbstractTest;
-import net.ushkinaz.storm8.StormConfigurator;
+import net.ushkinaz.storm8.configuration.StormConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 
