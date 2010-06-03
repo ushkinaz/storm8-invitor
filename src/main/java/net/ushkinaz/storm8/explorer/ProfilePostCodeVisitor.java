@@ -21,7 +21,7 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfilePostCodeVisitor.class);
 
-    private static final Pattern postCommentPattern = Pattern.compile("action=\"/(.*)\">");
+    private static final Pattern postCommentPattern = Pattern.compile("action=\"/(.*?)\">");
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
