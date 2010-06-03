@@ -83,6 +83,7 @@ public abstract class VictimsScanner {
             String timeStamp = match(matcher, 2);
             String name = match(matcher, 3);
             String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timeStamp);
+            LOGGER.debug(profileURL);
 
             try {
                 String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);

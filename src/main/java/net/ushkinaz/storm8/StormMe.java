@@ -114,6 +114,10 @@ public class StormMe {
             stormMe.digComments();
         }
 
+        if (arguments.contains("post-comments")) {
+            stormMe.postComment();
+        }
+
         if (arguments.contains("invite")) {
             stormMe.invite();
         }
@@ -130,6 +134,19 @@ public class StormMe {
 
         VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
         hitListScanner.visitVictims(profileCommentsVisitor);
+    }
+
+    private void postComment() {
+        Player player = configuration.getPlayer("ush-ninja");
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
+        ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
+//        profileCodesVisitor.setPlayer(player);
+
+//        VictimsScanner victimsScanner = injector.getInstance(ClanScanner.class);
+//        victimsScanner.visitVictims(profileCodesVisitor);
+
+        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
+        hitListScanner.visitVictims(postCodeVisitor);
     }
 
     private void scanTargets() {

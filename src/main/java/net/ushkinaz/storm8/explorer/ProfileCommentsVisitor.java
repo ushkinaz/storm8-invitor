@@ -72,4 +72,12 @@ public abstract class ProfileCommentsVisitor implements ProfileVisitor {
     public void setCallback(DBStoringCallbackFactory callbackFactory) {
         this.callbackFactory = callbackFactory;
     }
+
+    protected GameRequestor getGameRequestor() {
+        return gameRequestor;
+    }
+
+    protected Player getPlayer() {
+        return player;
+    }
 }
