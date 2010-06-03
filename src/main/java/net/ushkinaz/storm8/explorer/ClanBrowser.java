@@ -62,11 +62,19 @@ public class ClanBrowser {
 
     public void visitClanMembers(ProfileVisitor profileVisitor) {
         LOGGER.debug(">> visitClanMembers");
-        scanClan(0, profileVisitor);
+        scanVictims(0, profileVisitor);
         LOGGER.debug("<< visitClanMembers");
     }
 
-    private void scanClan(int scanFromIndex, ProfileVisitor profileVisitor) {
+    /**
+     * Scans single page of clan members.
+     * Since links on that page will often expire, a page will be reloaded starting at expired link, effectively moving down the list.
+     * So, in fact, this method will scan the whole clan.
+     *
+     * @param scanFromIndex  start scan from this index
+     * @param profileVisitor visitor to use
+     */
+    private void scanVictims(int scanFromIndex, ProfileVisitor profileVisitor) {
         String requestURL = clanURL + scanFromIndex;
         String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
         Matcher matcher = profilePattern.matcher(body);
@@ -90,7 +98,7 @@ public class ClanBrowser {
                 scanFromIndex++;
             } catch (PageExpiredException e) {
                 LOGGER.debug("Restarting scan, time stamp expired");
-                scanClan(scanFromIndex, profileVisitor);
+                scanVictims(scanFromIndex, profileVisitor);
                 break;
             }
 
