@@ -4,6 +4,7 @@ import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Victim;
 import net.ushkinaz.storm8.explorer.ClanBrowser;
 import net.ushkinaz.storm8.explorer.ProfileVisitor;
+import net.ushkinaz.storm8.explorer.VictimsScanner;
 import net.ushkinaz.storm8.http.PageExpiredException;
 import org.junit.After;
 import org.junit.Assert;
@@ -15,7 +16,7 @@ import org.junit.Test;
  * @date Jun 1, 2010
  */
 public class ClanBrowserTest extends GuiceAbstractTest {
-    private ClanBrowser clanBrowser;
+    private VictimsScanner clanBrowser;
     private Configuration configuration;
 
     @Before
@@ -31,7 +32,7 @@ public class ClanBrowserTest extends GuiceAbstractTest {
     @Test
     public void testVisitClanMembers() throws Exception {
         clanBrowser.setPlayer(configuration.getPlayer("ush-ninja"));
-        clanBrowser.visitClanMembers(new ProfileVisitor() {
+        clanBrowser.visitVictims(new ProfileVisitor() {
             @Override
             public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
             }
@@ -40,9 +41,9 @@ public class ClanBrowserTest extends GuiceAbstractTest {
 
     @Test
     public void testNotSingleton() throws Exception {
-        ClanBrowser br1 = injector.getInstance(ClanBrowser.class);
-        ClanBrowser br2 = injector.getInstance(ClanBrowser.class);
-        
+        VictimsScanner br1 = injector.getInstance(ClanBrowser.class);
+        VictimsScanner br2 = injector.getInstance(ClanBrowser.class);
+
         Assert.assertNotSame(br1, br2);
     }
 }

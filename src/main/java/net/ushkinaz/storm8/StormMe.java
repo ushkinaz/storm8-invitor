@@ -17,6 +17,7 @@ import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.explorer.ClanBrowser;
 import net.ushkinaz.storm8.explorer.ProfileCodesDigger;
+import net.ushkinaz.storm8.explorer.VictimsScanner;
 import net.ushkinaz.storm8.guice.PlayerProvider;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -123,11 +124,11 @@ public class StormMe {
         Player player = configuration.getPlayer("ush-ninja");
 
         injector.getInstance(PlayerProvider.class).setPlayer(player);
-        ClanBrowser clanBrowser = injector.getInstance(ClanBrowser.class);
+        VictimsScanner victimsScanner = injector.getInstance(ClanBrowser.class);
 
         ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
         profileCodesDigger.setPlayer(player);
-        clanBrowser.visitClanMembers(profileCodesDigger);
+        victimsScanner.visitVictims(profileCodesDigger);
     }
 
     private void scanTargets() {

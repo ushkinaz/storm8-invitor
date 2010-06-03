@@ -1,107 +1,44 @@
 package net.ushkinaz.storm8.explorer;
 
-import com.db4o.ObjectContainer;
-import com.google.inject.Inject;
-import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.Victim;
-import net.ushkinaz.storm8.http.GameRequestor;
-import net.ushkinaz.storm8.http.PageExpiredException;
-import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static net.ushkinaz.storm8.digger.MatcherHelper.*;
 
 /**
  * @author Dmitry Sidorenko
  */
-public class ClanBrowser {
+public class ClanBrowser extends VictimsScanner {
 // ------------------------------ FIELDS ------------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(ClanBrowser.class);
 
     private static final String LIST_URL = "group_member.php?groupMemberRange=";
-    private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?puid=(\\d*)&(.*?)\">(.*?)</a><br/>");
 
-    private GameRequestor gameRequestor;
-    private Player player;
-    private String clanURL;
-    private ObjectContainer db;
+    private int scanFromIndex;
+    private String clanURLBase;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     public ClanBrowser() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
-
-    @Inject
-    public void setDb(ObjectContainer db) {
-        this.db = db;
-    }
-
-    @Inject
-    public void setGameRequestor(GameRequestor gameRequestor) {
-        this.gameRequestor = gameRequestor;
-    }
-
-
-    @Inject
-    public void setPlayer(Player player) {
-        this.player = player;
-        clanURL = player.getGame().getGameURL() + LIST_URL;
+        scanFromIndex = 2480;
     }
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public void visitClanMembers(ProfileVisitor profileVisitor) {
-        LOGGER.debug(">> visitClanMembers");
-        scanVictims(0, profileVisitor);
-        LOGGER.debug("<< visitClanMembers");
+    @Override
+    protected String getListURL() {
+        LOGGER.info("Scan index: " + scanFromIndex);
+
+        if (clanURLBase == null) {
+            clanURLBase = getPlayer().getGame().getGameURL() + LIST_URL;
+        }
+
+        return clanURLBase + scanFromIndex;
     }
 
-    /**
-     * Scans single page of clan members.
-     * Since links on that page will often expire, a page will be reloaded starting at expired link, effectively moving down the list.
-     * So, in fact, this method will scan the whole clan.
-     *
-     * @param scanFromIndex  start scan from this index
-     * @param profileVisitor visitor to use
-     */
-    private void scanVictims(int scanFromIndex, ProfileVisitor profileVisitor) {
-        String requestURL = clanURL + scanFromIndex;
-        String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
-        Matcher matcher = profilePattern.matcher(body);
-        while (isMatchFound(matcher)) {
-            LOGGER.info("Scan index: " + scanFromIndex);
-            int puid = matchInteger(matcher);
-            String timestamp = match(matcher, 2);
-            String name = match(matcher, 3);
-            String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timestamp);
-
-            try {
-                String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);
-
-                Victim victim = new Victim(puid, player.getGame());
-                List<Victim> victims = db.queryByExample(victim);
-                victim.setName(name);
-                if (victims.size() > 0) {
-                    victim = victims.get(0);
-                }
-                profileVisitor.visitProfile(victim, profileHTML);
-                scanFromIndex++;
-            } catch (PageExpiredException e) {
-                LOGGER.debug("Restarting scan, time stamp expired");
-                scanVictims(scanFromIndex, profileVisitor);
-                break;
-            }
-
-        }
+    @Override
+    protected void profileVisited(Victim victim) {
+        scanFromIndex++;
     }
 }
