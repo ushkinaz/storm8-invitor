@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Dmitry Sidorenko
  */
-public class ClanBrowser extends VictimsScanner {
+public class ClanScanner extends VictimsScanner {
 // ------------------------------ FIELDS ------------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClanBrowser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClanScanner.class);
 
     private static final String LIST_URL = "group_member.php?groupMemberRange=";
 
@@ -20,8 +20,8 @@ public class ClanBrowser extends VictimsScanner {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public ClanBrowser() {
-        scanFromIndex = 0;
+    public ClanScanner() {
+        scanFromIndex = 2497;
     }
 
 // -------------------------- OTHER METHODS --------------------------

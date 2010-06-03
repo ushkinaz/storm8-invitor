@@ -14,12 +14,17 @@ import net.ushkinaz.storm8.configuration.StormConfigurator;
 import net.ushkinaz.storm8.dao.DB4OProvider;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.LiveCodesDigger;
+import net.ushkinaz.storm8.digger.annotations.Clan;
 import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
+import net.ushkinaz.storm8.digger.annotations.HitList;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
+import net.ushkinaz.storm8.explorer.ClanScanner;
+import net.ushkinaz.storm8.explorer.HitListScanner;
+import net.ushkinaz.storm8.explorer.VictimsScanner;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
 
@@ -68,6 +73,10 @@ public class Storm8Module extends AbstractModule {
 
         bind(CodesDigger.class).annotatedWith(OfficialForum.class).to(ForumCodesDigger.class);
         bind(CodesDigger.class).annotatedWith(GetCodesLive.class).to(LiveCodesDigger.class);
+
+        bind(VictimsScanner.class).annotatedWith(Clan.class).to(ClanScanner.class);
+
+        bind(VictimsScanner.class).annotatedWith(HitList.class).to(HitListScanner.class);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

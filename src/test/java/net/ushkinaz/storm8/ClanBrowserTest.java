@@ -2,7 +2,7 @@ package net.ushkinaz.storm8;
 
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Victim;
-import net.ushkinaz.storm8.explorer.ClanBrowser;
+import net.ushkinaz.storm8.explorer.ClanScanner;
 import net.ushkinaz.storm8.explorer.ProfileVisitor;
 import net.ushkinaz.storm8.explorer.VictimsScanner;
 import net.ushkinaz.storm8.http.PageExpiredException;
@@ -21,7 +21,7 @@ public class ClanBrowserTest extends GuiceAbstractTest {
 
     @Before
     public void setUp() throws Exception {
-        clanBrowser = injector.getInstance(ClanBrowser.class);
+        clanBrowser = injector.getInstance(ClanScanner.class);
         configuration = injector.getInstance(Configuration.class);
     }
 
@@ -41,8 +41,8 @@ public class ClanBrowserTest extends GuiceAbstractTest {
 
     @Test
     public void testNotSingleton() throws Exception {
-        VictimsScanner br1 = injector.getInstance(ClanBrowser.class);
-        VictimsScanner br2 = injector.getInstance(ClanBrowser.class);
+        VictimsScanner br1 = injector.getInstance(ClanScanner.class);
+        VictimsScanner br2 = injector.getInstance(ClanScanner.class);
 
         Assert.assertNotSame(br1, br2);
     }

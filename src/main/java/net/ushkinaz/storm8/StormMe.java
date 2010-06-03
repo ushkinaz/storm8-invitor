@@ -7,17 +7,16 @@ import com.db4o.defragment.DefragmentConfig;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
-import net.ushkinaz.storm8.explorer.EquipmentAnalyzerService;
 import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
+import net.ushkinaz.storm8.digger.annotations.HitList;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
 import net.ushkinaz.storm8.domain.Player;
-import net.ushkinaz.storm8.explorer.ClanBrowser;
-import net.ushkinaz.storm8.explorer.ProfileCodesDigger;
-import net.ushkinaz.storm8.explorer.VictimsScanner;
+import net.ushkinaz.storm8.explorer.*;
 import net.ushkinaz.storm8.guice.PlayerProvider;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
@@ -122,13 +121,15 @@ public class StormMe {
 
     private void digComments() {
         Player player = configuration.getPlayer("ush-ninja");
-
         injector.getInstance(PlayerProvider.class).setPlayer(player);
-        VictimsScanner victimsScanner = injector.getInstance(ClanBrowser.class);
-
         ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
-        profileCodesDigger.setPlayer(player);
-        victimsScanner.visitVictims(profileCodesDigger);
+//        profileCodesDigger.setPlayer(player);
+
+//        VictimsScanner victimsScanner = injector.getInstance(ClanScanner.class);
+//        victimsScanner.visitVictims(profileCodesDigger);
+
+        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
+        hitListScanner.visitVictims(profileCodesDigger);
     }
 
     private void scanTargets() {

@@ -49,6 +49,7 @@ public class ProfileCodesDigger implements ProfileVisitor {
         this.digger = digger;
     }
 
+    @Inject
     public void setPlayer(Player player) {
         this.player = player;
     }
