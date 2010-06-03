@@ -122,14 +122,14 @@ public class StormMe {
     private void digComments() {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
-        ProfileCodesDigger profileCodesDigger = injector.getInstance(ProfileCodesDigger.class);
-//        profileCodesDigger.setPlayer(player);
+        ProfileCodesVisitor profileCodesVisitor = injector.getInstance(ProfileCodesVisitor.class);
+//        profileCodesVisitor.setPlayer(player);
 
 //        VictimsScanner victimsScanner = injector.getInstance(ClanScanner.class);
-//        victimsScanner.visitVictims(profileCodesDigger);
+//        victimsScanner.visitVictims(profileCodesVisitor);
 
         VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-        hitListScanner.visitVictims(profileCodesDigger);
+        hitListScanner.visitVictims(profileCodesVisitor);
     }
 
     private void scanTargets() {
