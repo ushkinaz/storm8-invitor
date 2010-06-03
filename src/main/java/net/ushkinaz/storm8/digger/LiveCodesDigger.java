@@ -35,13 +35,6 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
     public LiveCodesDigger() {
     }
 
-// --------------------- GETTER / SETTER METHODS ---------------------
-
-    @Inject
-    public void setCallback(DBStoringCallbackFactory callbackFactory) {
-        this.callbackFactory = callbackFactory;
-    }
-
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -59,6 +52,11 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
     }
 
 // -------------------------- OTHER METHODS --------------------------
+
+    @Inject
+    public void setCallback(DBStoringCallbackFactory callbackFactory) {
+        this.callbackFactory = callbackFactory;
+    }
 
     @Inject
     public void setPageDigger(PageDigger pageDigger) {

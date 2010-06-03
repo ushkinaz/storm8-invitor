@@ -37,29 +37,6 @@ public class StormConfigurator implements Provider<Configuration> {
     public StormConfigurator() {
     }
 
-    protected void configure() {
-        try {
-            XMLObjectReader reader = XMLObjectReader.newInstance(new FileInputStream(CONFIG_XML));
-            assert binding != null;
-            reader.setBinding(binding);
-            configuration = reader.read("Configuration", Configuration.class);
-
-            for (Game game : configuration.getGames()) {
-                db.store(game);
-            }
-            for (Player player : configuration.getPlayers()) {
-                db.store(player);
-            }
-            db.commit();
-
-            reader.close();
-        } catch (XMLStreamException e) {
-            LOGGER.error("Error", e);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Error", e);
-        }
-    }
-
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     @Inject
@@ -85,5 +62,30 @@ public class StormConfigurator implements Provider<Configuration> {
             }
         }
         return configuration;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    protected void configure() {
+        try {
+            XMLObjectReader reader = XMLObjectReader.newInstance(new FileInputStream(CONFIG_XML));
+            assert binding != null;
+            reader.setBinding(binding);
+            configuration = reader.read("Configuration", Configuration.class);
+
+            for (Game game : configuration.getGames()) {
+                db.store(game);
+            }
+            for (Player player : configuration.getPlayers()) {
+                db.store(player);
+            }
+            db.commit();
+
+            reader.close();
+        } catch (XMLStreamException e) {
+            LOGGER.error("Error", e);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Error", e);
+        }
     }
 }

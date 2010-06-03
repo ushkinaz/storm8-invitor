@@ -3,20 +3,18 @@ package net.ushkinaz.storm8.digger;
 import java.util.regex.Matcher;
 
 public class MatcherHelper {
-
-    private MatcherHelper() {
-    }
+// -------------------------- STATIC METHODS --------------------------
 
     public static boolean isMatchFound(Matcher matcher) {
         return matcher.find();
     }
 
-    public static String match(Matcher matcher, int group) {
-        return matcher.group(group);
-    }
-
     public static String match(Matcher matcher) {
         return match(matcher, 1);
+    }
+
+    public static int matchInteger(Matcher matcher) {
+        return matchInteger(matcher, 1);
     }
 
     /**
@@ -34,7 +32,12 @@ public class MatcherHelper {
         return Integer.parseInt(result.replace(",", ""));
     }
 
-    public static int matchInteger(Matcher matcher) {
-        return matchInteger(matcher, 1);
+    public static String match(Matcher matcher, int group) {
+        return matcher.group(group);
+    }
+
+// --------------------------- CONSTRUCTORS ---------------------------
+
+    private MatcherHelper() {
     }
 }

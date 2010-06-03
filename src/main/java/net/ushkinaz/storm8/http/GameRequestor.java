@@ -41,12 +41,14 @@ public class GameRequestor extends HttpService {
         random = new Random();
     }
 
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     @Inject
     public void setPlayer(Player player) {
         this.player = player;
     }
 
-    // -------------------------- OTHER METHODS --------------------------
+// -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void initHttpClient(HttpClient httpClient) {

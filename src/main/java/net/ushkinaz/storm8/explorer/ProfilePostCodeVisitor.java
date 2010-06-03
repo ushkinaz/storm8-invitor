@@ -28,8 +28,6 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
     public ProfilePostCodeVisitor() {
     }
 
-// --------------------- GETTER / SETTER METHODS ---------------------
-
 // -------------------------- OTHER METHODS --------------------------
 
     @Override

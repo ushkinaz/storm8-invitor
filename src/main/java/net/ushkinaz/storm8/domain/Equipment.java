@@ -30,13 +30,7 @@ public class Equipment {
         this.game = game;
     }
 
-    // --------------------- GETTER / SETTER METHODS ---------------------
-
-
-    public Game getGame() {
-        return game;
-    }
-
+// --------------------- GETTER / SETTER METHODS ---------------------
 
     public int getAttack() {
         return attack;
@@ -60,6 +54,10 @@ public class Equipment {
 
     public void setDefence(int defence) {
         this.defence = defence;
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     public int getId() {
@@ -87,7 +85,6 @@ public class Equipment {
     }
 
 // ------------------------ CANONICAL METHODS ------------------------
-
 
     @Override
     public boolean equals(Object o) {

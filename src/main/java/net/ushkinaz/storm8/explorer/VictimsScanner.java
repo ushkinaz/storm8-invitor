@@ -106,11 +106,11 @@ public abstract class VictimsScanner {
         }
     }
 
+    protected abstract String getListURL();
+
     /**
      * Called when we successfully visited a profile
      * @param victim victim we visited
      */
     protected abstract void profileVisited(Victim victim);
-
-    protected abstract String getListURL();
 }

@@ -8,6 +8,7 @@ import net.ushkinaz.storm8.http.PageExpiredException;
  * @date Jun 2, 2010
  */
 public interface ProfileVisitor {
+// -------------------------- OTHER METHODS --------------------------
 
     void visitProfile(Victim victim, String profileHTML) throws PageExpiredException;
 }
