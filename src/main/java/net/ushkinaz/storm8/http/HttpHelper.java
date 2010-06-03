@@ -10,8 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HttpHelper {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
+
+// -------------------------- STATIC METHODS --------------------------
 
     public static Matcher getHttpMatcher(HttpClient httpClient, HttpMethod httpMethod, Pattern pattern) {
         return pattern.matcher(getHttpResponse(httpClient, httpMethod));

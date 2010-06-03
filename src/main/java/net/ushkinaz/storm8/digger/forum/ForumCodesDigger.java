@@ -34,12 +34,6 @@ public class ForumCodesDigger implements CodesDigger {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-
-    @Inject
-    public void setCallback(DBStoringCallbackFactory callbackFactory) {
-        this.callbackFactory = callbackFactory;
-    }
-
     @Inject
     public void setDb(ObjectContainer db) {
         this.db = db;
@@ -95,5 +89,12 @@ public class ForumCodesDigger implements CodesDigger {
         db.store(game);
         db.commit();
         LOGGER.debug("<< digCodes");
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    @Inject
+    public void setCallback(DBStoringCallbackFactory callbackFactory) {
+        this.callbackFactory = callbackFactory;
     }
 }

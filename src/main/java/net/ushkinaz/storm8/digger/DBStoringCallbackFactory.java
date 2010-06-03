@@ -22,10 +22,14 @@ public class DBStoringCallbackFactory {
     public DBStoringCallbackFactory() {
     }
 
+// --------------------- GETTER / SETTER METHODS ---------------------
+
     @Inject
     public void setDb(ObjectContainer db) {
         this.db = db;
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public PageDigger.CodesDiggerCallback get(final Game game, final ClanInviteSource inviteSource) {
         return new PageDigger.CodesDiggerCallback() {
@@ -41,5 +45,4 @@ public class DBStoringCallbackFactory {
             }
         };
     }
-
 }

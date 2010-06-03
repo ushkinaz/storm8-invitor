@@ -7,9 +7,7 @@ import org.apache.commons.httpclient.NameValuePair;
  * @date May 25, 2010
  */
 public interface PostBodyFactory {
-// -------------------------- OTHER METHODS --------------------------
-
-    NameValuePair[] createBody();
+// ------------------------------ FIELDS ------------------------------
 
     /**
      * Null object
@@ -20,4 +18,8 @@ public interface PostBodyFactory {
             return new NameValuePair[0];
         }
     };
+
+// -------------------------- OTHER METHODS --------------------------
+
+    NameValuePair[] createBody();
 }

@@ -117,5 +117,4 @@ public class Player extends Identifiable implements XMLSerializable {
         sb.append('}');
         return sb.toString();
     }
-
 }

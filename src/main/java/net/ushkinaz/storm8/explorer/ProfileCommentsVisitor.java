@@ -36,9 +36,17 @@ public abstract class ProfileCommentsVisitor implements ProfileVisitor {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
+    protected GameRequestor getGameRequestor() {
+        return gameRequestor;
+    }
+
     @Inject
     public void setGameRequestor(GameRequestor gameRequestor) {
         this.gameRequestor = gameRequestor;
+    }
+
+    protected Player getPlayer() {
+        return player;
     }
 
     @Inject
@@ -71,13 +79,5 @@ public abstract class ProfileCommentsVisitor implements ProfileVisitor {
     @Inject
     public void setCallback(DBStoringCallbackFactory callbackFactory) {
         this.callbackFactory = callbackFactory;
-    }
-
-    protected GameRequestor getGameRequestor() {
-        return gameRequestor;
-    }
-
-    protected Player getPlayer() {
-        return player;
     }
 }

@@ -6,14 +6,20 @@ package net.ushkinaz.storm8.http;
  * @author Dmitry Sidorenko
  */
 public class PageExpiredException extends RuntimeException {
+// ------------------------------ FIELDS ------------------------------
+
     private String url;
+
+// --------------------------- CONSTRUCTORS ---------------------------
+
+    public PageExpiredException() {
+    }
 
     public PageExpiredException(String url) {
         this.url = url;
     }
 
-    public PageExpiredException() {
-    }
+// ------------------------ CANONICAL METHODS ------------------------
 
     @Override
     public String toString() {

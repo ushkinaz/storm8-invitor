@@ -40,15 +40,14 @@ public class InviteService {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
+    @Inject
+    public void setClanDao(ClanDao clanDao) {
+        this.clanDao = clanDao;
+    }
 
     @Inject
     public void setGameRequestor(GameRequestor gameRequestor) {
         this.gameRequestor = gameRequestor;
-    }
-
-    @Inject
-    public void setClanDao(ClanDao clanDao) {
-        this.clanDao = clanDao;
     }
 
     @Inject

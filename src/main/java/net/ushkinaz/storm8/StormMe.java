@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
+import net.ushkinaz.storm8.digger.annotations.Clan;
 import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
 import net.ushkinaz.storm8.digger.annotations.HitList;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
@@ -41,13 +42,12 @@ public class StormMe {
     private Configuration configuration;
     private Injector injector;
 
-// --------------------- GETTER / SETTER METHODS ---------------------
+// --------------------------- CONSTRUCTORS ---------------------------
 
-
-    @Inject
-    public void setInjector(Injector injector) {
-        this.injector = injector;
+    public StormMe() {
     }
+
+// --------------------- GETTER / SETTER METHODS ---------------------
 
     @Inject
     public void setCodesDigger(@GetCodesLive CodesDigger codesDigger) {
@@ -64,11 +64,10 @@ public class StormMe {
         this.forumDigger = forumDigger;
     }
 
-// -------------------------- OTHER METHODS --------------------------
-
-    public StormMe() {
+    @Inject
+    public void setInjector(Injector injector) {
+        this.injector = injector;
     }
-
 
 // --------------------------- main() method ---------------------------
 
@@ -123,14 +122,30 @@ public class StormMe {
         }
     }
 
+    private void inventory() {
+        Player player = configuration.getPlayer("ush-ninja");
+
+        EquipmentAnalyzerService equipmentAnalyzerService = injector.getInstance(EquipmentAnalyzerService.class);
+        equipmentAnalyzerService.dig(player);
+    }
+
+    private void scanTargets() {
+    }
+
+    private void dig() throws ServerWorkflowException {
+        Game game = configuration.getGame("ninja");
+
+        forumDigger.digCodes(game);
+        codesDigger.digCodes(game);
+    }
+
     private void digComments() {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesVisitor.class);
-//        profileCodesVisitor.setPlayer(player);
 
-//        VictimsScanner victimsScanner = injector.getInstance(ClanScanner.class);
-//        victimsScanner.visitVictims(profileCodesVisitor);
+        VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
+        victimsScanner.visitVictims(profileCommentsVisitor);
 
         VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
         hitListScanner.visitVictims(profileCommentsVisitor);
@@ -140,30 +155,12 @@ public class StormMe {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
-//        profileCodesVisitor.setPlayer(player);
 
-//        VictimsScanner victimsScanner = injector.getInstance(ClanScanner.class);
-//        victimsScanner.visitVictims(profileCodesVisitor);
+        VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
+        victimsScanner.visitVictims(postCodeVisitor);
 
         VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
         hitListScanner.visitVictims(postCodeVisitor);
-    }
-
-    private void scanTargets() {
-    }
-
-    private void inventory() {
-        Player player = configuration.getPlayer("ush-ninja");
-
-        EquipmentAnalyzerService equipmentAnalyzerService = injector.getInstance(EquipmentAnalyzerService.class);
-        equipmentAnalyzerService.dig(player);
-    }
-
-    private void dig() throws ServerWorkflowException {
-        Game game = configuration.getGame("ninja");
-
-        forumDigger.digCodes(game);
-        codesDigger.digCodes(game);
     }
 
     private void invite() throws ServerWorkflowException {

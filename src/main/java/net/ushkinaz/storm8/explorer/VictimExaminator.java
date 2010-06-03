@@ -12,18 +12,29 @@ import static net.ushkinaz.storm8.digger.MatcherHelper.isMatchFound;
 import static net.ushkinaz.storm8.digger.MatcherHelper.matchInteger;
 
 public class VictimExaminator implements ProfileVisitor {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(VictimExaminator.class);
 
     static final Pattern itemPattern = Pattern.compile("src=\"http://static\\.storm8\\.com/nl/images/equipment/med/(\\d*)m\\.png\\?v=\\d*\"></div>.*?<div>x(\\d*)</div>", Pattern.DOTALL);
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     public VictimExaminator() {
     }
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface ProfileVisitor ---------------------
 
     @Override
     public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
         inventory(victim, profileHTML);
     }
+
+// -------------------------- OTHER METHODS --------------------------
 
     private void inventory(Victim victim, String profile) {
         Matcher itemMatcher = itemPattern.matcher(profile);
@@ -34,5 +45,4 @@ public class VictimExaminator implements ProfileVisitor {
             victim.getInventory().put(itemId, itemQuantity);
         }
     }
-
 }

@@ -16,18 +16,26 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class PlayerProvider implements Provider<Player> {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerProvider.class);
 
     ThreadLocal<Player> player = new ThreadLocal<Player>();
 
+// ------------------------ INTERFACE METHODS ------------------------
 
-    public void setPlayer(Player player) {
-        this.player.set(player);
-    }
+
+// --------------------- Interface Provider ---------------------
 
     @Override
     public Player get() {
         return player.get();
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    public void setPlayer(Player player) {
+        this.player.set(player);
     }
 }
