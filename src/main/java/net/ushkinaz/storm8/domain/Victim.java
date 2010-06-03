@@ -163,4 +163,20 @@ public class Victim {
     public int hashCode() {
         return puid;
     }
+
+    @Override
+    public String toString() {
+        return "Victim{" +
+                "puid=" + puid +
+                ", name='" + name + '\'' +
+                ", game=" + game +
+                ", clanMembers=" + clanMembers +
+                ", level=" + level +
+                ", missions=" + missions +
+                ", fightsWon=" + fightsWon +
+                ", fightsLost=" + fightsLost +
+                ", kills=" + kills +
+                ", deaths=" + deaths +
+                '}';
+    }
 }
