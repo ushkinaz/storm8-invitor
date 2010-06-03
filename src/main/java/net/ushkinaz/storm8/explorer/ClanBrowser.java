@@ -21,7 +21,7 @@ public class ClanBrowser extends VictimsScanner {
 // --------------------------- CONSTRUCTORS ---------------------------
 
     public ClanBrowser() {
-        scanFromIndex = 2480;
+        scanFromIndex = 0;
     }
 
 // -------------------------- OTHER METHODS --------------------------
