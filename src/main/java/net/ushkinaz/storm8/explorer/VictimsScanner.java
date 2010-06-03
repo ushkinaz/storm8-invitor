@@ -28,7 +28,7 @@ public abstract class VictimsScanner {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(VictimsScanner.class);
 
-    private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?puid=(\\d*)&(.*?)\">(.*?)</a><br/>");
+    private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?puid=(\\d*)&(.*?)\">(.*?)</a>");
     private GameRequestor gameRequestor;
     private Player player;
     private ObjectContainer db;
@@ -95,6 +95,8 @@ public abstract class VictimsScanner {
                 }
                 profileVisitor.visitProfile(victim, profileHTML);
                 profileVisited(victim);
+                db.store(victim);
+                db.commit();
             } catch (PageExpiredException e) {
                 LOGGER.debug("Restarting scan, time stamp expired");
                 scanVictims(profileVisitor);
