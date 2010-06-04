@@ -29,6 +29,8 @@ public abstract class VictimsScanner {
     private GameRequestor gameRequestor;
     private Player player;
     private ObjectContainer db;
+    private int maximumVictims;
+    private int victimsVisited;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -97,6 +99,13 @@ public abstract class VictimsScanner {
                 profileVisited(victim);
                 db.store(victim);
                 db.commit();
+                victimsVisited++;
+
+                LOGGER.debug("Scanned: " + victimsVisited);
+                if (maximumVictims > 0 && victimsVisited >= maximumVictims) {
+                    LOGGER.debug("Maximum Victims reached");
+                    return;
+                }
             } catch (PageExpiredException e) {
                 LOGGER.debug("Restarting scan, time stamp expired");
                 scanVictims(profileVisitors);
@@ -113,4 +122,12 @@ public abstract class VictimsScanner {
      * @param victim victim we visited
      */
     protected abstract void profileVisited(Victim victim);
+
+    public void setMaximumVictims(int maximumVictims) {
+        this.maximumVictims = maximumVictims;
+    }
+
+    public int getMaximumVictims() {
+        return maximumVictims;
+    }
 }
