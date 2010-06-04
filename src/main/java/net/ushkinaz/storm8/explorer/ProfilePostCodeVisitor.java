@@ -39,7 +39,7 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
 
     @Override
     protected void handleComments(PageDigger.CodesDiggerCallback callback, String commentsBody) {
-        final String commentText = "Please add my friend, Storm ID: Tymob, or code: V V 2 7 R";
+        final String commentText = "Please add this guy " + getPlayer().getCode();
 
         if (!blackListEvaluator.canPost(commentsBody, commentText)) {
             return;

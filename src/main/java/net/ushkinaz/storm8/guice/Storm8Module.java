@@ -64,6 +64,8 @@ public class Storm8Module extends AbstractModule {
         db4oOProvider = createDB4OProvider();
         bind(ObjectContainer.class).toProvider(db4oOProvider);
 
+        bind(DB4OProvider.class).toInstance(db4oOProvider);
+
         playerProvider = new PlayerProvider();
         bind(Player.class).toProvider(playerProvider);
 
