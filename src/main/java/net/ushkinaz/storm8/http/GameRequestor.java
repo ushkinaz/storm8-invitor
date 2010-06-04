@@ -37,15 +37,10 @@ public class GameRequestor extends HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public GameRequestor() {
-        random = new Random();
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setPlayer(Player player) {
+    public GameRequestor(Player player) {
         this.player = player;
+        random = new Random();
     }
 
 // -------------------------- OTHER METHODS --------------------------

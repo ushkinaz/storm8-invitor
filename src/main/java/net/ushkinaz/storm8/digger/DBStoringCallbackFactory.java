@@ -34,24 +34,17 @@ public class DBStoringCallbackFactory implements DBConsumer {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public DBStoringCallbackFactory() {
+    @Inject
+    public DBStoringCallbackFactory(DB4OProvider db4OProvider, ObjectContainer db) {
+        this.db = db;
         clanInvites = new LinkedBlockingQueue<ClanInvite>();
         consumer = new InvitesConsumer(clanInvites);
         workerThread = new Thread(consumer);
         workerThread.setDaemon(true);
         workerThread.setName("Storing invites");
         workerThread.start();
-    }
 
-    @Inject
-    public void setDB4OProvider(DB4OProvider db4OProvider) {
         db4OProvider.registerConsumer(this);
-    }
-// --------------------- GETTER / SETTER METHODS ---------------------
-
-    @Inject
-    public void setDb(ObjectContainer db) {
-        this.db = db;
     }
 
 // -------------------------- OTHER METHODS --------------------------

@@ -34,18 +34,9 @@ public class StormConfigurator implements Provider<Configuration> {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public StormConfigurator() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setBinding(XMLBinding binding) {
+    public StormConfigurator(XMLBinding binding, ObjectContainer db) {
         this.binding = binding;
-    }
-
-    @Inject
-    public void setDb(ObjectContainer db) {
         this.db = db;
     }
 

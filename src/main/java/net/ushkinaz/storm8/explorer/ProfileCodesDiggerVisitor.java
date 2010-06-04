@@ -27,13 +27,8 @@ public class ProfileCodesDiggerVisitor extends ProfileCommentsVisitor {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public ProfileCodesDiggerVisitor() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setDigger(PageDigger digger) {
+    public ProfileCodesDiggerVisitor(PageDigger digger) {
         this.digger = digger;
     }
 

@@ -34,25 +34,12 @@ public class InviteService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public InviteService() {
+    @Inject
+    public InviteService(InviteParser inviteParser, ClanDao clanDao, GameRequestor gameRequestor) {
         threadPoolExecutor = new ThreadPoolExecutor(0, 10, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
-    @Inject
-    public void setClanDao(ClanDao clanDao) {
-        this.clanDao = clanDao;
-    }
-
-    @Inject
-    public void setGameRequestor(GameRequestor gameRequestor) {
-        this.gameRequestor = gameRequestor;
-    }
-
-    @Inject
-    public void setInviteParser(InviteParser inviteParser) {
         this.inviteParser = inviteParser;
+        this.clanDao = clanDao;
+        this.gameRequestor = gameRequestor;
     }
 
 // -------------------------- OTHER METHODS --------------------------

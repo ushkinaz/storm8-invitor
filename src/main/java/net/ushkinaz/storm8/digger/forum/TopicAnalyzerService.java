@@ -31,13 +31,8 @@ public class TopicAnalyzerService extends HttpService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public TopicAnalyzerService() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setPageDigger(PageDigger pageDigger) {
+    public TopicAnalyzerService(PageDigger pageDigger) {
         this.pageDigger = pageDigger;
     }
 
