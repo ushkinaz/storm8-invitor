@@ -61,7 +61,6 @@ public abstract class ProfileCommentsVisitor implements ProfileVisitor {
 
     @Override
     public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
-        LOGGER.debug("Visiting: " + victim);
         PageDigger.CodesDiggerCallback callback = this.callbackFactory.get(player.getGame(), ClanInviteSource.INGAME_COMMENT);
 
         Matcher matcherComments = commentsPattern.matcher(profileHTML);

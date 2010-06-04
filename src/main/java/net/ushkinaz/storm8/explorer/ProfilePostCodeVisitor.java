@@ -1,5 +1,6 @@
 package net.ushkinaz.storm8.explorer;
 
+import com.google.inject.Inject;
 import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.apache.commons.httpclient.NameValuePair;
@@ -23,24 +24,31 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
 
     private static final Pattern postCommentPattern = Pattern.compile("action=\"/(.*?)\">");
 
+    private BlackListEvaluator blackListEvaluator;
+
+
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public ProfilePostCodeVisitor() {
+    @Inject
+    public ProfilePostCodeVisitor(BlackListEvaluator blackListEvaluator) {
+        this.blackListEvaluator = blackListEvaluator;
     }
+
 
 // -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void handleComments(PageDigger.CodesDiggerCallback callback, String commentsBody) {
-        final String commentText = "Please add " + getPlayer().getCode();
+        final String commentText = "Please add my friend, Storm ID: Tymob, or code: V V 2 7 R";
 
-        if (commentsBody.contains(commentText)) {
+        if (!blackListEvaluator.canPost(commentsBody, commentText)) {
             return;
         }
+
         Matcher postForm = postCommentPattern.matcher(commentsBody);
         while (isMatchFound(postForm)) {
             String url = getPlayer().getGame().getGameURL() + match(postForm);
-            getGameRequestor().postRequest(url, new PostBodyFactory() {
+            String result = getGameRequestor().postRequest(url, new PostBodyFactory() {
                 @Override
                 public NameValuePair[] createBody() {
                     return new NameValuePair[]{
@@ -49,6 +57,9 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
                     };
                 }
             });
+            if (result.contains("Your message contains inappropriate word(s).  Please enter a new message.")) {
+                throw new IllegalStateException("Failure: Your message contains inappropriate word(s): " + commentText);
+            }
         }
         LOGGER.debug("Code posted");
     }
