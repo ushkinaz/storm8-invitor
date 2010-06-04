@@ -9,9 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
-import net.ushkinaz.storm8.digger.annotations.Clan;
-import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
-import net.ushkinaz.storm8.digger.annotations.OfficialForum;
+import net.ushkinaz.storm8.digger.annotations.*;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
@@ -146,8 +144,13 @@ public class StormMe {
         VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
         victimsScanner.visitVictims(profileCommentsVisitor);
 
-//        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-//        hitListScanner.visitVictims(profileCommentsVisitor);
+        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
+        hitListScanner.setMaximumVictims(100);
+        hitListScanner.visitVictims(profileCommentsVisitor);
+
+        VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
+        fightsScanner.setMaximumVictims(5000);
+        fightsScanner.visitVictims(profileCommentsVisitor);
     }
 
     private void postComment() {
