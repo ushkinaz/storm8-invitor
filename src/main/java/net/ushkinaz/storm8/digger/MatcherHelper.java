@@ -25,10 +25,6 @@ public class MatcherHelper {
         return matcher.find();
     }
 
-    public static String match(Matcher matcher) {
-        return match(matcher, 1);
-    }
-
     public static int matchInteger(Matcher matcher) {
         return matchInteger(matcher, 1);
     }
@@ -50,6 +46,10 @@ public class MatcherHelper {
 
     public static String match(Matcher matcher, int group) {
         return matcher.group(group);
+    }
+
+    public static String match(Matcher matcher) {
+        return match(matcher, 1);
     }
 
 // --------------------------- CONSTRUCTORS ---------------------------

@@ -54,7 +54,8 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
         this.pageDigger = pageDigger;
         pageDigger.setCodePattern("<li>(\\w{5})</li>");
     }
-    // ------------------------ INTERFACE METHODS ------------------------
+
+// ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface CodesDigger ---------------------
@@ -69,7 +70,4 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
         }
         LOGGER.debug("<< digCodes");
     }
-
-// -------------------------- OTHER METHODS --------------------------
-
 }
