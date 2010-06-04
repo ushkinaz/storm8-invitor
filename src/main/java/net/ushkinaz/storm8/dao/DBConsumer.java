@@ -22,5 +22,9 @@ package net.ushkinaz.storm8.dao;
 public interface DBConsumer {
 // -------------------------- OTHER METHODS --------------------------
 
-    void requestShutdown();
+    /**
+     * Informs that DB is about to close.
+     * Gives a chance to consumer to commit all unfinished jobs.
+     */
+    void shutdownPending();
 }

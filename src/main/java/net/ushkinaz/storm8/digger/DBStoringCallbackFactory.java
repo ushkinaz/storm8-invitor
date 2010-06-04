@@ -69,12 +69,12 @@ public class DBStoringCallbackFactory implements DBConsumer {
 // --------------------- Interface DBConsumer ---------------------
 
     @Override
-    public void requestShutdown() {
-        LOGGER.debug(">> requestShutdown");
+    public void shutdownPending() {
+        LOGGER.debug(">> shutdownPending");
         shutdownRequested = true;
         consumer.finalizeQueue();
         workerThread.interrupt();
-        LOGGER.debug("<< requestShutdown");
+        LOGGER.debug("<< shutdownPending");
     }
 
 // -------------------------- OTHER METHODS --------------------------
