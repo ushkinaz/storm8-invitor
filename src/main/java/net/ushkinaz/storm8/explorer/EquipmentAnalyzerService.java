@@ -42,19 +42,12 @@ public class EquipmentAnalyzerService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    @SuppressWarnings({"UnusedDeclaration"})
     public EquipmentAnalyzerService() {
     }
 
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setDb(ObjectContainer db) {
+    public EquipmentAnalyzerService(ObjectContainer db, GameRequestor gameRequestor) {
         this.db = db;
-    }
-
-    @Inject
-    public void setGameRequestor(GameRequestor gameRequestor) {
         this.gameRequestor = gameRequestor;
     }
 

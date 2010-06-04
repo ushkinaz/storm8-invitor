@@ -29,23 +29,11 @@ public class ForumCodesDigger implements CodesDigger {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public ForumCodesDigger() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setDb(ObjectContainer db) {
+    public ForumCodesDigger(DBStoringCallbackFactory callbackFactory, ObjectContainer db, ForumAnalyzerService forumAnalyzerService, TopicAnalyzerService topicAnalyzerService) {
+        this.callbackFactory = callbackFactory;
         this.db = db;
-    }
-
-    @Inject
-    public void setForumAnalyzerService(ForumAnalyzerService forumAnalyzerService) {
         this.forumAnalyzerService = forumAnalyzerService;
-    }
-
-    @Inject
-    public void setTopicAnalyzerService(TopicAnalyzerService topicAnalyzerService) {
         this.topicAnalyzerService = topicAnalyzerService;
     }
 
@@ -89,12 +77,5 @@ public class ForumCodesDigger implements CodesDigger {
         db.store(game);
         db.commit();
         LOGGER.debug("<< digCodes");
-    }
-
-// -------------------------- OTHER METHODS --------------------------
-
-    @Inject
-    public void setCallback(DBStoringCallbackFactory callbackFactory) {
-        this.callbackFactory = callbackFactory;
     }
 }

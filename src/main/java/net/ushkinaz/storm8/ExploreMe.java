@@ -36,7 +36,7 @@ public class ExploreMe {
 // -------------------------- OTHER METHODS --------------------------
 
     @Inject
-    private void ExploreMe(Configuration configuration, GameRequestor gameRequestor) {
+    public void ExploreMe(Configuration configuration, GameRequestor gameRequestor) {
         this.requestor = gameRequestor;
         this.configuration = configuration;
     }

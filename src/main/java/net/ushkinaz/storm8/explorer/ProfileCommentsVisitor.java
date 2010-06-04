@@ -54,6 +54,11 @@ public abstract class ProfileCommentsVisitor implements ProfileVisitor {
         this.player = player;
     }
 
+    @Inject
+    public void setCallbackFactory(DBStoringCallbackFactory callbackFactory) {
+        this.callbackFactory = callbackFactory;
+    }
+
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -74,9 +79,4 @@ public abstract class ProfileCommentsVisitor implements ProfileVisitor {
 // -------------------------- OTHER METHODS --------------------------
 
     protected abstract void handleComments(PageDigger.CodesDiggerCallback callback, String commentsBody);
-
-    @Inject
-    public void setCallback(DBStoringCallbackFactory callbackFactory) {
-        this.callbackFactory = callbackFactory;
-    }
 }

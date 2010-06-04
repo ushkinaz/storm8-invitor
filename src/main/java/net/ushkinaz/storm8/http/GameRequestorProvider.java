@@ -28,18 +28,9 @@ public class GameRequestorProvider implements Provider<GameRequestor> {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public GameRequestorProvider() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setClientProvider(HttpClientProvider clientProvider) {
+    public GameRequestorProvider(HttpClientProvider clientProvider, PlayerProvider playerProvider) {
         this.clientProvider = clientProvider;
-    }
-
-    @Inject
-    public void setPlayerProvider(PlayerProvider playerProvider) {
         this.playerProvider = playerProvider;
     }
 
@@ -53,8 +44,7 @@ public class GameRequestorProvider implements Provider<GameRequestor> {
         GameRequestor gameRequestor;
         synchronized (requestors) {
             if (!requestors.containsKey(playerProvider.get())) {
-                gameRequestor = new GameRequestor();
-                gameRequestor.setPlayer(playerProvider.get());
+                gameRequestor = new GameRequestor(playerProvider.get());
                 gameRequestor.setClientProvider(clientProvider);
                 requestors.put(playerProvider.get(), gameRequestor);
             }

@@ -25,14 +25,10 @@ public class PageDigger {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public PageDigger() {
+@Inject
+    public PageDigger(CodesReader codesReader) {
         blackList = new HashSet<String>();
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
-    public Pattern getCodePattern() {
-        return codePattern;
+        codesReader.readFromFile("black.list", blackList);
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -51,11 +47,6 @@ public class PageDigger {
 
     protected void setCodePattern(String patternString) {
         this.codePattern = Pattern.compile(patternString);
-    }
-
-    @Inject
-    public void setCodesReader(CodesReader codesReader) {
-        codesReader.readFromFile("black.list", blackList);
     }
 
 // -------------------------- INNER CLASSES --------------------------

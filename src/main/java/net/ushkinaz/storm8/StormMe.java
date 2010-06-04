@@ -9,7 +9,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
-import net.ushkinaz.storm8.digger.annotations.*;
+import net.ushkinaz.storm8.digger.annotations.Clan;
+import net.ushkinaz.storm8.digger.annotations.FightList;
+import net.ushkinaz.storm8.digger.annotations.HitList;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
@@ -41,28 +43,11 @@ public class StormMe {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public StormMe() {
-    }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     @Inject
-    public void setCodesDigger(@GetCodesLive CodesDigger codesDigger) {
+    public StormMe(CodesDigger codesDigger, Configuration configuration, CodesDigger forumDigger, Injector injector) {
         this.codesDigger = codesDigger;
-    }
-
-    @Inject
-    public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
-    }
-
-    @Inject
-    public void setForumDigger(@OfficialForum CodesDigger forumDigger) {
         this.forumDigger = forumDigger;
-    }
-
-    @Inject
-    public void setInjector(Injector injector) {
         this.injector = injector;
     }
 

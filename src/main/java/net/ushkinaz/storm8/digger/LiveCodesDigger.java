@@ -32,10 +32,13 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public LiveCodesDigger() {
+    @Inject
+    public LiveCodesDigger(DBStoringCallbackFactory callbackFactory, PageDigger pageDigger) {
+        this.callbackFactory = callbackFactory;
+        this.pageDigger = pageDigger;
+        pageDigger.setCodePattern("<li>(\\w{5})</li>");
     }
-
-// ------------------------ INTERFACE METHODS ------------------------
+    // ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface CodesDigger ---------------------
@@ -53,14 +56,4 @@ public class LiveCodesDigger extends HttpService implements CodesDigger {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    @Inject
-    public void setCallback(DBStoringCallbackFactory callbackFactory) {
-        this.callbackFactory = callbackFactory;
-    }
-
-    @Inject
-    public void setPageDigger(PageDigger pageDigger) {
-        this.pageDigger = pageDigger;
-        pageDigger.setCodePattern("<li>(\\w{5})</li>");
-    }
 }
