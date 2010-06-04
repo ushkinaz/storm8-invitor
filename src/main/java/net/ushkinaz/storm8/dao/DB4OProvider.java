@@ -90,7 +90,7 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
     public synchronized void shutdown() {
         for (DBConsumer consumer : consumers) {
-            consumer.requestShutdown();
+            consumer.shutdownPending();
         }
 
         if (db != null && !db.ext().isClosed()) {
