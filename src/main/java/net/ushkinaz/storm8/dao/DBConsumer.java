@@ -20,6 +20,7 @@ package net.ushkinaz.storm8.dao;
  * @author Dmitry Sidorenko
  */
 public interface DBConsumer {
+// -------------------------- OTHER METHODS --------------------------
 
     void requestShutdown();
 }

@@ -37,10 +37,10 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 @Singleton
 public class DBStoringCallbackFactory implements DBConsumer {
-    @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger LOGGER = LoggerFactory.getLogger(DBStoringCallbackFactory.class);
 // ------------------------------ FIELDS ------------------------------
 
+    @SuppressWarnings({"UnusedDeclaration"})
+    private static final Logger LOGGER = LoggerFactory.getLogger(DBStoringCallbackFactory.class);
     private BlockingQueue<ClanInvite> clanInvites;
 
     private ObjectContainer db;
@@ -63,6 +63,20 @@ public class DBStoringCallbackFactory implements DBConsumer {
         db4OProvider.registerConsumer(this);
     }
 
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface DBConsumer ---------------------
+
+    @Override
+    public void requestShutdown() {
+        LOGGER.debug(">> requestShutdown");
+        shutdownRequested = true;
+        consumer.finalizeQueue();
+        workerThread.interrupt();
+        LOGGER.debug("<< requestShutdown");
+    }
+
 // -------------------------- OTHER METHODS --------------------------
 
     public PageDigger.CodesDiggerCallback get(final Game game, final ClanInviteSource inviteSource) {
@@ -77,19 +91,11 @@ public class DBStoringCallbackFactory implements DBConsumer {
                 } else {
                     clanInvites.add(clanInvite);
                 }
-
             }
         };
     }
 
-    @Override
-    public void requestShutdown() {
-        LOGGER.debug(">> requestShutdown");
-        shutdownRequested = true;
-        consumer.finalizeQueue();
-        workerThread.interrupt();
-        LOGGER.debug("<< requestShutdown");
-    }
+// -------------------------- INNER CLASSES --------------------------
 
     class InvitesConsumer implements Runnable {
         private final BlockingQueue<ClanInvite> queue;

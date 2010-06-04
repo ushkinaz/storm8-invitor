@@ -42,14 +42,12 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
 
     private BlackListEvaluator blackListEvaluator;
 
-
 // --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
     public ProfilePostCodeVisitor(BlackListEvaluator blackListEvaluator) {
         this.blackListEvaluator = blackListEvaluator;
     }
-
 
 // -------------------------- OTHER METHODS --------------------------
 

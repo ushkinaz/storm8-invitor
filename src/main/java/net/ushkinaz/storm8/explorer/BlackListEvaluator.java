@@ -24,8 +24,12 @@ import org.slf4j.LoggerFactory;
  * @date Jun 4, 2010
  */
 public class BlackListEvaluator {
+// ------------------------------ FIELDS ------------------------------
+
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(BlackListEvaluator.class);
+
+// -------------------------- OTHER METHODS --------------------------
 
     /**
      * Can we post this comment here?

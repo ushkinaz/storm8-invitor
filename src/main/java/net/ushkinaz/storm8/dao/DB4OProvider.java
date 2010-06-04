@@ -84,6 +84,10 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
 // -------------------------- OTHER METHODS --------------------------
 
+    public void registerConsumer(DBConsumer consumer) {
+        consumers.add(consumer);
+    }
+
     public synchronized void shutdown() {
         for (DBConsumer consumer : consumers) {
             consumer.requestShutdown();
@@ -96,9 +100,5 @@ public class DB4OProvider implements Provider<ObjectContainer> {
             LOGGER.info("DB shutdown done");
             db = null;
         }
-    }
-
-    public void registerConsumer(DBConsumer consumer) {
-        consumers.add(consumer);
     }
 }

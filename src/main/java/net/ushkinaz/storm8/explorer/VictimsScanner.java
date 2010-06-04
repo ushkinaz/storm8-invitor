@@ -55,6 +55,14 @@ public abstract class VictimsScanner {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
+    public int getMaximumVictims() {
+        return maximumVictims;
+    }
+
+    public void setMaximumVictims(int maximumVictims) {
+        this.maximumVictims = maximumVictims;
+    }
+
     protected Player getPlayer() {
         return player;
     }
@@ -138,12 +146,4 @@ public abstract class VictimsScanner {
      * @param victim victim we visited
      */
     protected abstract void profileVisited(Victim victim);
-
-    public void setMaximumVictims(int maximumVictims) {
-        this.maximumVictims = maximumVictims;
-    }
-
-    public int getMaximumVictims() {
-        return maximumVictims;
-    }
 }
