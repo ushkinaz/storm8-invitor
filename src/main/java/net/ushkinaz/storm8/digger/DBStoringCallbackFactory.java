@@ -110,7 +110,8 @@ public class DBStoringCallbackFactory implements DBConsumer {
         void consume(ClanInvite clanInvite) {
             if (db.ext().isClosed()) {
                 LOGGER.debug("Will I die, daddy?");
-                return;
+                throw new IllegalStateException("Will I die, daddy?");
+//                return;
             }
             Query query = db.query();
             query.constrain(ClanInvite.class);
@@ -120,6 +121,7 @@ public class DBStoringCallbackFactory implements DBConsumer {
             if (query.execute().size() == 0) {
                 db.store(clanInvite);
                 db.commit();
+                LOGGER.debug("Stored invite: " + clanInvite);
             }
         }
     }
