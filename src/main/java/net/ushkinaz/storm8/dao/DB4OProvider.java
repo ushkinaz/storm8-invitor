@@ -11,9 +11,11 @@ import net.ushkinaz.storm8.domain.xml.XMLDBFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Dmitry Sidorenko
- * @date May 25, 2010
  */
 public class DB4OProvider implements Provider<ObjectContainer> {
 // ------------------------------ FIELDS ------------------------------
@@ -23,10 +25,13 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 
     private EmbeddedConfiguration configuration;
     private ObjectContainer db;
+    private List<DBConsumer> consumers;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     public DB4OProvider(String dbFile) {
+        consumers = new ArrayList<DBConsumer>();
+
         configuration = Db4oEmbedded.newConfiguration();
 
         configureDatabase();
@@ -41,6 +46,8 @@ public class DB4OProvider implements Provider<ObjectContainer> {
     }
 
     private void configureDatabase() {
+        configuration.common().automaticShutDown(false);
+
         configuration.common().exceptionsOnNotStorable(true);
 
         configuration.common().add(new UniqueFieldValueConstraint(Game.class, "id"));
@@ -62,6 +69,10 @@ public class DB4OProvider implements Provider<ObjectContainer> {
 // -------------------------- OTHER METHODS --------------------------
 
     public synchronized void shutdown() {
+        for (DBConsumer consumer : consumers) {
+            consumer.requestShutdown();
+        }
+
         if (db != null && !db.ext().isClosed()) {
             LOGGER.info("DB shutdown");
             db.close();
@@ -69,5 +80,9 @@ public class DB4OProvider implements Provider<ObjectContainer> {
             LOGGER.info("DB shutdown done");
             db = null;
         }
+    }
+
+    public void registerConsumer(DBConsumer consumer) {
+        consumers.add(consumer);
     }
 }
