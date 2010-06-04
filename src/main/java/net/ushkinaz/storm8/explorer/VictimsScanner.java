@@ -14,13 +14,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.ushkinaz.storm8.digger.MatcherHelper.isMatchFound;
-import static net.ushkinaz.storm8.digger.MatcherHelper.match;
-import static net.ushkinaz.storm8.digger.MatcherHelper.matchInteger;
+import static net.ushkinaz.storm8.digger.MatcherHelper.*;
 
 /**
  * @author Dmitry Sidorenko
- * @date Jun 3, 2010
  */
 public abstract class VictimsScanner {
 // ------------------------------ FIELDS ------------------------------
@@ -61,9 +58,9 @@ public abstract class VictimsScanner {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public void visitVictims(ProfileVisitor profileVisitor) {
+    public void visitVictims(ProfileVisitor... profileVisitors) {
         LOGGER.debug(">> visitVictims");
-        scanVictims(profileVisitor);
+        scanVictims(profileVisitors);
         LOGGER.debug("<< visitVictims");
     }
 
@@ -72,9 +69,9 @@ public abstract class VictimsScanner {
      * Since links on that page will often expire, a page will be reloaded starting at expired link, effectively moving down the list.
      * So, in fact, this method will scan the whole clan.
      *
-     * @param profileVisitor visitor to use
+     * @param profileVisitors visitors to use
      */
-    private void scanVictims(ProfileVisitor profileVisitor) {
+    private void scanVictims(ProfileVisitor... profileVisitors) {
         String requestURL = getListURL();
         String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
         Matcher matcher = profilePattern.matcher(body);
@@ -94,13 +91,15 @@ public abstract class VictimsScanner {
                 if (victims.size() > 0) {
                     victim = victims.get(0);
                 }
-                profileVisitor.visitProfile(victim, profileHTML);
+                for (ProfileVisitor visitor : profileVisitors) {
+                    visitor.visitProfile(victim, profileHTML);
+                }
                 profileVisited(victim);
                 db.store(victim);
                 db.commit();
             } catch (PageExpiredException e) {
                 LOGGER.debug("Restarting scan, time stamp expired");
-                scanVictims(profileVisitor);
+                scanVictims(profileVisitors);
                 break;
             }
         }
@@ -110,6 +109,7 @@ public abstract class VictimsScanner {
 
     /**
      * Called when we successfully visited a profile
+     *
      * @param victim victim we visited
      */
     protected abstract void profileVisited(Victim victim);

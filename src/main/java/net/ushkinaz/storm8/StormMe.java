@@ -11,7 +11,6 @@ import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.annotations.Clan;
 import net.ushkinaz.storm8.digger.annotations.GetCodesLive;
-import net.ushkinaz.storm8.digger.annotations.HitList;
 import net.ushkinaz.storm8.digger.annotations.OfficialForum;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
@@ -142,25 +141,26 @@ public class StormMe {
     private void digComments() {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
-        ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesVisitor.class);
+        ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
 
         VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
         victimsScanner.visitVictims(profileCommentsVisitor);
 
-        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-        hitListScanner.visitVictims(profileCommentsVisitor);
+//        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
+//        hitListScanner.visitVictims(profileCommentsVisitor);
     }
 
     private void postComment() {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
+        ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
 
         VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
-        victimsScanner.visitVictims(postCodeVisitor);
+        victimsScanner.visitVictims(postCodeVisitor, profileCommentsVisitor);
 
-        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-        hitListScanner.visitVictims(postCodeVisitor);
+//        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
+//        hitListScanner.visitVictims(postCodeVisitor);
     }
 
     private void invite() throws ServerWorkflowException {

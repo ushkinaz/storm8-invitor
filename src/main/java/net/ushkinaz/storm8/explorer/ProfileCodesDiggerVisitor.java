@@ -15,11 +15,11 @@ import static net.ushkinaz.storm8.digger.MatcherHelper.match;
  *
  * @author Dmitry Sidorenko
  */
-public class ProfileCodesVisitor extends ProfileCommentsVisitor {
+public class ProfileCodesDiggerVisitor extends ProfileCommentsVisitor {
 // ------------------------------ FIELDS ------------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCodesVisitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCodesDiggerVisitor.class);
 
     private static final Pattern commentPattern = Pattern.compile("<div style=\"font-weight: bold; width: 250px\">(.*?)</div>", Pattern.DOTALL);
 
@@ -27,7 +27,7 @@ public class ProfileCodesVisitor extends ProfileCommentsVisitor {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public ProfileCodesVisitor() {
+    public ProfileCodesDiggerVisitor() {
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
