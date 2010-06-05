@@ -25,9 +25,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
+import net.ushkinaz.storm8.digger.LiveCodesDigger;
 import net.ushkinaz.storm8.digger.annotations.Clan;
 import net.ushkinaz.storm8.digger.annotations.FightList;
 import net.ushkinaz.storm8.digger.annotations.HitList;
+import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Game;
@@ -52,18 +54,14 @@ public class StormMe {
     private static final Logger LOGGER = LoggerFactory.getLogger(StormMe.class);
     private static final String STORM_DB = "storm8.db";
 
-    private CodesDigger forumDigger;
-    private CodesDigger codesDigger;
     private Configuration configuration;
     private Injector injector;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
-    public StormMe(CodesDigger codesDigger, Configuration configuration, CodesDigger forumDigger, Injector injector) {
-        this.codesDigger = codesDigger;
+    public StormMe(Configuration configuration, Injector injector) {
         this.configuration = configuration;
-        this.forumDigger = forumDigger;
         this.injector = injector;
     }
 
@@ -133,8 +131,11 @@ public class StormMe {
     private void dig() throws ServerWorkflowException {
         Game game = configuration.getGame("ninja");
 
+        CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
         forumDigger.digCodes(game);
-        codesDigger.digCodes(game);
+
+        CodesDigger liveCodesDigger = injector.getInstance(LiveCodesDigger.class);
+        liveCodesDigger.digCodes(game);
     }
 
     private void digComments() {
@@ -158,10 +159,10 @@ public class StormMe {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
-        ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
 
-        VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
-        victimsScanner.visitVictims(postCodeVisitor, profileCommentsVisitor);
+        VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
+        victimsScanner.setMaximumVictims(2000);
+        victimsScanner.visitVictims(postCodeVisitor);
 
 //        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
 //        hitListScanner.visitVictims(postCodeVisitor);
