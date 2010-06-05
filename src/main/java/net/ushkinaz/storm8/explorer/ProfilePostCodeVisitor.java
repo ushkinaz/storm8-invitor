@@ -41,6 +41,7 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
     private static final Pattern postCommentPattern = Pattern.compile("action=\"/(.*?)\">");
 
     private BlackListEvaluator blackListEvaluator;
+    private int actualCodesPosted = 0;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -75,6 +76,6 @@ public class ProfilePostCodeVisitor extends ProfileCommentsVisitor {
                 throw new IllegalStateException("Failure: Your message contains inappropriate word(s): " + commentText);
             }
         }
-        LOGGER.debug("Code posted");
+        LOGGER.debug("Codes posted: " + ++actualCodesPosted);
     }
 }
