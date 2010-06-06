@@ -17,12 +17,10 @@
 package net.ushkinaz.storm8.digger;
 
 import com.google.inject.Inject;
-import net.ushkinaz.storm8.configuration.CodesReader;
+import net.ushkinaz.storm8.configuration.CodesBlackList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,15 +34,14 @@ public class PageDigger {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageDigger.class);
 
     private static final String CODE_PATTERN = "\\w{5}";
-    private Set<String> blackList;
     private Pattern codePattern = Pattern.compile("\\W(" + CODE_PATTERN + ")\\W");
+    private CodesBlackList codesBlackList;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
-    public PageDigger(CodesReader codesReader) {
-        blackList = new HashSet<String>();
-        codesReader.readFromFile("black.list", blackList);
+    public PageDigger(CodesBlackList codesBlackList) {
+        this.codesBlackList = codesBlackList;
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -53,7 +50,7 @@ public class PageDigger {
         Matcher matcher = codePattern.matcher(post);
         while (matcher.find()) {
             String code = matcher.group(1).toUpperCase();
-            if (blackList.contains(code)) {
+            if (codesBlackList.isBlackListed(code)) {
                 continue;
             }
             LOGGER.debug("Code: " + code);

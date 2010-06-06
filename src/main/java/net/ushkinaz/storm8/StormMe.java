@@ -83,6 +83,8 @@ public class StormMe {
 
         StormMe stormMe = injector.getInstance(StormMe.class);
 
+        LOGGER.debug("Parsing cli");
+
         if (arguments.contains("clean")) {
             ObjectContainer db = injector.getInstance(ObjectContainer.class);
             for (Object o : db.queryByExample(Game.class)) {
