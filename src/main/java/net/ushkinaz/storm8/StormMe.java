@@ -39,6 +39,7 @@ import net.ushkinaz.storm8.guice.PlayerProvider;
 import net.ushkinaz.storm8.guice.Storm8Module;
 import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
+import net.ushkinaz.storm8.money.BankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +116,32 @@ public class StormMe {
 
         if (arguments.contains("invite")) {
             stormMe.invite();
+        }
+
+        if (arguments.contains("bank-money")) {
+            stormMe.bankMoney();
+        }
+    }
+
+    private void bankMoney() {
+        Player player = configuration.getPlayer("ush-ninja");
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
+
+        BankService bankService = injector.getInstance(BankService.class);
+        boolean doTheJob = true;
+        while (doTheJob) {
+            try {
+                //Doing it twice to be sure we didn't miss the time
+                bankService.putAllMoneyInBank(player.getGame());
+                Thread.sleep(5000);
+                int nextIncome = bankService.putAllMoneyInBank(player.getGame());
+                LOGGER.info("Sleeping for " + nextIncome + " milliseconds");
+                Thread.sleep(nextIncome);
+            } catch (InterruptedException e) {
+                doTheJob = false;
+                LOGGER.error("Interrupted", e);
+                break;
+            }
         }
     }
 
