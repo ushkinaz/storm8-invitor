@@ -23,5 +23,6 @@ package net.ushkinaz.storm8.domain;
 public enum ClanInviteSource {
     FORUM,
     LIVE_CODES,
-    INGAME_COMMENT
+    INGAME_COMMENT,
+    INGAME_BROADCAST,
 }
