@@ -37,7 +37,6 @@ import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.explorer.*;
 import net.ushkinaz.storm8.guice.PlayerProvider;
 import net.ushkinaz.storm8.guice.Storm8Module;
-import net.ushkinaz.storm8.http.ServerWorkflowException;
 import net.ushkinaz.storm8.invite.InviteService;
 import net.ushkinaz.storm8.money.BankService;
 import org.slf4j.Logger;
@@ -100,12 +99,20 @@ public class StormMe {
             stormMe.inventory();
         }
 
+        if (arguments.contains("batch")) {
+            stormMe.batch();
+        }
+
         if (arguments.contains("scan-targets")) {
             stormMe.scanTargets();
         }
 
         if (arguments.contains("dig")) {
             stormMe.dig();
+        }
+
+        if (arguments.contains("dig-broadcasts")) {
+            stormMe.digBroadcasts();
         }
 
         if (arguments.contains("dig-comments")) {
@@ -123,6 +130,40 @@ public class StormMe {
         if (arguments.contains("bank-money")) {
             stormMe.bankMoney();
         }
+    }
+
+    private void batch() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bankMoney();
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    digBroadcasts();
+                    digComments();
+                    dig();
+                    invite();
+                    try {
+                        Thread.sleep(1000 * 60 * 60);
+                    } catch (InterruptedException e) {
+                        //TODO: add proper handling
+                        LOGGER.error("Error", e);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void digBroadcasts() {
+        Player player = configuration.getPlayer("ush-ninja");
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
+        BroadcastsScanner broadcastsDigger = injector.getInstance(BroadcastsScanner.class);
+        broadcastsDigger.digCodes();
+        broadcastsDigger.setMaximumScans(1);
     }
 
     private void bankMoney() {
@@ -157,7 +198,7 @@ public class StormMe {
     private void scanTargets() {
     }
 
-    private void dig() throws ServerWorkflowException {
+    private void dig() {
         Game game = configuration.getGame("ninja");
 
         CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
@@ -197,7 +238,7 @@ public class StormMe {
 //        hitListScanner.visitVictims(postCodeVisitor);
     }
 
-    private void invite() throws ServerWorkflowException {
+    private void invite() {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         InviteService service = injector.getInstance(InviteService.class);
