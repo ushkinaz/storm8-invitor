@@ -108,7 +108,7 @@ public class StormMe {
         }
 
         if (arguments.contains("dig")) {
-            stormMe.dig();
+            stormMe.digSites();
         }
 
         if (arguments.contains("dig-broadcasts")) {
@@ -145,7 +145,7 @@ public class StormMe {
                 while (true) {
                     digBroadcasts();
                     digComments();
-                    dig();
+                    digSites();
                     invite();
                     try {
                         Thread.sleep(1000 * 60 * 60);
@@ -198,7 +198,7 @@ public class StormMe {
     private void scanTargets() {
     }
 
-    private void dig() {
+    private void digSites() {
         Game game = configuration.getGame("ninja");
 
         CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
@@ -221,7 +221,7 @@ public class StormMe {
         hitListScanner.visitVictims(profileCommentsVisitor);
 
         VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-        fightsScanner.setMaximumVictims(5000);
+        fightsScanner.setMaximumVictims(100);
         fightsScanner.visitVictims(profileCommentsVisitor);
     }
 
