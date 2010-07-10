@@ -147,12 +147,14 @@ public class StormMe {
                     digComments();
                     digSites();
                     invite();
+/*
                     try {
                         Thread.sleep(1000 * 60 * 60);
                     } catch (InterruptedException e) {
                         //TODO: add proper handling
                         LOGGER.error("Error", e);
                     }
+*/
                 }
             }
         }).start();
@@ -217,11 +219,11 @@ public class StormMe {
         victimsScanner.visitVictims(profileCommentsVisitor);
 
         VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-        hitListScanner.setMaximumVictims(100);
+        hitListScanner.setMaximumVictims(1000);
         hitListScanner.visitVictims(profileCommentsVisitor);
 
         VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-        fightsScanner.setMaximumVictims(100);
+        fightsScanner.setMaximumVictims(1000);
         fightsScanner.visitVictims(profileCommentsVisitor);
     }
 
