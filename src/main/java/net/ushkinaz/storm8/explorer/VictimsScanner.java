@@ -47,6 +47,7 @@ public abstract class VictimsScanner {
     private ObjectContainer db;
     private int maximumVictims;
     private int victimsVisited;
+    private VictimScanFilter victimFilter;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -70,6 +71,10 @@ public abstract class VictimsScanner {
     @Inject
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public void setVictimFilter(VictimScanFilter victimFilter) {
+        this.victimFilter = victimFilter;
     }
 
     @Inject
@@ -107,10 +112,16 @@ public abstract class VictimsScanner {
             String name = match(matcher, 3);
             String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timeStamp);
 
+            Victim victim = new Victim(puid, player.getGame());
+            victim.setName(name);
+
+            if (victimFilter != null && victimFilter.filter(victim)) {
+                continue;
+            }
+
             try {
                 String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);
 
-                Victim victim = new Victim(puid, player.getGame());
                 List<Victim> victims = db.queryByExample(victim);
                 victim.setName(name);
                 if (victims.size() > 0) {

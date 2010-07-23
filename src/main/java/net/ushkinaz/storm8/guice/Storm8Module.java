@@ -25,6 +25,7 @@ package net.ushkinaz.storm8.guice;
 
 import com.db4o.ObjectContainer;
 import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 import javolution.xml.XMLBinding;
 import net.ushkinaz.storm8.configuration.StormConfigurator;
 import net.ushkinaz.storm8.dao.DB4OProvider;
@@ -35,10 +36,7 @@ import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.Configuration;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.domain.xml.XMLBinderFactory;
-import net.ushkinaz.storm8.explorer.ClanScanner;
-import net.ushkinaz.storm8.explorer.FightScanner;
-import net.ushkinaz.storm8.explorer.HitListScanner;
-import net.ushkinaz.storm8.explorer.VictimsScanner;
+import net.ushkinaz.storm8.explorer.*;
 import net.ushkinaz.storm8.invite.InviteService;
 import org.slf4j.Logger;
 
@@ -93,6 +91,11 @@ public class Storm8Module extends AbstractModule {
         bind(VictimsScanner.class).annotatedWith(Clan.class).to(ClanScanner.class);
         bind(VictimsScanner.class).annotatedWith(HitList.class).to(HitListScanner.class);
         bind(VictimsScanner.class).annotatedWith(FightList.class).to(FightScanner.class);
+        bind(VictimsScanner.class).annotatedWith(Comments.class).to(MyCommentsScanner.class);
+
+        bind(VictimScanFilter.class).annotatedWith(ByName.class).to(VictimScanFilterByName.class);
+
+        bind(String.class).annotatedWith(Names.named("victim name")).toInstance("Hong kong fue");
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
