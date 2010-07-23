@@ -47,30 +47,60 @@ public class BankService {
         this.gameRequestor = gameRequestor;
     }
 
+    public void ensureHaveCash(Game game, int amount) {
+        String cash = getCash(gameRequestor.postRequest(game.getGameURL() + URL, PostBodyFactory.NULL));
+        int intCash = Integer.parseInt(cash);
+        if (intCash < amount) {
+            withdraw(game, amount - intCash);
+        }
+    }
+
+    public void withdraw(Game game, final int amount) {
+        String result = gameRequestor.postRequest(game.getGameURL() + URL, new PostBodyFactory() {
+            @Override
+            public NameValuePair[] createBody() {
+                return new NameValuePair[]{
+                        new NameValuePair("withdrawAmount", Integer.toString(amount)),
+                        new NameValuePair("action", "Withdraw"),
+                        new NameValuePair("sk", "1"),
+                };
+            }
+        });
+        if (result.contains("You successfully withdrew")) {
+            LOGGER.info("Withdrew: " + amount);
+        }
+    }
+
     public int putAllMoneyInBank(Game game) {
         // successfully deposited
         String bankHTML = gameRequestor.postRequest(game.getGameURL() + URL, PostBodyFactory.NULL);
 
         checkBalance(bankHTML);
-        Matcher matcherCodes = amountPattern.matcher(bankHTML);
-        if (matcherCodes.find()) {
-            final String cashString = matcherCodes.group(1);
-            LOGGER.info("Cash: " + cashString);
-            String result = gameRequestor.postRequest(game.getGameURL() + URL, new PostBodyFactory() {
-                @Override
-                public NameValuePair[] createBody() {
-                    return new NameValuePair[]{
-                            new NameValuePair("depositAmount", cashString),
-                            new NameValuePair("action", "Deposit"),
-                            new NameValuePair("sk", "1"),
-                    };
-                }
-            });
-            if (result.contains("You successfully deposited")) {
-                LOGGER.info("Deposited: " + cashString);
+        final String cashString = getCash(bankHTML);
+        String result = gameRequestor.postRequest(game.getGameURL() + URL, new PostBodyFactory() {
+            @Override
+            public NameValuePair[] createBody() {
+                return new NameValuePair[]{
+                        new NameValuePair("depositAmount", cashString),
+                        new NameValuePair("action", "Deposit"),
+                        new NameValuePair("sk", "1"),
+                };
             }
+        });
+        if (result.contains("You successfully deposited")) {
+            LOGGER.info("Deposited: " + cashString);
         }
         return nextIncome(bankHTML);
+    }
+
+    private String getCash(CharSequence bankHTML) {
+        Matcher matcherCodes = amountPattern.matcher(bankHTML);
+        String cashString = "";
+        if (matcherCodes.find()) {
+            cashString = matcherCodes.group(1);
+            LOGGER.info("Cash: " + cashString);
+        }
+        return cashString;
     }
 
     private void checkBalance(String bankHTML) {

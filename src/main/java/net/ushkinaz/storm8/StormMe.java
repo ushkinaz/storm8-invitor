@@ -26,9 +26,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.LiveCodesDigger;
-import net.ushkinaz.storm8.digger.annotations.Clan;
-import net.ushkinaz.storm8.digger.annotations.FightList;
-import net.ushkinaz.storm8.digger.annotations.HitList;
+import net.ushkinaz.storm8.digger.annotations.*;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
@@ -44,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -95,6 +94,10 @@ public class StormMe {
             db.commit();
         }
 
+        if (arguments.contains("hitlist-coment")) {
+            stormMe.hitlist();
+        }
+
         if (arguments.contains("inventory")) {
             stormMe.inventory();
         }
@@ -130,6 +133,47 @@ public class StormMe {
         if (arguments.contains("bank-money")) {
             stormMe.bankMoney();
         }
+    }
+
+    private void hitlist() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bankMoney();
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Player player = configuration.getPlayer("ush-ninja");
+                injector.getInstance(PlayerProvider.class).setPlayer(player);
+
+                VictimScanFilter victimFilter = injector.getInstance(Key.get(VictimScanFilter.class, ByName.class));
+                VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Comments.class));
+                victimsScanner.setVictimFilter(victimFilter);
+                ProfileVisitor hitListVisitor = injector.getInstance(HitListVisitor.class);
+
+                final Random random = new Random();
+                boolean doTheJob = true;
+                while (doTheJob) {
+                    try {
+                        victimsScanner.visitVictims(hitListVisitor);
+                        //Minimal - once in 10 secs
+
+                        //Once in 10 mins + random
+                        Thread.sleep(getNextPause(random));
+                    } catch (InterruptedException e) {
+                        doTheJob = false;
+                        LOGGER.error("Interrupted", e);
+                        break;
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private int getNextPause(Random random) {
+        return 600000 + random.nextInt(300000);
     }
 
     private void batch() {
