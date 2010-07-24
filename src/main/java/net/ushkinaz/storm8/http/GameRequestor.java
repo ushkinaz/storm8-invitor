@@ -90,7 +90,7 @@ public class GameRequestor extends HttpService {
             //randomlySleep();
             asString = postMethod.getResponseBodyAsString();
         } catch (IOException e) {
-            LOGGER.error("Error in IO", e);
+            LOGGER.error("Error requesting:" + requestURL, e);
         }
         if (asString.contains("Error: The profile for the requested player cannot be displayed at this time.")) {
             throw new PageExpiredException(requestURL);

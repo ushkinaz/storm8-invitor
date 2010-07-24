@@ -49,7 +49,12 @@ public class BankService {
 
     public void ensureHaveCash(Game game, int amount) {
         String cash = getCash(gameRequestor.postRequest(game.getGameURL() + URL, PostBodyFactory.NULL));
-        int intCash = Integer.parseInt(cash);
+        int intCash = 0;
+        try {
+            intCash = Integer.parseInt(cash);
+        } catch (NumberFormatException e) {
+            LOGGER.warn("Cash parsing", e);
+        }
         if (intCash < amount) {
             withdraw(game, amount - intCash);
         }
