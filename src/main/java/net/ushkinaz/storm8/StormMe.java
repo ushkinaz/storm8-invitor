@@ -141,7 +141,7 @@ public class StormMe {
             public void run() {
                 bankMoney();
             }
-        }).start();
+        }, "Banking").start();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -161,7 +161,9 @@ public class StormMe {
                         //Minimal - once in 10 secs
 
                         //Once in 10 mins + random
-                        Thread.sleep(getNextPause(random));
+                        final int pause = getNextPause(random);
+                        LOGGER.info("Sleeping for " + pause + " milliseconds");
+                        Thread.sleep(pause);
                     } catch (InterruptedException e) {
                         doTheJob = false;
                         LOGGER.error("Interrupted", e);
@@ -169,11 +171,12 @@ public class StormMe {
                     }
                 }
             }
-        }).start();
+        }, "HitListing").start();
     }
 
     private int getNextPause(Random random) {
-        return 600000 + random.nextInt(300000);
+        return 10000;
+//        return 300000 + random.nextInt(300000);
     }
 
     private void batch() {
@@ -221,8 +224,8 @@ public class StormMe {
         while (doTheJob) {
             try {
                 //Doing it twice to be sure we didn't miss the time
-                bankService.putAllMoneyInBank(player.getGame());
-                Thread.sleep(5000);
+//                bankService.putAllMoneyInBank(player.getGame());
+//                Thread.sleep(5000);
                 int nextIncome = bankService.putAllMoneyInBank(player.getGame());
                 LOGGER.info("Sleeping for " + nextIncome + " milliseconds");
                 Thread.sleep(nextIncome);
