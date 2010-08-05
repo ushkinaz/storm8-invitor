@@ -53,7 +53,7 @@ public class BankService {
         try {
             intCash = Integer.parseInt(cash);
         } catch (NumberFormatException e) {
-            LOGGER.warn("Cash parsing", e);
+            LOGGER.warn("Cash parsing error: " + e.getMessage());
         }
         if (intCash < amount) {
             withdraw(game, amount - intCash);

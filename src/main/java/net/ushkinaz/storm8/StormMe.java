@@ -167,16 +167,28 @@ public class StormMe {
                     } catch (InterruptedException e) {
                         doTheJob = false;
                         LOGGER.error("Interrupted", e);
-                        break;
+                    } catch (StopVisitingException e) {
+                        final int waitFor = 3600000;
+                        LOGGER.warn("Stop visiting, waiting for " + waitFor);
+                        sleepFor(waitFor);
                     }
                 }
+                LOGGER.info("Hitlist job finished");
             }
         }, "HitListing").start();
     }
 
+    private void sleepFor(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted", e);
+        }
+    }
+
     private int getNextPause(Random random) {
-        return 10000;
-//        return 300000 + random.nextInt(300000);
+//        return 10000;
+        return 300000 + random.nextInt(300000);
     }
 
     private void batch() {
@@ -194,14 +206,12 @@ public class StormMe {
                     digComments();
                     digSites();
                     invite();
-/*
                     try {
                         Thread.sleep(1000 * 60 * 60);
                     } catch (InterruptedException e) {
                         //TODO: add proper handling
                         LOGGER.error("Error", e);
                     }
-*/
                 }
             }
         }).start();
@@ -211,8 +221,8 @@ public class StormMe {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         BroadcastsScanner broadcastsDigger = injector.getInstance(BroadcastsScanner.class);
+        broadcastsDigger.setMaximumScans(1000);
         broadcastsDigger.digCodes();
-        broadcastsDigger.setMaximumScans(1);
     }
 
     private void bankMoney() {
@@ -232,7 +242,6 @@ public class StormMe {
             } catch (InterruptedException e) {
                 doTheJob = false;
                 LOGGER.error("Interrupted", e);
-                break;
             }
         }
     }
@@ -258,30 +267,38 @@ public class StormMe {
     }
 
     private void digComments() {
-        Player player = configuration.getPlayer("ush-ninja");
-        injector.getInstance(PlayerProvider.class).setPlayer(player);
-        ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
+        try {
+            Player player = configuration.getPlayer("ush-ninja");
+            injector.getInstance(PlayerProvider.class).setPlayer(player);
+            ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
 
-        VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
-        victimsScanner.visitVictims(profileCommentsVisitor);
+            VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
+            victimsScanner.visitVictims(profileCommentsVisitor);
 
-        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-        hitListScanner.setMaximumVictims(1000);
-        hitListScanner.visitVictims(profileCommentsVisitor);
+            VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
+            hitListScanner.setMaximumVictims(2000);
+            hitListScanner.visitVictims(profileCommentsVisitor);
 
-        VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-        fightsScanner.setMaximumVictims(1000);
-        fightsScanner.visitVictims(profileCommentsVisitor);
+            VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
+            fightsScanner.setMaximumVictims(1000);
+            fightsScanner.visitVictims(profileCommentsVisitor);
+        } catch (StopVisitingException e) {
+            LOGGER.error("Error", e);
+        }
     }
 
     private void postComment() {
-        Player player = configuration.getPlayer("ush-ninja");
-        injector.getInstance(PlayerProvider.class).setPlayer(player);
-        ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
+        try {
+            Player player = configuration.getPlayer("ush-ninja");
+            injector.getInstance(PlayerProvider.class).setPlayer(player);
+            ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
 
-        VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-        victimsScanner.setMaximumVictims(2000);
-        victimsScanner.visitVictims(postCodeVisitor);
+            VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
+            victimsScanner.setMaximumVictims(2000);
+            victimsScanner.visitVictims(postCodeVisitor);
+        } catch (StopVisitingException e) {
+            LOGGER.error("Error", e);
+        }
 
 //        VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
 //        hitListScanner.visitVictims(postCodeVisitor);
