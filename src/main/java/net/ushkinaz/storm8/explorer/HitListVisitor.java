@@ -55,7 +55,7 @@ public class HitListVisitor implements ProfileVisitor {
     }
 
     @Override
-    public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException {
+    public void visitProfile(Victim victim, String profileHTML) throws PageExpiredException, TooManyTimesInHitListException {
         Matcher m = PATTERN.matcher(profileHTML);
         if (MatcherHelper.isMatchFound(m)) {
             String url = MatcherHelper.match(m);
@@ -72,7 +72,11 @@ public class HitListVisitor implements ProfileVisitor {
                 }
             });
             if (res.contains("Failure")) {
-                LOGGER.warn("Failed");
+                LOGGER.warn("Failed hitlisting");
+                if (res.contains("on the hit list too many times today")) {
+                    LOGGER.warn(victim.getName() + ": on the hit list too many times today");
+                    throw new TooManyTimesInHitListException(victim);
+                }
             } else {
                 LOGGER.info("Placed bounty of " + BOUNTY_VALUE + " on " + victim.getName());
             }

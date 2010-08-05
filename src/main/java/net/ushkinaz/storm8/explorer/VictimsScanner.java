@@ -89,7 +89,7 @@ public abstract class VictimsScanner {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public void visitVictims(ProfileVisitor... profileVisitors) {
+    public void visitVictims(ProfileVisitor... profileVisitors) throws StopVisitingException {
         LOGGER.debug(">> visitVictims");
         scanVictims(profileVisitors);
         LOGGER.debug("<< visitVictims");
@@ -102,8 +102,10 @@ public abstract class VictimsScanner {
      *
      * @param profileVisitors visitors to use
      */
-    private void scanVictims(ProfileVisitor... profileVisitors) {
+    private void scanVictims(ProfileVisitor... profileVisitors) throws StopVisitingException {
         String requestURL = getListURL();
+        //The game seems to be too suspicious about subsequent request for comments section w/o requesting home section. Let it be
+        gameRequestor.postRequest(player.getGame().getGameURL(), PostBodyFactory.NULL);
         String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
         Matcher matcher = profilePattern.matcher(body);
         while (isMatchFound(matcher)) {

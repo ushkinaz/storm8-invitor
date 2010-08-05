@@ -22,6 +22,7 @@
               </set>
             </option>
             <option name="logIdName" value="Default" />
+            <option name="logIdSequenceValue" value="10" />
           </DefaultLogConfiguration>
         </option>
       </ProjectLogConfigurations>

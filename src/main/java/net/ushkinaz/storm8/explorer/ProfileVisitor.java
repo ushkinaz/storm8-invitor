@@ -26,5 +26,5 @@ import net.ushkinaz.storm8.http.PageExpiredException;
 public interface ProfileVisitor {
 // -------------------------- OTHER METHODS --------------------------
 
-    void visitProfile(Victim victim, String profileHTML) throws PageExpiredException;
+    void visitProfile(Victim victim, String profileHTML) throws PageExpiredException, StopVisitingException;
 }
