@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 public class StormMe {
@@ -59,6 +60,7 @@ public class StormMe {
 
     private Configuration configuration;
     private Injector injector;
+    private static final String PLAYER_CODE = "ush-ninja";
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -66,6 +68,47 @@ public class StormMe {
     public StormMe(Configuration configuration, Injector injector) {
         this.configuration = configuration;
         this.injector = injector;
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    private int getNextPause(Random random) {
+//        return 10000;
+        return 300000 + random.nextInt(300000);
+    }
+
+    private void sleepFor(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted", e);
+        }
+    }
+
+// -------------------------- INNER CLASSES --------------------------
+
+    private class LoopingCallThread extends Thread {
+        private long sleep;
+        private Runnable target;
+
+        public LoopingCallThread(String name, long sleep, TimeUnit timeUnit, Runnable target) {
+            super(name);
+            this.target = target;
+            this.sleep = TimeUnit.MILLISECONDS.convert(sleep, timeUnit);
+        }
+
+        @Override
+        public void run() {
+            boolean exitFlag = false;
+            while (!exitFlag) {
+                target.run();
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e) {
+                    exitFlag = true;
+                }
+            }
+        }
     }
 
 // --------------------------- main() method ---------------------------
@@ -141,7 +184,7 @@ public class StormMe {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Player player = configuration.getPlayer("ush-ninja");
+                Player player = configuration.getPlayer(PLAYER_CODE);
                 injector.getInstance(PlayerProvider.class).setPlayer(player);
 
                 VictimScanFilter victimFilter = injector.getInstance(Key.get(VictimScanFilter.class, ByName.class));
@@ -174,105 +217,66 @@ public class StormMe {
         }, "HitListing").start();
     }
 
-    private void sleepFor(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            LOGGER.warn("Interrupted", e);
-        }
-    }
-
-    private int getNextPause(Random random) {
-//        return 10000;
-        return 300000 + random.nextInt(300000);
-    }
-
-    private void batch() {
-        digBroadcasts();
-        digSites();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean exitFlag = false;
-                while (!exitFlag) {
-                    digComments();
-                    invite();
-                    try {
-                        Thread.sleep(1000 * 60 * 5);
-                    } catch (InterruptedException e) {
-                        exitFlag = true;
-                    }
-                }
-            }
-        }, "Batcher").start();
-    }
-
-    private void digBroadcasts() {
-        Player player = configuration.getPlayer("ush-ninja");
-        injector.getInstance(PlayerProvider.class).setPlayer(player);
-        BroadcastsScanner broadcastsDigger = injector.getInstance(BroadcastsScanner.class);
-        broadcastsDigger.digCodes();
-    }
-
-    private void bankMoney() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Player player = configuration.getPlayer("ush-ninja");
-                injector.getInstance(PlayerProvider.class).setPlayer(player);
-
-                BankService bankService = injector.getInstance(BankService.class);
-                boolean doTheJob = true;
-                while (doTheJob) {
-                    try {
-                        //Doing it twice to be sure we didn't miss the time
-//                bankService.putAllMoneyInBank(player.getGame());
-//                Thread.sleep(5000);
-                        int nextIncome = bankService.putAllMoneyInBank(player.getGame());
-                        LOGGER.info("Sleeping for " + nextIncome + " milliseconds");
-                        Thread.sleep(nextIncome);
-                    } catch (InterruptedException e) {
-                        doTheJob = false;
-                        LOGGER.error("Interrupted", e);
-                    }
-                }
-            }
-        }, "Banking").start();
-    }
-
     private void inventory() {
-        Player player = configuration.getPlayer("ush-ninja");
+        Player player = configuration.getPlayer(PLAYER_CODE);
 
         EquipmentAnalyzerService equipmentAnalyzerService = injector.getInstance(EquipmentAnalyzerService.class);
         equipmentAnalyzerService.dig(player);
     }
 
-    private void digSites() {
-        new Thread("SitesDigger") {
+    private void batch() {
+        new LoopingCallThread("BroadCastsDigger", 30, TimeUnit.MINUTES, new Runnable() {
             @Override
             public void run() {
-                boolean exitFlag = false;
-                while (!exitFlag) {
-                    Game game = configuration.getGame("ninja");
-
-                    CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
-                    forumDigger.digCodes(game);
-
-                    CodesDigger liveCodesDigger = injector.getInstance(LiveCodesDigger.class);
-                    liveCodesDigger.digCodes(game);
-                    try {
-                        sleep(1000 * 60 * 30);
-                    } catch (InterruptedException e) {
-                        exitFlag = true;
-                    }
-                }
+                digBroadcasts();
             }
-        }.start();
+        }).start();
+        new LoopingCallThread("SitesDigger", 2, TimeUnit.HOURS, new Runnable() {
+            @Override
+            public void run() {
+                digSites();
+            }
+        }).start();
+        new LoopingCallThread("Invitor", 20, TimeUnit.MINUTES, new Runnable() {
+            @Override
+            public void run() {
+                invite();
+            }
+        }).start();
+        new LoopingCallThread("InvitorUpdater", 2, TimeUnit.DAYS, new Runnable() {
+            @Override
+            public void run() {
+                updateInvitesStatus();
+            }
+        }).start();
+        new LoopingCallThread("CommentsDigger", 5, TimeUnit.MINUTES, new Runnable() {
+            @Override
+            public void run() {
+                digComments();
+            }
+        }).start();
+    }
+
+    private void digSites() {
+        Game game = configuration.getGame("ninja");
+
+        CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
+        forumDigger.digCodes(game);
+
+        CodesDigger liveCodesDigger = injector.getInstance(LiveCodesDigger.class);
+        liveCodesDigger.digCodes(game);
+    }
+
+    private void digBroadcasts() {
+        Player player = configuration.getPlayer(PLAYER_CODE);
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
+        BroadcastsScanner broadcastsDigger = injector.getInstance(BroadcastsScanner.class);
+        broadcastsDigger.digCodes();
     }
 
     private void digComments() {
         try {
-            Player player = configuration.getPlayer("ush-ninja");
+            Player player = configuration.getPlayer(PLAYER_CODE);
             injector.getInstance(PlayerProvider.class).setPlayer(player);
             ProfileCommentsVisitor profileCommentsVisitor;
             profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
@@ -283,11 +287,11 @@ public class StormMe {
 */
 
             VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-            hitListScanner.setScanVictims(500);
+            hitListScanner.setScanVictims(50);
             hitListScanner.visitVictims(profileCommentsVisitor);
 
             VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-            fightsScanner.setScanVictims(1000);
+            fightsScanner.setScanVictims(100);
             fightsScanner.visitVictims(profileCommentsVisitor);
         } catch (StopVisitingException e) {
             LOGGER.error("Error", e);
@@ -296,7 +300,7 @@ public class StormMe {
 
     private void postComment() {
         try {
-            Player player = configuration.getPlayer("ush-ninja");
+            Player player = configuration.getPlayer(PLAYER_CODE);
             injector.getInstance(PlayerProvider.class).setPlayer(player);
             ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
 
@@ -312,10 +316,39 @@ public class StormMe {
     }
 
     private void invite() {
-        Player player = configuration.getPlayer("ush-ninja");
+        Player player = configuration.getPlayer(PLAYER_CODE);
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         InviteService service = injector.getInstance(InviteService.class);
         service.invite(player);
-        service.waitForInvitesToFinish();
+    }
+
+    private void updateInvitesStatus() {
+        Player player = configuration.getPlayer(PLAYER_CODE);
+        injector.getInstance(PlayerProvider.class).setPlayer(player);
+        InviteService service = injector.getInstance(InviteService.class);
+        service.updateStatus(player);
+    }
+
+    private void bankMoney() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Player player = configuration.getPlayer(PLAYER_CODE);
+                injector.getInstance(PlayerProvider.class).setPlayer(player);
+
+                BankService bankService = injector.getInstance(BankService.class);
+                boolean doTheJob = true;
+                while (doTheJob) {
+                    try {
+                        int nextIncome = bankService.putAllMoneyInBank(player.getGame());
+                        LOGGER.info("Sleeping for " + nextIncome + " milliseconds");
+                        Thread.sleep(nextIncome);
+                    } catch (InterruptedException e) {
+                        doTheJob = false;
+                        LOGGER.error("Interrupted", e);
+                    }
+                }
+            }
+        }, "Banking").start();
     }
 }

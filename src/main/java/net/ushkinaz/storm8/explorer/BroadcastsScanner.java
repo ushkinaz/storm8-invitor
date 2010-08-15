@@ -63,31 +63,12 @@ public class BroadcastsScanner {
 // -------------------------- OTHER METHODS --------------------------
 
     public void digCodes() {
-        new BroadcastsScanThread().start();
-    }
-
-// -------------------------- INNER CLASSES --------------------------
-
-    private class BroadcastsScanThread extends Thread {
-        public BroadcastsScanThread() {
-            super("BroadcastsScanner");
-            setDaemon(true);
-        }
-
-        @Override
-        public void run() {
-            while (exitFlag) {
-                try {
-                    String requestURL = player.getGame().getGameURL() + "ajax/getNewsFeedStories.php?selectedTab=broadcasts";
-                    String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
-                    pageDigger.parsePost(body, callbackFactory.get(getPlayer().getGame(), ClanInviteSource.INGAME_BROADCAST));
-                    sleep(SLEEP_30_MINUTES);
-                } catch (PageExpiredException e) {
-                    LOGGER.error("Error", e);
-                } catch (InterruptedException e) {
-                    exitFlag = true;
-                }
-            }
+        try {
+            String requestURL = player.getGame().getGameURL() + "ajax/getNewsFeedStories.php?selectedTab=broadcasts";
+            String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
+            pageDigger.parsePost(body, callbackFactory.get(getPlayer().getGame(), ClanInviteSource.INGAME_BROADCAST));
+        } catch (PageExpiredException e) {
+            LOGGER.error("Error", e);
         }
     }
 }

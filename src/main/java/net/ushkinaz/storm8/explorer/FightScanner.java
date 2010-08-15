@@ -51,10 +51,10 @@ public class FightScanner extends VictimsScanner {
 
     @Override
     protected void profileVisited(Victim victim) {
-//        try {
-//            Thread.sleep(1000 * 60 * 2);
-//        } catch (InterruptedException e) {
-//            LOGGER.error("Error", e);
-//        }
+        try {
+            Thread.sleep(1000 * 10);
+        } catch (InterruptedException e) {
+            LOGGER.error("Error", e);
+        }
     }
 }
