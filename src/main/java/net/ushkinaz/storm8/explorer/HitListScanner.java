@@ -53,5 +53,10 @@ public class HitListScanner extends VictimsScanner {
 
     @Override
     protected void profileVisited(Victim victim) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            LOGGER.warn("Error", e);
+        }
     }
 }

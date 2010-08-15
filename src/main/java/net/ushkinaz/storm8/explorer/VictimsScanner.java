@@ -134,6 +134,8 @@ public abstract class VictimsScanner {
 
                     victim = getVictimFromDB(name, victim);
 
+                    LOGGER.info("Victim #" + victimsVisited + ": " + victim.getName());
+
                     for (ProfileVisitor visitor : profileVisitors) {
                         visitor.visitProfile(victim, profileHTML);
                     }
@@ -142,7 +144,6 @@ public abstract class VictimsScanner {
                     db.commit();
                     victimsVisited++;
 
-                    LOGGER.info("Victim #" + victimsVisited + ": " + victim.getName());
                     if (scanVictims > 0 && victimsVisited >= scanVictims) {
                         LOGGER.info("Maximum Victims reached");
                         return;

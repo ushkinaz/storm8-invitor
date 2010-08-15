@@ -86,6 +86,17 @@ public class InviteService {
         LOGGER.debug("<< invite");
     }
 
+    public void updateStatus(final Player player) {
+        LOGGER.debug(">> updateStatus");
+        Collection<ClanInvite> invites = clanDao.getByStatus(player.getGame(), ClanInviteStatus.PENDING);
+
+        final int[] count = {invites.size()};
+        for (final ClanInvite invite : invites) {
+            threadPoolExecutor.execute(new InviteClanAction(player, invite, count));
+        }
+        LOGGER.debug("<< updateStatus");
+    }
+
     private void invite(Player player, ClanInvite clanInvite, GameRequestor gameRequestor) throws ServerWorkflowException {
         try {
             String responseBody = gameRequestor.postRequest(player.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
@@ -97,10 +108,6 @@ public class InviteService {
             LOGGER.error("Bad thing happened", e);
             threadPoolExecutor.shutdownNow();
         }
-    }
-
-    public void waitForInvitesToFinish() {
-        threadPoolExecutor.shutdown();
     }
 
     private class InvitorThreadFactory implements ThreadFactory {
@@ -126,7 +133,6 @@ public class InviteService {
             try {
                 invite(player, invite, gameRequestor);
             } catch (ServerWorkflowException e) {
-                //todo: need to re throw
                 LOGGER.error("Error inviting clan", e);
             } finally {
                 count[0]--;
