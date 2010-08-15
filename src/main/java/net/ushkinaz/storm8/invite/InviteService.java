@@ -80,24 +80,9 @@ public class InviteService {
                 }
                 continue;
             }
-            threadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        invite(player, invite, gameRequestor);
-                    } catch (ServerWorkflowException e) {
-                        //todo: need to re throw
-                        LOGGER.error("Error", e);
-                    } finally {
-                        count[0]--;
-                        if (count[0] % 50 == 0) {
-                            LOGGER.info("Invites to process: " + count[0]);
-                        }
-                    }
-                }
-            });
+            threadPoolExecutor.execute(new InviteClanAction(player, invite, count));
         }
-        LOGGER.info(count[0] + " invitation jobs are dispatched.");
+        LOGGER.info(invites.size() + " invitation jobs are dispatched.");
         LOGGER.debug("<< invite");
     }
 
@@ -114,10 +99,41 @@ public class InviteService {
         }
     }
 
+    public void waitForInvitesToFinish() {
+        threadPoolExecutor.shutdown();
+    }
+
     private class InvitorThreadFactory implements ThreadFactory {
         @Override
         public Thread newThread(Runnable r) {
-            return new Thread("Invitor " + invitorId++);
+            return new Thread(r, "Invitor " + invitorId++);
+        }
+    }
+
+    private class InviteClanAction implements Runnable {
+        private final Player player;
+        private final ClanInvite invite;
+        private final int[] count;
+
+        public InviteClanAction(Player player, ClanInvite invite, int[] count) {
+            this.player = player;
+            this.invite = invite;
+            this.count = count;
+        }
+
+        @Override
+        public void run() {
+            try {
+                invite(player, invite, gameRequestor);
+            } catch (ServerWorkflowException e) {
+                //todo: need to re throw
+                LOGGER.error("Error inviting clan", e);
+            } finally {
+                count[0]--;
+                if (count[0] % 10 == 0) {
+                    LOGGER.info("Invites to process: " + count[0]);
+                }
+            }
         }
     }
 }

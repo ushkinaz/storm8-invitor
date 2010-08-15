@@ -316,6 +316,6 @@ public class StormMe {
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         InviteService service = injector.getInstance(InviteService.class);
         service.invite(player);
-
+        service.waitForInvitesToFinish();
     }
 }
