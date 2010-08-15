@@ -91,7 +91,6 @@ public class Storm8Module extends AbstractModule {
         bind(VictimsScanner.class).annotatedWith(Clan.class).to(ClanScanner.class);
         bind(VictimsScanner.class).annotatedWith(HitList.class).to(HitListScanner.class);
         bind(VictimsScanner.class).annotatedWith(FightList.class).to(FightScanner.class);
-        bind(VictimsScanner.class).annotatedWith(Comments.class).to(MyCommentsScanner.class);
 
         bind(VictimScanFilter.class).annotatedWith(ByName.class).to(VictimScanFilterByName.class);
 

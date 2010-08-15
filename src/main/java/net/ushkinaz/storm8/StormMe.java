@@ -40,6 +40,7 @@ import net.ushkinaz.storm8.money.BankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
@@ -70,6 +71,8 @@ public class StormMe {
         Set<String> arguments = new HashSet<String>(Arrays.asList(args));
 
         if (arguments.contains("defragment")) {
+            new File("storm8.db.backup").delete();
+            LOGGER.info("Defragmenting");
             DefragmentConfig defragmentConfig = new DefragmentConfig(STORM_DB);
             defragmentConfig.db4oConfig().generateUUIDs(ConfigScope.GLOBALLY);
             defragmentConfig.db4oConfig().generateVersionNumbers(ConfigScope.GLOBALLY);
@@ -106,10 +109,6 @@ public class StormMe {
             stormMe.batch();
         }
 
-        if (arguments.contains("scan-targets")) {
-            stormMe.scanTargets();
-        }
-
         if (arguments.contains("dig")) {
             stormMe.digSites();
         }
@@ -136,12 +135,6 @@ public class StormMe {
     }
 
     private void hitlist() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                bankMoney();
-            }
-        }, "Banking").start();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -195,12 +188,6 @@ public class StormMe {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bankMoney();
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
                 while (true) {
                     digBroadcasts();
                     digComments();
@@ -221,29 +208,34 @@ public class StormMe {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         BroadcastsScanner broadcastsDigger = injector.getInstance(BroadcastsScanner.class);
-        broadcastsDigger.setMaximumScans(1000);
+        broadcastsDigger.setMaximumScans(100);
         broadcastsDigger.digCodes();
     }
 
     private void bankMoney() {
-        Player player = configuration.getPlayer("ush-ninja");
-        injector.getInstance(PlayerProvider.class).setPlayer(player);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Player player = configuration.getPlayer("ush-ninja");
+                injector.getInstance(PlayerProvider.class).setPlayer(player);
 
-        BankService bankService = injector.getInstance(BankService.class);
-        boolean doTheJob = true;
-        while (doTheJob) {
-            try {
-                //Doing it twice to be sure we didn't miss the time
+                BankService bankService = injector.getInstance(BankService.class);
+                boolean doTheJob = true;
+                while (doTheJob) {
+                    try {
+                        //Doing it twice to be sure we didn't miss the time
 //                bankService.putAllMoneyInBank(player.getGame());
 //                Thread.sleep(5000);
-                int nextIncome = bankService.putAllMoneyInBank(player.getGame());
-                LOGGER.info("Sleeping for " + nextIncome + " milliseconds");
-                Thread.sleep(nextIncome);
-            } catch (InterruptedException e) {
-                doTheJob = false;
-                LOGGER.error("Interrupted", e);
+                        int nextIncome = bankService.putAllMoneyInBank(player.getGame());
+                        LOGGER.info("Sleeping for " + nextIncome + " milliseconds");
+                        Thread.sleep(nextIncome);
+                    } catch (InterruptedException e) {
+                        doTheJob = false;
+                        LOGGER.error("Interrupted", e);
+                    }
+                }
             }
-        }
+        }, "Banking").start();
     }
 
     private void inventory() {
@@ -251,9 +243,6 @@ public class StormMe {
 
         EquipmentAnalyzerService equipmentAnalyzerService = injector.getInstance(EquipmentAnalyzerService.class);
         equipmentAnalyzerService.dig(player);
-    }
-
-    private void scanTargets() {
     }
 
     private void digSites() {
@@ -276,7 +265,7 @@ public class StormMe {
             victimsScanner.visitVictims(profileCommentsVisitor);
 
             VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-            hitListScanner.setMaximumVictims(2000);
+            hitListScanner.setMaximumVictims(500);
             hitListScanner.visitVictims(profileCommentsVisitor);
 
             VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
