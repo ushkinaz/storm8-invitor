@@ -17,7 +17,6 @@
 package net.ushkinaz.storm8.explorer;
 
 import net.ushkinaz.storm8.domain.Victim;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -26,8 +25,9 @@ import org.slf4j.LoggerFactory;
 public class ClanScanner extends VictimsScanner {
 // ------------------------------ FIELDS ------------------------------
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClanScanner.class);
+    static {
+        LOGGER = LoggerFactory.getLogger(ClanScanner.class);
+    }
 
     private static final String LIST_URL = "group_member.php?groupMemberRange=";
 

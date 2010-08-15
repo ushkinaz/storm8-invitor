@@ -39,7 +39,7 @@ public abstract class VictimsScanner {
 // ------------------------------ FIELDS ------------------------------
 
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger LOGGER = LoggerFactory.getLogger(VictimsScanner.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(VictimsScanner.class);
 
     private static final Pattern profilePattern = Pattern.compile("<a href=\"/profile\\.php\\?puid=(\\d*)&(.*?)\">(.*?)</a>");
     private GameRequestor gameRequestor;
