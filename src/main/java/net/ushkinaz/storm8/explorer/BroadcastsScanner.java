@@ -22,6 +22,7 @@ import net.ushkinaz.storm8.digger.PageDigger;
 import net.ushkinaz.storm8.domain.ClanInviteSource;
 import net.ushkinaz.storm8.domain.Player;
 import net.ushkinaz.storm8.http.GameRequestor;
+import net.ushkinaz.storm8.http.PageExpiredException;
 import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,14 @@ public class BroadcastsScanner {
 
     @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger LOGGER = LoggerFactory.getLogger(BroadcastsScanner.class);
+    private static final int SLEEP_30_MINUTES = 1000 * 60 * 30;
 
     private PageDigger pageDigger;
     private GameRequestor gameRequestor;
     private Player player;
     private int maximumScans;
     private DBStoringCallbackFactory callbackFactory;
+    private boolean exitFlag = false;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -51,16 +54,7 @@ public class BroadcastsScanner {
         this.callbackFactory = callbackFactory;
     }
 
-
 // --------------------- GETTER / SETTER METHODS ---------------------
-
-    public int getMaximumScans() {
-        return maximumScans;
-    }
-
-    public void setMaximumScans(int maximumScans) {
-        this.maximumScans = maximumScans;
-    }
 
     protected Player getPlayer() {
         return player;
@@ -69,8 +63,31 @@ public class BroadcastsScanner {
 // -------------------------- OTHER METHODS --------------------------
 
     public void digCodes() {
-        String requestURL = player.getGame().getGameURL() + "ajax/getNewsFeedStories.php?selectedTab=broadcasts";
-        String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
-        pageDigger.parsePost(body, callbackFactory.get(getPlayer().getGame(), ClanInviteSource.INGAME_BROADCAST));
+        new BroadcastsScanThread().start();
+    }
+
+// -------------------------- INNER CLASSES --------------------------
+
+    private class BroadcastsScanThread extends Thread {
+        public BroadcastsScanThread() {
+            super("BroadcastsScanner");
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            while (exitFlag) {
+                try {
+                    String requestURL = player.getGame().getGameURL() + "ajax/getNewsFeedStories.php?selectedTab=broadcasts";
+                    String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
+                    pageDigger.parsePost(body, callbackFactory.get(getPlayer().getGame(), ClanInviteSource.INGAME_BROADCAST));
+                    sleep(SLEEP_30_MINUTES);
+                } catch (PageExpiredException e) {
+                    LOGGER.error("Error", e);
+                } catch (InterruptedException e) {
+                    exitFlag = true;
+                }
+            }
+        }
     }
 }

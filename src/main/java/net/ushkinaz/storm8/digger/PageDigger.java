@@ -53,7 +53,7 @@ public class PageDigger {
             if (codesBlackList.isBlackListed(code)) {
                 continue;
             }
-            LOGGER.debug("Code: " + code);
+//            LOGGER.debug("Code: " + code);
             callback.codeFound(code);
         }
     }

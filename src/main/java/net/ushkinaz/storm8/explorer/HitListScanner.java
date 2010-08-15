@@ -25,13 +25,15 @@ import org.slf4j.LoggerFactory;
 public class HitListScanner extends VictimsScanner {
 // ------------------------------ FIELDS ------------------------------
 
-    static {
-        LOGGER = LoggerFactory.getLogger(HitListScanner.class);
-    }
-
     private static final String LIST_URL = "hitlist.php";
 
     private String clanURLBase;
+
+// -------------------------- STATIC METHODS --------------------------
+
+    static {
+        LOGGER = LoggerFactory.getLogger(HitListScanner.class);
+    }
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -51,11 +53,5 @@ public class HitListScanner extends VictimsScanner {
 
     @Override
     protected void profileVisited(Victim victim) {
-        try {
-            //TODO: add configurable sleep duration
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            LOGGER.error("Error", e);
-        }
     }
 }
