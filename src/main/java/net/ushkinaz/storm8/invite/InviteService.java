@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -47,12 +48,13 @@ public class InviteService {
     private InviteParser inviteParser;
     private ClanDao clanDao;
     private GameRequestor gameRequestor;
+    private int invitorId;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
     @Inject
     public InviteService(InviteParser inviteParser, ClanDao clanDao, GameRequestor gameRequestor) {
-        threadPoolExecutor = new ThreadPoolExecutor(0, 10, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        threadPoolExecutor = new ThreadPoolExecutor(0, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new InvitorThreadFactory());
         this.inviteParser = inviteParser;
         this.clanDao = clanDao;
         this.gameRequestor = gameRequestor;
@@ -109,6 +111,13 @@ public class InviteService {
             // Bad thing happened
             LOGGER.error("Bad thing happened", e);
             threadPoolExecutor.shutdownNow();
+        }
+    }
+
+    private class InvitorThreadFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread("Invitor " + invitorId++);
         }
     }
 }

@@ -26,7 +26,10 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import net.ushkinaz.storm8.digger.CodesDigger;
 import net.ushkinaz.storm8.digger.LiveCodesDigger;
-import net.ushkinaz.storm8.digger.annotations.*;
+import net.ushkinaz.storm8.digger.annotations.ByName;
+import net.ushkinaz.storm8.digger.annotations.Comments;
+import net.ushkinaz.storm8.digger.annotations.FightList;
+import net.ushkinaz.storm8.digger.annotations.HitList;
 import net.ushkinaz.storm8.digger.forum.ForumCodesDigger;
 import net.ushkinaz.storm8.domain.ClanInvite;
 import net.ushkinaz.storm8.domain.Configuration;
@@ -185,30 +188,29 @@ public class StormMe {
     }
 
     private void batch() {
+        digBroadcasts();
+        digSites();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    digBroadcasts();
+                boolean exitFlag = false;
+                while (!exitFlag) {
                     digComments();
-                    digSites();
                     invite();
                     try {
-                        Thread.sleep(1000 * 60 * 60);
+                        Thread.sleep(1000 * 60 * 5);
                     } catch (InterruptedException e) {
-                        //TODO: add proper handling
-                        LOGGER.error("Error", e);
+                        exitFlag = true;
                     }
                 }
             }
-        }).start();
+        }, "Batcher").start();
     }
 
     private void digBroadcasts() {
         Player player = configuration.getPlayer("ush-ninja");
         injector.getInstance(PlayerProvider.class).setPlayer(player);
         BroadcastsScanner broadcastsDigger = injector.getInstance(BroadcastsScanner.class);
-        broadcastsDigger.setMaximumScans(100);
         broadcastsDigger.digCodes();
     }
 
@@ -246,30 +248,46 @@ public class StormMe {
     }
 
     private void digSites() {
-        Game game = configuration.getGame("ninja");
+        new Thread("SitesDigger") {
+            @Override
+            public void run() {
+                boolean exitFlag = false;
+                while (!exitFlag) {
+                    Game game = configuration.getGame("ninja");
 
-        CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
-        forumDigger.digCodes(game);
+                    CodesDigger forumDigger = injector.getInstance(ForumCodesDigger.class);
+                    forumDigger.digCodes(game);
 
-        CodesDigger liveCodesDigger = injector.getInstance(LiveCodesDigger.class);
-        liveCodesDigger.digCodes(game);
+                    CodesDigger liveCodesDigger = injector.getInstance(LiveCodesDigger.class);
+                    liveCodesDigger.digCodes(game);
+                    try {
+                        sleep(1000 * 60 * 30);
+                    } catch (InterruptedException e) {
+                        exitFlag = true;
+                    }
+                }
+            }
+        }.start();
     }
 
     private void digComments() {
         try {
             Player player = configuration.getPlayer("ush-ninja");
             injector.getInstance(PlayerProvider.class).setPlayer(player);
-            ProfileCommentsVisitor profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
+            ProfileCommentsVisitor profileCommentsVisitor;
+            profileCommentsVisitor = injector.getInstance(ProfileCodesDiggerVisitor.class);
 
+/*
             VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, Clan.class));
             victimsScanner.visitVictims(profileCommentsVisitor);
+*/
 
             VictimsScanner hitListScanner = injector.getInstance(Key.get(VictimsScanner.class, HitList.class));
-            hitListScanner.setMaximumVictims(500);
+            hitListScanner.setScanVictims(500);
             hitListScanner.visitVictims(profileCommentsVisitor);
 
             VictimsScanner fightsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-            fightsScanner.setMaximumVictims(1000);
+            fightsScanner.setScanVictims(1000);
             fightsScanner.visitVictims(profileCommentsVisitor);
         } catch (StopVisitingException e) {
             LOGGER.error("Error", e);
@@ -283,7 +301,7 @@ public class StormMe {
             ProfileCommentsVisitor postCodeVisitor = injector.getInstance(ProfilePostCodeVisitor.class);
 
             VictimsScanner victimsScanner = injector.getInstance(Key.get(VictimsScanner.class, FightList.class));
-            victimsScanner.setMaximumVictims(2000);
+            victimsScanner.setScanVictims(2000);
             victimsScanner.visitVictims(postCodeVisitor);
         } catch (StopVisitingException e) {
             LOGGER.error("Error", e);
@@ -299,10 +317,5 @@ public class StormMe {
         InviteService service = injector.getInstance(InviteService.class);
         service.invite(player);
 
-/*
-        for (Game game : configurator.getGames().values()) {
-            service.invite(game);
-        }
-*/
     }
 }

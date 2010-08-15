@@ -26,7 +26,9 @@ import net.ushkinaz.storm8.http.PostBodyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +47,7 @@ public abstract class VictimsScanner {
     private GameRequestor gameRequestor;
     private Player player;
     private ObjectContainer db;
-    private int maximumVictims;
+    private int scanVictims = 5000;
     private int victimsVisited;
     private VictimScanFilter victimFilter;
 
@@ -56,12 +58,12 @@ public abstract class VictimsScanner {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    public int getMaximumVictims() {
-        return maximumVictims;
+    public int getScanVictims() {
+        return scanVictims;
     }
 
-    public void setMaximumVictims(int maximumVictims) {
-        this.maximumVictims = maximumVictims;
+    public void setScanVictims(int scanVictims) {
+        this.scanVictims = scanVictims;
     }
 
     protected Player getPlayer() {
@@ -103,51 +105,62 @@ public abstract class VictimsScanner {
      * @param profileVisitors visitors to use
      */
     private void scanVictims(ProfileVisitor... profileVisitors) throws StopVisitingException {
-        String requestURL = getListURL();
-        //The game seems to be too suspicious about subsequent request for comments section w/o requesting home section. Let it be
-        gameRequestor.postRequest(player.getGame().getGameURL(), PostBodyFactory.NULL);
-        String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
-        Matcher matcher = profilePattern.matcher(body);
-        while (isMatchFound(matcher)) {
-            int puid = matchInteger(matcher);
-            String timeStamp = match(matcher, 2);
-            String name = match(matcher, 3);
-            String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timeStamp);
-
-            Victim victim = new Victim(puid, player.getGame());
-            victim.setName(name);
-
-            if (victimFilter != null && victimFilter.filter(victim)) {
-                continue;
-            }
-
+        Set<Integer> puidsList = new HashSet<Integer>();
+        while (true) {
+            String requestURL = getListURL();
+            //The game seems to be too suspicious about subsequent request for comments section w/o requesting home section. Let it be
+            gameRequestor.postRequest(player.getGame().getGameURL(), PostBodyFactory.NULL);
+            String body = gameRequestor.postRequest(requestURL, PostBodyFactory.NULL);
+            Matcher matcher = profilePattern.matcher(body);
             try {
-                String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);
+                while (isMatchFound(matcher)) {
+                    int puid = matchInteger(matcher);
+                    if (puidsList.contains(puid)) {
+                        continue;
+                    }
+                    puidsList.add(puid);
+                    String timeStamp = match(matcher, 2);
+                    String name = match(matcher, 3);
+                    String profileURL = String.format("%sprofile.php?puid=%s&%s", player.getGame().getGameURL(), puid, timeStamp);
 
-                List<Victim> victims = db.queryByExample(victim);
-                victim.setName(name);
-                if (victims.size() > 0) {
-                    victim = victims.get(0);
-                }
-                for (ProfileVisitor visitor : profileVisitors) {
-                    visitor.visitProfile(victim, profileHTML);
-                }
-                profileVisited(victim);
-                db.store(victim);
-                db.commit();
-                victimsVisited++;
+                    Victim victim = new Victim(puid, player.getGame());
+                    victim.setName(name);
 
-                LOGGER.debug("Scanned: " + victimsVisited);
-                if (maximumVictims > 0 && victimsVisited >= maximumVictims) {
-                    LOGGER.debug("Maximum Victims reached");
-                    return;
+                    if (victimFilter != null && victimFilter.filter(victim)) {
+                        continue;
+                    }
+
+                    String profileHTML = gameRequestor.postRequest(profileURL, PostBodyFactory.NULL);
+
+                    victim = getVictimFromDB(name, victim);
+
+                    for (ProfileVisitor visitor : profileVisitors) {
+                        visitor.visitProfile(victim, profileHTML);
+                    }
+                    profileVisited(victim);
+                    db.store(victim);
+                    db.commit();
+                    victimsVisited++;
+
+                    LOGGER.info("Victim #" + victimsVisited + ": " + victim.getName());
+                    if (scanVictims > 0 && victimsVisited >= scanVictims) {
+                        LOGGER.info("Maximum Victims reached");
+                        return;
+                    }
                 }
             } catch (PageExpiredException e) {
                 LOGGER.debug("Restarting scan, time stamp expired");
-                scanVictims(profileVisitors);
-                break;
             }
         }
+    }
+
+    private Victim getVictimFromDB(String name, Victim victim) {
+        List<Victim> victims = db.queryByExample(victim);
+        victim.setName(name);
+        if (victims.size() > 0) {
+            victim = victims.get(0);
+        }
+        return victim;
     }
 
     protected abstract String getListURL();

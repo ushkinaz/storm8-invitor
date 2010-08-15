@@ -136,7 +136,7 @@ public class DBStoringCallbackFactory implements DBConsumer {
             if (query.execute().size() == 0) {
                 db.store(clanInvite);
                 db.commit();
-                LOGGER.debug("Stored invite: " + clanInvite);
+                LOGGER.info("Stored invite: " + clanInvite);
             }
         }
     }
