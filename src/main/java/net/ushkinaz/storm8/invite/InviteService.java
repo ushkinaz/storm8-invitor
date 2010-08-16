@@ -54,7 +54,7 @@ public class InviteService {
 
     @Inject
     public InviteService(InviteParser inviteParser, ClanDao clanDao, GameRequestor gameRequestor) {
-        threadPoolExecutor = new ThreadPoolExecutor(0, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new InvitorThreadFactory());
+        threadPoolExecutor = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new InvitorThreadFactory());
         this.inviteParser = inviteParser;
         this.clanDao = clanDao;
         this.gameRequestor = gameRequestor;
@@ -100,6 +100,10 @@ public class InviteService {
     private void invite(Player player, ClanInvite clanInvite, GameRequestor gameRequestor) throws ServerWorkflowException {
         try {
             String responseBody = gameRequestor.postRequest(player.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
+            if (responseBody.isEmpty()) {
+                //Connection reset? Sleep for a while
+                sleep();
+            }
 
             inviteParser.parseResult(responseBody, clanInvite);
             clanDao.updateClanInvite(clanInvite);
@@ -107,6 +111,14 @@ public class InviteService {
             // Bad thing happened
             LOGGER.error("Bad thing happened", e);
             threadPoolExecutor.shutdownNow();
+        }
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException e) {
+            LOGGER.error("Error", e);
         }
     }
 
