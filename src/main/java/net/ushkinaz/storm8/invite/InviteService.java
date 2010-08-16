@@ -102,7 +102,7 @@ public class InviteService {
             String responseBody = gameRequestor.postRequest(player.getGame().getClansURL(), new InviteClanPostBodyFactory(clanInvite));
             if (responseBody.isEmpty()) {
                 //Connection reset? Sleep for a while
-                sleep();
+                return;
             }
 
             inviteParser.parseResult(responseBody, clanInvite);

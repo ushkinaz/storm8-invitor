@@ -243,12 +243,14 @@ public class StormMe {
                 invite();
             }
         }).start();
+/*
         new LoopingCallThread("InvitorUpdater", 2, TimeUnit.DAYS, new Runnable() {
             @Override
             public void run() {
                 updateInvitesStatus();
             }
         }).start();
+*/
         new LoopingCallThread("CommentsDigger", 5, TimeUnit.MINUTES, new Runnable() {
             @Override
             public void run() {

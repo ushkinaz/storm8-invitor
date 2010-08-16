@@ -27,6 +27,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,8 +46,8 @@ public class GameRequestor extends HttpService {
     static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     static final String ACCEPT_CHARSET = "Accept-Charset: utf-8, iso-8859-1, utf-16, *;q=0.7";
     static final String ACCEPT = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5,application/youtube-client";
-    private static final int SLEEP_BASE = 1;
-    private static final int SLEEP = 2;
+    private static final int SLEEP_BASE = 5000;
+    private static final int SLEEP = 10000;
 
     private Random random;
     private Player player;
@@ -87,8 +88,10 @@ public class GameRequestor extends HttpService {
         try {
             PostMethod postMethod = createPostMethod(requestURL, postBodyFactory);
             getClient().executeMethod(postMethod);
-            //randomlySleep();
             asString = postMethod.getResponseBodyAsString();
+        } catch (SocketException e) {
+            LOGGER.error("Error requesting:" + requestURL, e);
+            randomlySleep();
         } catch (IOException e) {
             LOGGER.error("Error requesting:" + requestURL, e);
         }
@@ -122,7 +125,7 @@ public class GameRequestor extends HttpService {
     private void randomlySleep() {
         if (!LOGGER.isDebugEnabled()) {
             try {
-                Thread.sleep(random.nextInt(SLEEP_BASE + SLEEP));
+                Thread.sleep(SLEEP_BASE + random.nextInt(SLEEP));
             } catch (InterruptedException e) {
                 LOGGER.error("Error", e);
             }
